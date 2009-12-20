@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="normal">#FFFF</color>
+	<color name="found">#F00</color>
+	<color name="focus">#0F0</color>
+	<color name="picked">#FFF0</color>
+</resources>

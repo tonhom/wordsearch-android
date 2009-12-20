@@ -1,0 +1,16 @@
+# use glob syntax.
+syntax: glob
+.bzr/*
+.settings/*
+bin/*
+gen/*
+*~
+
+.classpath
+.project
+.bzrignore
+default.properties
+
+# switch to regexp syntax.
+#syntax: regexp
+#^\.pc/
