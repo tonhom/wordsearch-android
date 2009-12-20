@@ -4,6 +4,9 @@ syntax: glob
 .settings/*
 bin/*
 gen/*
+assets/*
+res/drawable/*.png
+res/values/word*.xml
 *~
 
 .classpath
