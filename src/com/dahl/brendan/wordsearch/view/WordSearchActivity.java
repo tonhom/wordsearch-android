@@ -13,12 +13,9 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.view;
-
-import java.util.Date;
-import java.util.LinkedList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,11 +30,11 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
 import com.dahl.brendan.wordsearch.view.controller.TextViewGridController;
 import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
+import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
 
 /**
  * 
@@ -136,7 +133,8 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_scores:
-			showHighScore();
+			HighScoresShow hsShow = new HighScoresShow(control, this, false);
+			hsShow.run();
 			return true;
 		case R.id.menu_theme:
 			this.showCategorySelector();
@@ -229,32 +227,6 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(this.getString(R.string.category) + " : " + control.getCurrentTheme());
 		builder.setItems(control.getThemes(), this);
-		builder.show();
-	}
-
-	/**
-	 * shows an alert dialog to display the top three scores
-	 */
-	public void showHighScore() {
-		LinkedList<HighScore> highScores = control.getHighScores();
-		StringBuilder str = new StringBuilder();
-		if (highScores.size() == 0) {
-			str.append(this.getString(R.string.no_high_scores));
-		} else {
-			for (int index = 0; index < highScores.size(); index++) {
-				str.append(Integer.toString(index+1)+": "+highScores.get(index).getInitials()+" " + highScores.get(index).getScore() + " ( " + ConversionUtil.formatTime.format(new Date(highScores.get(index).getTime())) + " )\n");
-			}
-		}
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.high_score);
-		builder.setMessage(str);
-		builder.setNegativeButton(R.string.reset,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						control.resetScores();
-					}
-				});
-		builder.setNeutralButton(android.R.string.ok, this);
 		builder.show();
 	}
 

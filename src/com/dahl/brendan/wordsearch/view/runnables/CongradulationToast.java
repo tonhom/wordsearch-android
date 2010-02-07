@@ -13,18 +13,17 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.view.runnables;
 
 import java.util.Date;
 
-import android.widget.Toast;
-
 import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
+import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
 
 /**
  * 
@@ -36,15 +35,15 @@ import com.dahl.brendan.wordsearch.view.WordSearchActivity;
 public class CongradulationToast implements Runnable {
 	final private HighScore hs;
 	final private WordSearchActivity wordSearch;
-	public CongradulationToast(HighScore hs, WordSearchActivity wordSearch) {
+	final private WordSearchActivityController controller;
+	public CongradulationToast(WordSearchActivityController controller, HighScore hs, WordSearchActivity wordSearch) {
 		this.hs = hs;
 		this.wordSearch = wordSearch;
+		this.controller = controller;
 	}
 	public void run() {
-		Toast.makeText(
-				wordSearch,
-				wordSearch.getString(R.string.congradulations).replace(
-						"%time",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"),
-				Toast.LENGTH_LONG).show();
+		NewGameDialog newGameDialog = new NewGameDialog(controller, wordSearch, wordSearch.getString(R.string.congradulations).replace(
+				"%time",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
+		newGameDialog.run();
 	}
 }

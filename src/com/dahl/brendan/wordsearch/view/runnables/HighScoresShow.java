@@ -22,11 +22,8 @@ import java.util.LinkedList;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.text.TextUtils;
-import android.widget.EditText;
 
 import com.dahl.brendan.wordsearch.model.HighScore;
-import com.dahl.brendan.wordsearch.model.Preferences;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
@@ -36,47 +33,42 @@ import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
  * 
  * @author Brendan Dahl
  *
- * this class stores the action of requesting the user's initials to store a new high score
+ * shows an alert dialog to display the top three scores
  *
  */
-public class HighScoresInitials implements Runnable, DialogInterface.OnClickListener {
-	final private HighScore hs;
-	final private EditText text;
+public class HighScoresShow implements Runnable, DialogInterface.OnClickListener {
 	final private WordSearchActivity wordSearch;
 	final private WordSearchActivityController controller;
-	final private Preferences prefs;
-	public HighScoresInitials(WordSearchActivityController controller, HighScore hs, WordSearchActivity wordSearch, Preferences prefs) {
+	final private Boolean gameOver;
+	public HighScoresShow(WordSearchActivityController controller, WordSearchActivity wordSearch, boolean gameOver) {
+		this.gameOver = gameOver;
 		this.controller = controller;
-		this.hs = hs;
 		this.wordSearch = wordSearch;
-		this.prefs = prefs;
-		this.text = new EditText(wordSearch);
 	}
 
 	public void run() {
+		LinkedList<HighScore> highScores = controller.getHighScores();
+		StringBuilder str = new StringBuilder();
+		if (highScores.size() == 0) {
+			str.append(wordSearch.getString(R.string.no_high_scores));
+		} else {
+			for (int index = 0; index < highScores.size(); index++) {
+				str.append(Integer.toString(index+1)+": "+highScores.get(index).getInitials()+" " + highScores.get(index).getScore() + " ( " + ConversionUtil.formatTime.format(new Date(highScores.get(index).getTime())) + " )\n");
+			}
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(wordSearch);
-		builder.setMessage(wordSearch.getString(R.string.enter_initials).replace("%score", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
-		text.setSingleLine();
-		builder.setView(text);
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.setNeutralButton(android.R.string.cancel, this);
+		builder.setTitle(R.string.high_score);
+		builder.setMessage(str);
+		builder.setNegativeButton(R.string.reset, this);
+		builder.setNeutralButton(android.R.string.ok, this);
 		builder.show();
 	}
 
 	public void onClick(DialogInterface dialog, int which) {
 		if (which == DialogInterface.BUTTON_POSITIVE) {
-			LinkedList<HighScore> scores = prefs.getTopScores();
-			String name = text.getText().toString();
-			if (!TextUtils.isEmpty(name)) {
-				hs.setInitials(name);
-			} else {
-				hs.setInitials("?");
-			}
-			scores.add(hs);
-			prefs.setTopScores(scores);
-			HighScoresShow hsShow = new HighScoresShow(controller, wordSearch, true);
-			hsShow.run();
-		} else {
+			controller.resetScores();
+		}
+		if (gameOver) {
 			wordSearch.runOnUiThread(new NewGameDialog(controller, wordSearch, null));
 		}
 	}

@@ -13,7 +13,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.view.controller;
 
@@ -182,9 +182,9 @@ public class WordSearchActivityController {
 		HighScore hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
 		LinkedList<HighScore> scores = prefs.getTopScores();
 		if (scores.size() < 3 || hs.getScore() > scores.get(2).getScore()) {
-			wordSearch.runOnUiThread(new HighScoresInitials(hs, wordSearch, prefs));
+			wordSearch.runOnUiThread(new HighScoresInitials(this, hs, wordSearch, prefs));
 		} else {
-			wordSearch.runOnUiThread(new CongradulationToast(hs, wordSearch));
+			wordSearch.runOnUiThread(new CongradulationToast(this, hs, wordSearch));
 		}
 		return highScorer;
 	}

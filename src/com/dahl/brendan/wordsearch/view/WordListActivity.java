@@ -13,7 +13,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.view;
 

@@ -1,7 +1,6 @@
 # use glob syntax.
 syntax: glob
-.bzr/*
-.settings/*
+#.settings/*
 bin/*
 gen/*
 assets/*
@@ -9,9 +8,8 @@ res/drawable/*.png
 res/values/word*.xml
 *~
 
-.classpath
-.project
-.bzrignore
+#.classpath
+#.project
 default.properties
 
 # switch to regexp syntax.

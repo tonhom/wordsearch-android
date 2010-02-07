@@ -17,17 +17,10 @@
 
 package com.dahl.brendan.wordsearch.view.runnables;
 
-import java.util.Date;
-import java.util.LinkedList;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.text.TextUtils;
-import android.widget.EditText;
 
-import com.dahl.brendan.wordsearch.model.HighScore;
-import com.dahl.brendan.wordsearch.model.Preferences;
-import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
 import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
@@ -36,48 +29,34 @@ import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
  * 
  * @author Brendan Dahl
  *
- * this class stores the action of requesting the user's initials to store a new high score
+ * this class stores the action of notifying the user that their game is over and if they want to start a new game
  *
  */
-public class HighScoresInitials implements Runnable, DialogInterface.OnClickListener {
-	final private HighScore hs;
-	final private EditText text;
-	final private WordSearchActivity wordSearch;
+public class NewGameDialog implements Runnable, DialogInterface.OnClickListener {
 	final private WordSearchActivityController controller;
-	final private Preferences prefs;
-	public HighScoresInitials(WordSearchActivityController controller, HighScore hs, WordSearchActivity wordSearch, Preferences prefs) {
+	final private WordSearchActivity wordSearch;
+	final private String extraText;
+	public NewGameDialog(WordSearchActivityController controller, WordSearchActivity wordSearch, String extraText) {
 		this.controller = controller;
-		this.hs = hs;
 		this.wordSearch = wordSearch;
-		this.prefs = prefs;
-		this.text = new EditText(wordSearch);
+		if (TextUtils.isEmpty(extraText)) {
+			this.extraText = "";
+		} else {
+			this.extraText = extraText+"\n";
+		}
 	}
 
 	public void run() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(wordSearch);
-		builder.setMessage(wordSearch.getString(R.string.enter_initials).replace("%score", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
-		text.setSingleLine();
-		builder.setView(text);
-		builder.setPositiveButton(android.R.string.ok, this);
+		builder.setMessage(extraText+wordSearch.getString(R.string.game_over));
+		builder.setPositiveButton(R.string.new_game, this);
 		builder.setNeutralButton(android.R.string.cancel, this);
 		builder.show();
 	}
 
 	public void onClick(DialogInterface dialog, int which) {
 		if (which == DialogInterface.BUTTON_POSITIVE) {
-			LinkedList<HighScore> scores = prefs.getTopScores();
-			String name = text.getText().toString();
-			if (!TextUtils.isEmpty(name)) {
-				hs.setInitials(name);
-			} else {
-				hs.setInitials("?");
-			}
-			scores.add(hs);
-			prefs.setTopScores(scores);
-			HighScoresShow hsShow = new HighScoresShow(controller, wordSearch, true);
-			hsShow.run();
-		} else {
-			wordSearch.runOnUiThread(new NewGameDialog(controller, wordSearch, null));
+			controller.newWordSearch();
 		}
 	}
 }

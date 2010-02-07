@@ -13,7 +13,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.model;
 
@@ -91,8 +91,8 @@ public class HighScore implements Comparable<HighScore> {
 
 	public void setInitials(String initials) {
 		initials = initials.trim().toUpperCase();
-		if (initials.length() > 3) {
-			initials = initials.substring(0, 3);
+		if (initials.length() > 10) {
+			initials = initials.substring(0, 10);
 		}
 		this.initials = initials;
 	}
