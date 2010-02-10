@@ -28,6 +28,7 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
@@ -106,6 +107,7 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		Log.v(LOG_TAG, "onCreate");
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this, savedInstanceState);
 		final Bundle savedInstanceStateInner = savedInstanceState;
