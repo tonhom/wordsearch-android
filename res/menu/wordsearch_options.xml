@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:id="@+id/menu_new" android:title="@string/new_game" android:alphabeticShortcut='n'/>
-  <item android:id="@+id/menu_theme" android:title="@string/category" android:alphabeticShortcut='t'/>
-  <item android:id="@+id/menu_size" android:title="@string/size" android:alphabeticShortcut='g'/>
+  <item android:id="@+id/menu_options" android:title="@string/options" android:alphabeticShortcut='o'/>
   <item android:id="@+id/menu_tutorial" android:title="@string/tutorial" android:alphabeticShortcut='t'/>
-  <item android:id="@+id/menu_input_type" android:title="@string/input_type" android:alphabeticShortcut='i'/>
   <item android:id="@+id/menu_custom" android:title="@string/custom_editor" android:alphabeticShortcut='c'/>
   <item android:id="@+id/menu_scores" android:title="@string/high_score" android:alphabeticShortcut='h'/>
 </menu>

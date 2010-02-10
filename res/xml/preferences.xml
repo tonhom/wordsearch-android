@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListPreference android:key="@string/prefs_size"
+		android:title="@string/size" android:defaultValue="10"
+		android:summary="@string/prefs_size_summary"
+		android:entryValues="@array/sizes_list_values"
+		android:entries="@array/sizes_list_labels" />
+	<ListPreference android:key="@string/prefs_category"
+		android:title="@string/category" android:defaultValue="@string/RANDOM"
+		android:summary="@string/prefs_category_summary"
+		android:entryValues="@array/categories_list_values"
+		android:entries="@array/categories_list_labels" />
+	<ListPreference android:key="@string/prefs_touch_mode"
+		android:title="@string/input_type" android:defaultValue="@string/DRAG"
+		android:summary="@string/prefs_touch_mode_summary"
+		android:entryValues="@array/touch_mode_list_values"
+		android:entries="@array/touch_mode_list_labels" />
+</PreferenceScreen>

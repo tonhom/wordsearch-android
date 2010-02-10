@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -73,11 +74,26 @@ public class WordSearchActivityController {
 	/**
 	 * stores and retreives settings that need to be persisted
 	 */
-	private Preferences prefs;
+	final private Preferences prefs;
 	/**
 	 * the activity this controls
 	 */
 	private WordSearchActivity wordSearch;
+
+	/**
+	 * used to serialize the control to and from a bundle
+	 */
+	private static final String BUNDLE_TIME = "ws_time";
+
+	private static final String BUNDLE_VIEW = "ws_view";
+	
+	private static final String BUNDLE_GRID = "ws_grid";
+
+	private static final String BUNDLE_GRID_SIZE = "ws_grid_size";
+
+	public static int getGridSize() {
+		return gridSize;
+	}
 
 	public WordSearchActivityController(WordSearchActivity wordSearch,
 			Bundle savedInstanceState) {
@@ -85,7 +101,6 @@ public class WordSearchActivityController {
 		this.wordSearch = wordSearch;
 		prefs = new Preferences(this.wordSearch);
 		dictionaryFactory = new DictionaryFactory(this.wordSearch);
-		this.setTheme(prefs.getTheme());
 		{
 			TextView wordBox = (TextView) wordSearch.findViewById(R.id.wordBox);
 			TextView letterBox = (TextView) wordSearch
@@ -113,9 +128,10 @@ public class WordSearchActivityController {
 		} else {
 			this.setGridSize(prefs.getSize());
 		}
-		this.setTouchMode(prefs.getTouchMode());
+		prefs.getTouchMode();
+//		this.updateTouchMode();
 	}
-	
+
 	protected void foundWord(String word) {
 		int remainingWordCount = wordBoxManager.wordFound(word);
 		if (remainingWordCount == 0) {
@@ -126,10 +142,6 @@ public class WordSearchActivityController {
 		}
 	}
 
-	public String getCurrentTheme() {
-		return dictionaryFactory.getCurrentTheme();
-	}
-
 	public TextViewGridController getGridManager() {
 		return gridManager;
 	}
@@ -138,17 +150,26 @@ public class WordSearchActivityController {
 		return prefs.getTopScores();
 	}
 
-	public String[] getThemes() {
-		return dictionaryFactory.getThemes();
+	public Preferences getPrefs() {
+		return prefs;
+	}
+	
+	public boolean getTouchMode() {
+		return this.gridManager.getTouchMode();
 	}
 
 	public String guessWord(Point pointStart, Point pointEnd) {
 		return grid.guessWord(pointStart, pointEnd);
 	}
+	
+	public Boolean isCurrentThemeCustom() {
+		return dictionaryFactory.isCustomDictionary();
+	}
 
 	public void newWordSearch() {
-		dictionaryFactory.resetDictionary();
-		grid = Grid.generateGrid(dictionaryFactory.getCurrentDic(), 12, 4, getGridSize());
+		this.setGridSize(prefs.getSize());
+		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
+		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, getGridSize());
 		if (grid.getWordListLength() == 0) {
 			wordSearch.alertNoWords();
 		}
@@ -159,73 +180,6 @@ public class WordSearchActivityController {
 	public void resetScores() {
 		prefs.resetTopScores();
 	}
-
-	private void setGrid(Grid grid) {
-		gridManager.reset(grid);
-		wordBoxManager.resetWords(grid.getWordList());
-		timeStart = System.currentTimeMillis();
-	}
-	
-	public static int getGridSize() {
-		return gridSize;
-	}
-
-	public void setGridSize(int gridSizeNew) {
-		prefs.setSize(gridSizeNew);
-		gridSize = prefs.getSize();
-		gridManager.setGridView(new TextView[gridSize][]);
-		wordSearch.setupViewGrid(gridSize, gridManager);
-	}
-
-	private boolean setHighScore(long time) {
-		boolean highScorer = false;
-		HighScore hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
-		LinkedList<HighScore> scores = prefs.getTopScores();
-		if (scores.size() < 3 || hs.getScore() > scores.get(2).getScore()) {
-			wordSearch.runOnUiThread(new HighScoresInitials(this, hs, wordSearch, prefs));
-		} else {
-			wordSearch.runOnUiThread(new CongradulationToast(this, hs, wordSearch));
-		}
-		return highScorer;
-	}
-	
-	public void setTouchMode(boolean touchMode) {
-		this.gridManager.setTouchMode(touchMode);
-		this.prefs.setTouchMode(touchMode);
-	}
-
-	public boolean getTouchMode() {
-		return this.gridManager.getTouchMode();
-	}
-
-	protected void setLetter(CharSequence charSequence) {
-		wordBoxManager.setLetter(charSequence);
-	}
-
-	public void setTheme(int which) {
-		prefs.setTheme(which);
-		dictionaryFactory.setTheme(which);
-	}
-
-	public void timePause() {
-		timeSum += System.currentTimeMillis() - timeStart;
-	}
-
-	public void timeResume() {
-		timeStart = System.currentTimeMillis();
-	}
-
-	public Boolean isCurrentThemeCustom() {
-		return dictionaryFactory.isCustomDictionary();
-	}
-	
-	/**
-	 * used to serialize the control to and from a bundle
-	 */
-	private static final String BUNDLE_TIME = "ws_time";
-	private static final String BUNDLE_VIEW = "ws_view";
-	private static final String BUNDLE_GRID = "ws_grid";
-	private static final String BUNDLE_GRID_SIZE = "ws_grid_size";
 
 	public void restoreState(Bundle inState) {
 		if (inState != null) {
@@ -243,6 +197,44 @@ public class WordSearchActivityController {
 			outState.putParcelable(BUNDLE_GRID, this.grid);
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
 		}
+	}
+
+	private void setGrid(Grid grid) {
+		gridManager.reset(grid);
+		wordBoxManager.resetWords(grid.getWordList());
+		timeStart = System.currentTimeMillis();
+	}
+
+	public void setGridSize(int gridSizeNew) {
+		gridSize = prefs.getSize();
+		gridManager.setGridView(new TextView[gridSize][]);
+		wordSearch.setupViewGrid(gridSize, gridManager);
+	}
+	
+	private boolean setHighScore(long time) {
+		boolean highScorer = false;
+		HighScore hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
+		LinkedList<HighScore> scores = prefs.getTopScores();
+		if (scores.size() < 3 || hs.getScore() > scores.get(2).getScore()) {
+			wordSearch.runOnUiThread(new HighScoresInitials(this, hs, wordSearch, prefs));
+		} else {
+			wordSearch.runOnUiThread(new CongradulationToast(this, hs, wordSearch));
+		}
+		return highScorer;
+	}
+	protected void setLetter(CharSequence charSequence) {
+		wordBoxManager.setLetter(charSequence);
+	}
+	public void updateTouchMode() {
+		this.gridManager.setTouchMode(prefs.getTouchMode());
+	}
+
+	public void timePause() {
+		timeSum += System.currentTimeMillis() - timeStart;
+	}
+
+	public void timeResume() {
+		timeStart = System.currentTimeMillis();
 	}
 
 }

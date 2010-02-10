@@ -1,39 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="tutorial_messages_drag">
-		<item>@string/tutorial_message_drag1</item>
-		<item>@string/tutorial_message_drag2</item>
-		<item>@string/tutorial_message_drag3</item>
-		<item>@string/tutorial_message_drag4</item>
-	</string-array>
-	<string-array name="tutorial_messages_trackball">
-		<item>@string/tutorial_message_trackball1</item>
-		<item>@string/tutorial_message_trackball2</item>
-		<item>@string/tutorial_message_trackball3</item>
-	</string-array>
-	<string-array name="tutorial_messages_tap">
-		<item>@string/tutorial_message_tap1</item>
-		<item>@string/tutorial_message_tap2</item>
-		<item>@string/tutorial_message_tap3</item>
-	</string-array>
-	<string-array name="tutorial_messages_tips">
-		<item>@string/tutorial_message_tip1</item>
-		<item>@string/tutorial_message_tip2</item>
-		<item>@string/tutorial_message_tip3</item>
-		<item>@string/tutorial_message_tip4</item>
-		<item>@string/tutorial_message_tip5</item>
-		<item>@string/tutorial_message_tip6</item>
-		<item>@string/tutorial_message_tip7</item>
-		<item>@string/tutorial_message_tip8</item>
-	</string-array>
-	<string-array name="sizes">
-		<item>7x7</item>
-		<item>8x8</item>
-		<item>9x9</item>
-		<item>10x10</item>
-	</string-array>
-	<string name="prev">&lt;</string>
-	<string name="next">&gt;</string>
 	<string name="app_name">Word Search</string>
 
 	<string name="places">Places</string>
@@ -43,10 +9,11 @@
 	<string name="misc">Misc</string>
 	<string name="numbers">Numbers</string>
 	<string name="custom">Custom</string>
-	<string name="custom_editor">Custom Editor</string>
 	<string name="insane">Insane</string>
 	<string name="random">Random</string>
-	<string name="category">Category</string>
+
+	<string name="custom_editor">Custom Editor</string>
+	<string name="category">Word Bank</string>
 	<string name="reset">Reset</string>
 	<string name="ok">OK</string>
 	<string name="high_score">High Scores</string>
@@ -96,7 +63,7 @@
 	<string name="tutorial_message_tip7">If you are using drag to highlight words, be careful not to drag your finger off of the touch screen.  Going off the touch screen is the same as lifting your finger.</string>
 	<string name="tutorial_message_tip8">When selecting a word using drag, the game will only highlight in yellow letters in a straight line going directly above, below, left, right, or diagonally between where you started highlighting and where your finger currently is.  If your finger is not in a direct line from the start letter, the highlight will not follow your finger until your finger returns to a direct line from the start letter.  The game will find the word that is highlighted, regardless of where your finger is when you lift it.</string>
 
-	<string name="size">Size</string>
+	<string name="size">Grid Size</string>
 	<string name="enter_initials">You made a new record %score!\nPlease enter your initials</string>
 	<string name="no_high_scores">No High Scores</string>
 	
@@ -104,10 +71,11 @@
 	<string name="drag">Drag</string>
 	<string name="tap">Tap</string>
 
-	<string-array name="input_types">
-		<item>@string/drag</item>
-		<item>@string/tap</item>
-	</string-array>
-
 	<string name="game_over">Game over, would you like to start a new game?</string>
+	
+	<string name="options">Preferences</string>
+	
+	<string name="prefs_size_summary">Current Grid Size: %replaceme</string>
+	<string name="prefs_category_summary">Current Word Bank: %replaceme</string>
+	<string name="prefs_touch_mode_summary">Current Input Type: %replaceme</string>
 </resources>

@@ -21,9 +21,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +45,7 @@ import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
  *
  * Activity for the word search game itself
  */
-public class WordSearchActivity extends Activity implements OnClickListener {
+public class WordSearchActivity extends Activity implements OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 //	final private static String LOG_TAG = "WordSearchActivity";
 	/**
 	 * control classes were made to segment the complex game logic away from the display logic
@@ -73,7 +75,8 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							showSizeSelector();
+							startActivity(new Intent(WordSearchActivity.this, WordSearchPreferences.class));
+//							showSizeSelector(); TODO
 						}
 					});
 		}
@@ -93,11 +96,12 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 		case DialogInterface.BUTTON_NEUTRAL:
 			break;
 		case DialogInterface.BUTTON_NEGATIVE:
-			showCategorySelector();
+			startActivity(new Intent(this, WordSearchPreferences.class));
+//			showCategorySelector(); TODO
 			break;
 		default:
-			control.setTheme(which);
-			control.newWordSearch();
+//			control.setTheme(which); TODO ensure no references to this are left
+//			control.newWordSearch();
 			break;
 		}
 	}
@@ -108,6 +112,7 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 //		Log.v(LOG_TAG, "onCreate");
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this, savedInstanceState);
 		final Bundle savedInstanceStateInner = savedInstanceState;
@@ -127,6 +132,11 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.getMenuInflater().inflate(R.menu.wordsearch_options, menu);
+		menu.findItem(R.id.menu_new).setIcon(android.R.drawable.ic_menu_add);
+		menu.findItem(R.id.menu_options).setIcon(android.R.drawable.ic_menu_preferences);
+		menu.findItem(R.id.menu_custom).setIcon(android.R.drawable.ic_menu_edit);
+		menu.findItem(R.id.menu_tutorial).setIcon(android.R.drawable.ic_menu_help);
+		menu.findItem(R.id.menu_scores).setIcon(android.R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -138,26 +148,26 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 			HighScoresShow hsShow = new HighScoresShow(control, this, false);
 			hsShow.run();
 			return true;
-		case R.id.menu_theme:
-			this.showCategorySelector();
+		case R.id.menu_options:
+			startActivity(new Intent(this, WordSearchPreferences.class));
 			return true;
 		case R.id.menu_new:
 			control.newWordSearch();
 			return true;
 		case R.id.menu_custom:
+		{
 			Intent intent = new Intent(Intent.ACTION_EDIT, Word.CONTENT_URI);
 			intent.setType(Word.CONTENT_TYPE);
 			this.startActivity(intent);
 			return true;
+		}
 		case R.id.menu_tutorial:
-			this.showTutorial();
+		{
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setClass(this, TutorialActivity.class);
+			startActivity(intent);
 			return true;
-		case R.id.menu_size:
-			this.showSizeSelector();
-			return true;
-		case R.id.menu_input_type:
-			this.showInputTypeSelector();
-			return true;
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -221,59 +231,16 @@ public class WordSearchActivity extends Activity implements OnClickListener {
 		}
 		gridTable.setOnTouchListener(controller);
 	}
-	
-	/**
-	 * show an alert dialog to pick a theme for the next game
-	 */
-	private void showCategorySelector() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(this.getString(R.string.category) + " : " + control.getCurrentTheme());
-		builder.setItems(control.getThemes(), this);
-		builder.show();
-	}
 
-	/**
-	 * show an alert dialog to pick a size for the next game
-	 */
-	private void showSizeSelector() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		String[] sizes = this.getResources().getStringArray(R.array.sizes);
-		builder.setTitle(this.getString(R.string.size) + " : " + sizes[WordSearchActivityController.getGridSize()-7]);
-		builder.setItems(sizes,
-				new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				control.setGridSize(whichButton+7);
-				control.newWordSearch();
-			}
-		});
-		builder.show();
-	}
-
-	/**
-	 * show an alert dialog to pick a whether to use click or touch input
-	 */
-	private void showInputTypeSelector() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		if (control.getTouchMode()) {
-			builder.setTitle(this.getString(R.string.input_type) + " : " + this.getString(R.string.drag));
-		} else {
-			builder.setTitle(this.getString(R.string.input_type) + " : " + this.getString(R.string.tap));
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (control == null) {// hack fix later
+			return;
 		}
-		builder.setItems(R.array.input_types,
-				new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				control.setTouchMode(whichButton == 0);
-			}
-		});
-		builder.show();
-	}
-
-	/**
-	 * starts the tutorial activity
-	 */
-	private void showTutorial() {
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setClass(this, TutorialActivity.class);
-		startActivity(intent);
+		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
+			control.newWordSearch();
+		}
+		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
+			control.updateTouchMode();
+		}
 	}
 }

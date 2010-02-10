@@ -22,60 +22,59 @@ import java.util.LinkedList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import com.dahl.brendan.wordsearch.model.dictionary.DictionaryFactory;
+import com.dahl.brendan.wordsearch.view.R;
 
 public class Preferences {
+	private final String PREFS_SIZE;
+	private final String PREFS_TOUCHMODE;
+	private final String PREFS_TOUCHMODE_DEFAULT;
+
 	private static final String PREFS_NAME = "MyPrefsFile";
-	private static final String PREFS_THEME = "theme";
 	private static final String PREFS_SCORE_TIME = "score_time";
 	private static final String PREFS_SCORE_NAME = "score_name";
 	private static final String PREFS_SCORE_THEME = "score_theme";
 	private static final String PREFS_SCORE_SIZE = "score_size";
-	private static final String PREFS_TOUCHMODE = "touch_mode";
 	private static final String PREFS_SEPARATOR = ":";
 //	private static final String LOG_TAG = "Preferences";
-	private static final String PREFS_SIZE = "size";
+	private final SharedPreferences settings_scores;
 	private final SharedPreferences settings;
 
 	private static int GRID_SIZE_DEFAULT = 10;
 
+	final private static int MAX_TOP_SCORES = 3;
+
 	public Preferences(Context ctx) {
-		settings = ctx.getSharedPreferences(PREFS_NAME, 0);
+		settings_scores = ctx.getSharedPreferences(PREFS_NAME, 0);
+		settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+		PREFS_SIZE = ctx.getString(R.string.prefs_size);
+		PREFS_TOUCHMODE = ctx.getString(R.string.prefs_touch_mode);
+		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.DRAG); 
 	}
 
 	public int getSize() {
-		return settings.getInt(PREFS_SIZE, GRID_SIZE_DEFAULT);
-	}
-
-	public int getTheme() {
-		return settings.getInt(PREFS_THEME, DictionaryFactory.INIT);
+		int size_int = GRID_SIZE_DEFAULT;
+		try {
+			String size = settings.getString(PREFS_SIZE, null);
+			size_int = Integer.valueOf(size);
+		} catch (Exception e) {
+			size_int = GRID_SIZE_DEFAULT;
+		}
+		return size_int;
 	}
 
 	private String getTopScoreNameKey(int level) {
 		return PREFS_SCORE_NAME + PREFS_SEPARATOR + Integer.toString(level);
 	}
-
-	private String getTopScoreTimeKey(int level) {
-		return PREFS_SCORE_TIME + PREFS_SEPARATOR + Integer.toString(level);
-	}
 	
-	private String getTopScoreThemeKey(int level) {
-		return PREFS_SCORE_THEME + PREFS_SEPARATOR + Integer.toString(level);
-	}
-	
-	private String getTopScoreSizeKey(int level) {
-		return PREFS_SCORE_SIZE + PREFS_SEPARATOR + Integer.toString(level);
-	}
-	
-	final private static int MAX_TOP_SCORES = 3;
 	public LinkedList<HighScore> getTopScores() {
 		LinkedList<HighScore> scores = new LinkedList<HighScore>();
 		for (int level = 0; level < MAX_TOP_SCORES; level++) {
-			long time = settings.getLong(getTopScoreTimeKey(level), -1);
-			String name = settings.getString(getTopScoreNameKey(level), "");
-			int size = settings.getInt(getTopScoreSizeKey(level), -1);
-			float theme = settings.getFloat(getTopScoreThemeKey(level), -1);
+			long time = settings_scores.getLong(getTopScoreTimeKey(level), -1);
+			String name = settings_scores.getString(getTopScoreNameKey(level), "");
+			int size = settings_scores.getInt(getTopScoreSizeKey(level), -1);
+			float theme = settings_scores.getFloat(getTopScoreThemeKey(level), -1);
 			if (time != -1) {
 				HighScore highScore = new HighScore(time, size, theme);
 				highScore.setInitials(name);
@@ -85,24 +84,35 @@ public class Preferences {
 		Collections.sort(scores);
 		return scores;
 	}
-
-	public void setSize(int gridSize) {
-		if (gridSize < 6 || gridSize > 10) {
-			gridSize = GRID_SIZE_DEFAULT;
-		}
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putInt(PREFS_SIZE, gridSize);
-		editor.commit();
+	
+	private String getTopScoreSizeKey(int level) {
+		return PREFS_SCORE_SIZE + PREFS_SEPARATOR + Integer.toString(level);
+	}
+	
+	private String getTopScoreThemeKey(int level) {
+		return PREFS_SCORE_THEME + PREFS_SEPARATOR + Integer.toString(level);
+	}
+	private String getTopScoreTimeKey(int level) {
+		return PREFS_SCORE_TIME + PREFS_SEPARATOR + Integer.toString(level);
 	}
 
-	public void setTheme(int themeIndex) {
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putInt(PREFS_THEME, themeIndex);
+	public boolean getTouchMode() {
+		return PREFS_TOUCHMODE_DEFAULT.equals(settings.getString(PREFS_TOUCHMODE, PREFS_TOUCHMODE_DEFAULT));
+	}
+
+	public void resetTopScores() {
+		SharedPreferences.Editor editor = settings_scores.edit();
+		for (int level = 0; level < MAX_TOP_SCORES; level++) {
+			editor.remove(getTopScoreTimeKey(level));
+			editor.remove(getTopScoreNameKey(level));
+			editor.remove(getTopScoreSizeKey(level));
+			editor.remove(getTopScoreThemeKey(level));
+		}
 		editor.commit();
 	}
 
 	public void setTopScores(LinkedList<HighScore> highScores) {
-		SharedPreferences.Editor editor = settings.edit();
+		SharedPreferences.Editor editor = settings_scores.edit();
 		Collections.sort(highScores);
 		for (int level = 0; level < MAX_TOP_SCORES; level++) {
 			if (level < highScores.size()) {
@@ -119,26 +129,5 @@ public class Preferences {
 			}
 		}
 		editor.commit();
-	}
-
-	public void resetTopScores() {
-		SharedPreferences.Editor editor = settings.edit();
-		for (int level = 0; level < MAX_TOP_SCORES; level++) {
-			editor.remove(getTopScoreTimeKey(level));
-			editor.remove(getTopScoreNameKey(level));
-			editor.remove(getTopScoreSizeKey(level));
-			editor.remove(getTopScoreThemeKey(level));
-		}
-		editor.commit();
-	}
-
-	public void setTouchMode(boolean touchMode) {
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(PREFS_TOUCHMODE, touchMode);
-		editor.commit();
-	}
-	
-	public boolean getTouchMode() {
-		return settings.getBoolean(PREFS_TOUCHMODE, true);
 	}
 }

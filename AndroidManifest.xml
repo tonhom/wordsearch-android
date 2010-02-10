@@ -30,6 +30,12 @@
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".WordSearchPreferences" android:theme="@android:style/Theme.Dialog"
+          android:label="@string/options">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
 	</application>
 	<uses-sdk android:minSdkVersion="4" />
 </manifest> 

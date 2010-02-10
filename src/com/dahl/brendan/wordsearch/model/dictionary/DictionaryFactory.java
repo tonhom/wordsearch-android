@@ -13,7 +13,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009-2010 Brendan Dahl
 
 package com.dahl.brendan.wordsearch.model.dictionary;
 
@@ -31,22 +31,22 @@ import com.dahl.brendan.wordsearch.view.R;
  *
  */
 public class DictionaryFactory {
-	private static final int PLACES = 0;
-	private static final int ANIMALS = 1;
-	private static final int PEOPLE = 2;
-	private static final int ADJECTIVES = 3;
-	private static final int MISC = 4;
-	private static final int INSANE = 5;
-	private static final int NUMBERS = 6;
-	private static final int CUSTOM = 7;
-	private static final int RANDOM = 8;
-	public static final int INIT = -1;
+	public enum DictionaryType {
+		PLACES,
+		ANIMALS,
+		PEOPLE,
+		ADJECTIVES,
+		MISC,
+		INSANE,
+		NUMBERS,
+		CUSTOM,
+		RANDOM;
+	}
 	private static final String LOG_TAG = "DICTIONARYFACTORY";
 	public static final int MAX_TRIES = 5;
 	private Random random = new Random();
-	private final String[] themes;
 	private final Context ctx;
-	private int themeIndex = RANDOM;
+	private DictionaryType currentDictionaryType = DictionaryType.RANDOM;
 	private Dictionary currentDic = null;
 	
 	/**
@@ -54,51 +54,20 @@ public class DictionaryFactory {
 	 */
 	public DictionaryFactory(Context ctx) {
 		this.ctx = ctx;
-		String[] themes = {
-				ctx.getString(R.string.places),
-				ctx.getString(R.string.animals),
-				ctx.getString(R.string.people),
-				ctx.getString(R.string.adjectives),
-				ctx.getString(R.string.misc),
-				ctx.getString(R.string.insane),
-				ctx.getString(R.string.numbers),
-				ctx.getString(R.string.custom),
-				ctx.getString(R.string.random)
-		};
-		this.themes = themes;
-		this.resetDictionary();
-	}
-	
-	/**
-	 * @return currently chosen dictionary
-	 */
-	public Dictionary getCurrentDic() {
-		return currentDic;
-	}
-
-	/**
-	 * @return name of the currently chosen dictionary
-	 */
-	public String getCurrentTheme() {
-		int themeI = RANDOM;
-		if (themeIndex >= 0 && themeIndex <= RANDOM) {
-			themeI = themeIndex;
-		}
-		return this.themes[themeI];
 	}
 	
 	/**
 	 * @return if we are currently using a custom dictionary provider
 	 */
 	public Boolean isCustomDictionary() {
-		return this.themeIndex == CUSTOM;
+		return DictionaryType.CUSTOM.equals(currentDictionaryType);
 	}
 
 	/**
 	 * @param themeIndex constant representing a dictionary type
 	 * @return new dictionary of the requested type
 	 */
-	private Dictionary getDictionary(int themeIndex) {
+	private Dictionary getDictionary(DictionaryType themeIndex) {
 		Dictionary dic = null;
 		switch (themeIndex) {
 		case PLACES:
@@ -127,39 +96,37 @@ public class DictionaryFactory {
 			break;
 		default:
 			Log.e(LOG_TAG, "invalid index received");
-		case INIT:
 		case RANDOM:
-			dic = getDictionary(random.nextInt(MISC+1));
+			dic = getDictionary(DictionaryType.values()[random.nextInt(DictionaryType.values().length-4)]);
 			break;
 		}
 		return dic;
 	}
 	
-	/**
-	 * @return an array of names of the current types of dictionary available
-	 */
-	public String[] getThemes() {
-		return themes;
-	}
-
-	/**
-	 * if random or cutsom dictionary types creates a new dictionary based on the type
-	 */
-	public void resetDictionary() {
-		if (themeIndex == RANDOM) {
-			this.currentDic = getDictionary(INIT);
+	public Dictionary getDictionary(String type) {
+		DictionaryType newType = DictionaryType.RANDOM;
+		try {
+			newType = DictionaryType.valueOf(type);
+		} catch (Exception e) {
+//			Log.v(LOG_TAG, "DictionaryType unknown: ",e);
+			newType = DictionaryType.RANDOM;
 		}
-		if (themeIndex == CUSTOM) {
-			this.currentDic = getDictionary(CUSTOM);
+		// if random or custom dictionary types creates a new dictionary based on the type
+		switch (newType) {
+		case RANDOM:
+			this.currentDic = getDictionary(DictionaryType.RANDOM);
+			break;
+		case CUSTOM:
+			this.currentDic = getDictionary(DictionaryType.CUSTOM);
+			break;
+		default:
+			if (!newType.equals(currentDictionaryType)) {
+				this.currentDic = getDictionary(newType);
+			}
+			break;
 		}
-	}
-
-	/**
-	 * @param themeIndex the new dictionary type's theme index
-	 */
-	public void setTheme(int themeIndex) {
-		this.themeIndex = themeIndex;
-		this.currentDic = getDictionary(this.themeIndex);
+		currentDictionaryType = newType;
+		return this.currentDic;
 	}
 
 	/**
@@ -167,7 +134,7 @@ public class DictionaryFactory {
 	 */
 	public float getScoreThemeMultiplier() {
 		float score = 1;
-		switch (this.themeIndex) {
+		switch (this.currentDictionaryType) {
 		case PLACES:
 			score = 90;
 			break;
@@ -190,7 +157,6 @@ public class DictionaryFactory {
 		case CUSTOM:
 			score = 80;
 			break;
-		case INIT:
 		case RANDOM:
 			score = 95;
 			break;

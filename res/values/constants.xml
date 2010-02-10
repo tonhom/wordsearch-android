@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- simple strings that are probably not nessasary to internationalize -->
+	<string name="prev">&lt;</string>
+	<string name="next">&gt;</string>
+
+	<!-- tutorial tip sets -->
+	<string-array name="tutorial_messages_drag">
+		<item>@string/tutorial_message_drag1</item>
+		<item>@string/tutorial_message_drag2</item>
+		<item>@string/tutorial_message_drag3</item>
+		<item>@string/tutorial_message_drag4</item>
+	</string-array>
+	<string-array name="tutorial_messages_trackball">
+		<item>@string/tutorial_message_trackball1</item>
+		<item>@string/tutorial_message_trackball2</item>
+		<item>@string/tutorial_message_trackball3</item>
+	</string-array>
+	<string-array name="tutorial_messages_tap">
+		<item>@string/tutorial_message_tap1</item>
+		<item>@string/tutorial_message_tap2</item>
+		<item>@string/tutorial_message_tap3</item>
+	</string-array>
+	<string-array name="tutorial_messages_tips">
+		<item>@string/tutorial_message_tip1</item>
+		<item>@string/tutorial_message_tip2</item>
+		<item>@string/tutorial_message_tip3</item>
+		<item>@string/tutorial_message_tip4</item>
+		<item>@string/tutorial_message_tip5</item>
+		<item>@string/tutorial_message_tip6</item>
+		<item>@string/tutorial_message_tip7</item>
+		<item>@string/tutorial_message_tip8</item>
+	</string-array>
+
+	<!-- input type preference choices -->
+	<string-array name="touch_mode_list_labels">
+		<item>@string/drag</item>
+		<item>@string/tap</item>
+	</string-array>
+	<string-array name="touch_mode_list_values">
+		<item>@string/DRAG</item>
+		<item>@string/TAP</item>
+	</string-array>
+	<string name="DRAG">DRAG</string>
+	<string name="TAP">TAP</string>
+	
+	<!-- size preference choices -->
+	<string-array name="sizes_list_labels">
+		<item>7x7</item>
+		<item>8x8</item>
+		<item>9x9</item>
+		<item>10x10</item>
+	</string-array>
+	<string-array name="sizes_list_values">
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+	</string-array>
+	<string name="SIZE_DEFAULT">10</string>
+
+	<!-- category preference choices -->
+	<string-array name="categories_list_labels">
+		<item>@string/places</item>
+		<item>@string/animals</item>
+		<item>@string/people</item>
+		<item>@string/adjectives</item>
+		<item>@string/misc</item>
+		<item>@string/insane</item>
+		<item>@string/numbers</item>
+		<item>@string/custom</item>
+		<item>@string/random</item>
+	</string-array>
+	<string-array name="categories_list_values">
+		<item>@string/PLACES</item>
+		<item>@string/ANIMALS</item>
+		<item>@string/PEOPLE</item>
+		<item>@string/ADJECTIVES</item>
+		<item>@string/MISC</item>
+		<item>@string/INSANE</item>
+		<item>@string/NUMBERS</item>
+		<item>@string/CUSTOM</item>
+		<item>@string/RANDOM</item>
+	</string-array>
+
+	<!-- DictionaryType Enum values -->
+	<string name="PLACES">PLACES</string>
+	<string name="ANIMALS">ANIMALS</string>
+	<string name="PEOPLE">PEOPLE</string>
+	<string name="ADJECTIVES">ADJECTIVES</string>
+	<string name="MISC">MISC</string>
+	<string name="NUMBERS">NUMBERS</string>
+	<string name="CUSTOM">CUSTOM</string>
+	<string name="INSANE">INSANE</string>
+	<string name="RANDOM">RANDOM</string>
+
+	<!-- stored preferences names -->
+	<string name="prefs_size">size4</string>
+	<string name="prefs_touch_mode">touch_mode1</string>
+	<string name="prefs_category">category1</string>
+</resources>
