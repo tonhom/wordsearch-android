@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="places">
+		<item>BEACH</item>
+		<item>CAVE</item>
+		<item>CREEK</item>
+		<item>DESERT</item>
+	</string-array>
+</resources>

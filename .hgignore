@@ -1,15 +1,12 @@
 # use glob syntax.
 syntax: glob
-#.settings/*
 bin/*
 gen/*
-assets/*
-res/drawable/*.png
-res/values/word*.xml
+#assets/*
+#res/drawable/*.png
+#res/values/word*.xml
 *~
 
-#.classpath
-#.project
 default.properties
 
 # switch to regexp syntax.
