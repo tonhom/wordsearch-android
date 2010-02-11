@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="themeNormal">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:textViewStyle">@style/themeNormalTextView</item>
+	</style>
+	<style name="themeNormalTextView">
+  		<item name="android:textSize">@dimen/grid_view</item>
+		<item name="android:textColor">#33F</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+</resources>
