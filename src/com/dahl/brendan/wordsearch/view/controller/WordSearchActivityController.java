@@ -162,16 +162,16 @@ public class WordSearchActivityController {
 		return grid.guessWord(pointStart, pointEnd);
 	}
 	
-	public Boolean isCurrentThemeCustom() {
-		return dictionaryFactory.isCustomDictionary();
-	}
-
 	public void newWordSearch() {
 		this.setGridSize(prefs.getSize());
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
 		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, getGridSize());
 		if (grid.getWordListLength() == 0) {
-			wordSearch.alertNoWords();
+			if (dictionaryFactory.isCustomDictionary()) {
+				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_NO_WORDS_CUSTOM);
+			} else {
+				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_NO_WORDS);
+			}
 		}
 		timeSum = 0L;
 		this.setGrid(grid);

@@ -19,10 +19,10 @@ package com.dahl.brendan.wordsearch.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -37,6 +37,8 @@ import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
 import com.dahl.brendan.wordsearch.view.controller.TextViewGridController;
 import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
+import com.dahl.brendan.wordsearch.view.listeners.DialogNoWordsCustomListener;
+import com.dahl.brendan.wordsearch.view.listeners.DialogNoWordsListener;
 import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
 
 /**
@@ -45,42 +47,20 @@ import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
  *
  * Activity for the word search game itself
  */
-public class WordSearchActivity extends Activity implements OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
-//	final private static String LOG_TAG = "WordSearchActivity";
+public class WordSearchActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+	final public static int DIALOG_ID_NO_WORDS = 0;
+	final public static int DIALOG_ID_NO_WORDS_CUSTOM = 1;
+	final private DialogNoWordsListener DIALOG_LISTENER_NO_WORDS = new DialogNoWordsListener(this);
+	final private DialogNoWordsCustomListener DIALOG_LISTENER_NO_WORDS_CUSTOM = new DialogNoWordsCustomListener(this);
+
+	//	final private static String LOG_TAG = "WordSearchActivity";
 	/**
 	 * control classes were made to segment the complex game logic away from the display logic
 	 */
 	private WordSearchActivityController control;
 
-	/**
-	 * shows alert to user about their being no words in their game
-	 */
-	public void alertNoWords() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		if (control.isCurrentThemeCustom()) {
-			builder.setMessage(R.string.no_words_custom);
-			builder.setNegativeButton(R.string.category, this);
-			builder.setPositiveButton(R.string.custom_editor, this);
-		} else {
-			builder.setMessage(R.string.no_words);
-			builder.setNegativeButton(R.string.category, this);
-			builder.setPositiveButton(R.string.new_game,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							control.newWordSearch();
-						}
-					});
-			builder.setNeutralButton(R.string.size,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							startActivity(new Intent(WordSearchActivity.this, WordSearchPreferences.class));
-//							showSizeSelector(); TODO
-						}
-					});
-		}
-		builder.show();
+	public WordSearchActivityController getControl() {
+		return control;
 	}
 
 	/**
@@ -126,6 +106,34 @@ public class WordSearchActivity extends Activity implements OnClickListener, Sha
 				}
 			}
 		});
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch(id) {
+		case DIALOG_ID_NO_WORDS: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.no_words);
+			builder.setNegativeButton(R.string.category, DIALOG_LISTENER_NO_WORDS);
+			builder.setPositiveButton(R.string.new_game, DIALOG_LISTENER_NO_WORDS);
+			builder.setNeutralButton(R.string.size, DIALOG_LISTENER_NO_WORDS);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_NO_WORDS_CUSTOM: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.no_words_custom);
+			builder.setNegativeButton(R.string.category, DIALOG_LISTENER_NO_WORDS_CUSTOM);
+			builder.setPositiveButton(R.string.custom_editor, DIALOG_LISTENER_NO_WORDS_CUSTOM);
+			dialog = builder.create();
+			break;
+		}
+		default:
+			dialog = super.onCreateDialog(id);
+			break;
+		}
+		return dialog;
 	}
 
 	/** hook into menu button for activity */
@@ -194,6 +202,18 @@ public class WordSearchActivity extends Activity implements OnClickListener, Sha
 		control.saveState(outState);
 	}
 
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (control == null) {// hack fix later
+			return;
+		}
+		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
+			control.newWordSearch();
+		}
+		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
+			control.updateTouchMode();
+		}
+	}
+
 	/**
 	 * creates a grid of textViews from layout files based on the gridSize
 	 *  and sets the new textViews to use the controller as their listener
@@ -230,17 +250,5 @@ public class WordSearchActivity extends Activity implements OnClickListener, Sha
 			row.invalidate();
 		}
 		gridTable.setOnTouchListener(controller);
-	}
-
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (control == null) {// hack fix later
-			return;
-		}
-		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
-			control.newWordSearch();
-		}
-		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
-			control.updateTouchMode();
-		}
 	}
 }

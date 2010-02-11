@@ -50,12 +50,16 @@ import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
  * Activity to allow user to edit the WordDictionaryProvider's database of words
  */
 public class WordListActivity extends ListActivity implements OnItemClickListener, OnClickListener {
+	public static final int DIALOG_ID_CLICK = 0;
+	public static final int DIALOG_ID_ADD = 1;
+	public static final int DIALOG_ID_NO_WORDS = 2;
+	public static final int EDIT_ID = 10;
 	private static final String LOG_TAG = "WordList";
 
 	/**
-	 * text is a field used in edit and add dialogs that is here to allow retreival from alertdialog
+	 * text is a field used in edit and add dialogs that is here to allow retrieval from alertdialog
 	 */
-	private EditText text = null;
+	private EditText text;
 	/**
 	 * index of word being edited or inserted by alert dialog
 	 */
@@ -65,34 +69,18 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	 */
 	private static final long INSERT_INDEX = -1L;
 
-	/**
-	 * called to add a word to the list
-	 */
-	private void addDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		text = new EditText(this);
-		text.setSingleLine();
-		index = INSERT_INDEX;
-		builder.setView(text);
-		builder.setTitle(R.string.new_word);
-		builder.setNeutralButton(android.R.string.cancel, this);
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.show();
-	}
-	
 	public void onClick(DialogInterface dialog, int whichButton) {
 		switch (whichButton) {
-		case Dialog.BUTTON_NEGATIVE:
-		{
+		case Dialog.BUTTON_NEGATIVE: {
 			Uri uri = ContentUris.withAppendedId(getIntent().getData(), index);
 			getContentResolver().delete(uri, null, null);
 			break;
 		}
 		case Dialog.BUTTON_NEUTRAL:
 			break;
-		case Dialog.BUTTON_POSITIVE:
-		{
-			String str = text.getText().toString();
+		case Dialog.BUTTON_POSITIVE: {
+			EditText text = (EditText)((AlertDialog)dialog).findViewById(EDIT_ID);
+			String str =text.getText().toString();
 			String str2 = "";
         	for (int i = 0; i < str.length() && str2.length() <= 10; i++) {
         		Character c = str.charAt(i);
@@ -139,6 +127,9 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		text = new EditText(this);
+		text.setSingleLine();
+		text.setId(EDIT_ID);
 		Intent intent = getIntent();
 		if (intent.getData() == null) {
 			intent.setData(Word.CONTENT_URI);
@@ -153,10 +144,7 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 		getListView().setOnCreateContextMenuListener(this);
 
 		if (cursor.getCount() == 0) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.wordlist_no_words);
-			builder.setNeutralButton(android.R.string.ok, this);
-			builder.show();
+			this.showDialog(DIALOG_ID_NO_WORDS);
 		}
 	}
 
@@ -184,6 +172,46 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	}
 
 	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch(id) {
+		case DIALOG_ID_CLICK: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setView(text);
+			builder.setTitle(R.string.edit_word);
+			builder.setNegativeButton(R.string.delete, this);
+			builder.setNeutralButton(android.R.string.cancel, this);
+			builder.setPositiveButton(android.R.string.ok, this);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_ADD: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			EditText text = new EditText(this);
+			text.setSingleLine();
+			text.setId(EDIT_ID);
+			builder.setView(text);
+			builder.setTitle(R.string.new_word);
+			builder.setNeutralButton(android.R.string.cancel, this);
+			builder.setPositiveButton(android.R.string.ok, this);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_NO_WORDS: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.wordlist_no_words);
+			builder.setNeutralButton(android.R.string.ok, this);
+			dialog = builder.create();
+			break;
+		}
+		default:
+			dialog = super.onCreateDialog(id);
+			break;
+		}
+		return dialog;
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.getMenuInflater().inflate(R.menu.wordlist_options, menu);
 		menu.findItem(R.id.menu_insert).setIcon(android.R.drawable.ic_menu_add);
@@ -195,19 +223,10 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	/**
 	 * called when editing a word in the list
 	 */
-	public void onItemClick(AdapterView<?> data, View view, int position,
-			long rowid) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		text = new EditText(this);
-		text.setSingleLine();
+	public void onItemClick(AdapterView<?> data, View view, int position, long rowid) {
 		index = rowid;
 		text.setText(((TextView) view).getText());
-		builder.setView(text);
-		builder.setTitle(R.string.edit_word);
-		builder.setNegativeButton(R.string.delete, this);
-		builder.setNeutralButton(android.R.string.cancel, this);
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.show();
+		this.showDialog(DIALOG_ID_CLICK);
 	}
 
 	@Override
@@ -217,9 +236,26 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 			this.finish();
 			return true;
 		case R.id.menu_insert:
-			addDialog();
+			this.showDialog(DIALOG_ID_ADD);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_ID_ADD: {
+			index = INSERT_INDEX;
+			EditText text = (EditText)((AlertDialog)dialog).findViewById(EDIT_ID);
+			text.setText("");
+			break;
+		}
+		case DIALOG_ID_CLICK:
+			break;
+		default:
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
 	}
 }
