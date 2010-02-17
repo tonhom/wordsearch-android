@@ -65,7 +65,7 @@ public class HighScoresShow implements Runnable, DialogInterface.OnClickListener
 	}
 
 	public void onClick(DialogInterface dialog, int which) {
-		if (which == DialogInterface.BUTTON_POSITIVE) {
+		if (which == DialogInterface.BUTTON_NEGATIVE) {
 			controller.resetScores();
 		}
 		if (gameOver) {

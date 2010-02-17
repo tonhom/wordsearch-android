@@ -206,9 +206,9 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		if (control == null) {// hack fix later
 			return;
 		}
-		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
-			control.newWordSearch();
-		}
+//		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
+//			control.newWordSearch();
+//		}
 		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
 			control.updateTouchMode();
 		}

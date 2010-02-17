@@ -1,63 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<string name="prev">&lt;</string>
-	<string name="next">&gt;</string>
-	<string name="app_name">Word Search</string>
+<resources> 
+<string name="app_name"> Word Search </string> 
 
-	<string name="places">Lieux</string>
-	<string name="animals">Animaux</string>
-	<string name="people">Gens</string>
-	<string name="numbers">Numéros</string>
-	<string name="insane">Fou</string>
+<string name="places"> Lieux </string> 
+<string name="animals"> Animals </string> 
+<string name="people"> People </string> 
+<string name="adjectives"> Adjectifs </string> 
+<string name="misc"> Divers </string> 
+<string name="numbers"> Numéros </string> 
+<string name="custom"> personnalisé </string> 
+<string name="insane"> Insane </string> 
+<string name="random"> aléatoire </string> 
 
-	<string name="random">Aléatoire</string>
-	<string name="category">Catégorie</string>
-	<string name="reset">Remettre</string>
+<string name="custom_editor"> Custom Editor </string> 
+<string name="category"> Word Bank </string> 
+<string name="reset"> Reset </string> 
+<string name="ok"> OK </string> 
+<string name="high_score"> High Scores </string> 
+<string name="new_game"> Nouveau </string> 
+<string name="quit"> Quit </string> 
+<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est temps%. </string> 
 
-	<string name="ok">OK</string>
-	<string name="high_score">Meilleurs scores</string>
+<string name="wordlist_name"> Word recherche personnalisé Catégorie Editor </string> 
+<string name="custom_empty"> Votre catégorie personnalisée n'a pas de mots. \nCliquez menu puis cliquez sur nouveau mot </string> 
+<string name="no_words"> Aucun mot n'a été trouvée pour cette grille, s'il vous plaît choisir une taille de grille différente ou par catégorie. </string> 
+<string name="no_words_custom"> Il n'ya pas de mots disponibles dans votre catégorie personnalisée, s'il vous plaît allez dans l'éditeur de catégories personnalisées et ajouter quelques wprds ou choisir une catégorie différente. </string> 
+<string name="wordlist_no_words"> Il n'ya pas de mots actuellement dans votre catégorie personnalisée, s'il vous plaît cliquer sur menu puis ajoutez mot. </string> 
+<string name="new_word"> New Word </string> 
+<string name="edit_word"> Modifier mot </string> 
+<string name="delete"> Supprimer </string> 
+<string name="add_word"> Ajouter Word </string> 
+<string name="invalid_word"> Les mots doivent avoir au moins 4 lettres </string> 
 
-	<string name="new_game">Nouveau jeu</string>
-	<string name="quit">Quitter</string>
-	<string name="fastest_games">Jeux les plus rapides</string>
-	<string name="congradulations">Vous avez trouvé tous les mots en %time,	félicitations!</string>
+<string name="tutorial"> Tutorial </string> 
+<string name="tutorial_heading_touch"> Touch </string> 
+<string name="tutorial_heading_drag"> Drag </string> 
+<string name="tutorial_heading_tap"> Touchez </string> 
+<string name="tutorial_heading_trackball"> Trackball </string> 
+<string name="tutorial_heading_tips"> Conseils </string> 
+<string name="tutorial_message"> En WordSearch, votre but est de trouver tous les mots dans la liste de mots. Il ya deux façons que vous pouvez trouver les mots: </string> 
+<string name="tutorial_message2"> Drag et Tap deux utilisent l'écran tactile. Drag est sélectionné par défaut, mais vous pouvez basculer entre Drag et Tap en allant dans le menu et choisir \"Type d'entrée. \" </string> 
+<string name="tutorial_message_drag1"> l'aide de votre doigt, effleurez la première lettre d'un mot. </string> 
+<string name="tutorial_message_drag2">, sans lever le doigt, faites glisser l'écran à la dernière lettre du mot. </string> 
+<string name="tutorial_message_drag3"> Lorsque vous faites glisser votre doigt autour, les lettres que vous êtes actuellement en soulignant deviendront jaunes. Vous pouvez voir la lettre que votre doigt est actuellement dans le coin supérieur gauche de l'écran (où le \"&lt;\" flèche est habituellement). </string> 
+<string name="tutorial_message_drag4"> Lorsque vous avez mis en évidence le mot en entier (et pas plus que le mot en entier), soulevez le doigt de l'écran. La parole sera ensuite passer à une couleur différente dans la grille et sera retirée de la liste de mots. </string> 
+<string name="tutorial_message_trackball1"> Roulez la boule de commande pour trouver la première lettre d'un mot. Cette lettre vous vous trouvez actuellement est vert. </string> 
+<string name="tutorial_message_trackball2"> Lorsque vous êtes sur la première lettre d'un mot, cliquez sur la boule de commande pour commencer en soulignant le mot. </string> 
+<string name="tutorial_message_trackball3"> Roulez la boule de commande à la dernière lettre du mot et cliquez sur la boule de commande à nouveau pour trouver le mot. Le mot se transforme en une couleur différente dans la grille et sera retirée de la liste de mots. </string> 
+<string name="tutorial_message_tap1"> Avec vos doigts, de tape la première lettre du mot et de lever le doigt. </string> 
+<string name="tutorial_message_tap2"> Avec vos doigts, de tape la dernière lettre du mot. Le mot entier sera souligné et le mot sera retirée de la liste de mots. </string> 
+<string name="tutorial_message_tap3"> La lettre n'est pas sélectionné jusqu'à ce que vous lever le doigt. Si, lorsque vous essayez de robinet, vous choisissez la mauvaise lettre, ne soulevez pas votre doigt - faites simplement glisser votre doigt sur l'écran jusqu'à trouver la bonne lettre (utiliser la boîte aux lettres dans le coin supérieur gauche si vous avez besoin l'aide) et lever le doigt quand vous êtes sur la bonne lettre. </string> 
+<string name="tutorial_message_tip1"> Vous pouvez également sélectionner un mot à partir de la dernière lettre et se terminant à la première. </string> 
+<string name="tutorial_message_tip2"> Utilisez le \"&lt;\" et \"&gt;\" flèches pour naviguer à travers les mots dans la liste de mots en cours. Pour modifier des listes de mots, allez dans le menu et cliquez sur \"Catégories. \" </string> 
+<string name="tutorial_message_tip3"> Vous pouvez trouver n'importe quel mot dans la liste de mots, et pas seulement celle qui est actuellement affichée </string> 
+<string name="tutorial_message_tip4"> Si vous éprouvez des difficultés à utiliser du robinet ou glisser pour sélectionner un mot, allez dans le menu, cliquez sur \"size \" et choisissez une grille avec moins de lettres (soit 7x7). Parce qu'il ya moins de lettres, les lettres sont plus espacées et plus facile à régler avec votre doigt. </string> 
+<string name="tutorial_message_tip5"> Si vous utilisez la boule de commande, n'oubliez pas de cliquer sur la boule de commande pour commencer et finir de trouver un mot. si vous ne cliquez pas sur la boule de commande, le jeu ne sait pas que vous essayez de trouver un mot. </string> 
+<string name="tutorial_message_tip6"> Parce que la grille est généré de manière aléatoire, vous mai voir quelques mots qui ne font pas partie de la liste de mots, vous ne pouvez pas mettre en évidence et \"trouver \" Ces mots </string> 
+<string name="tutorial_message_tip7"> Si vous utilisez le glisser pour mettre en surbrillance des mots, veillez à ne pas faire glisser votre doigt de l'écran tactile. Va désactiver l'écran tactile est le même que le levage de votre doigt. </string> 
+<string name="tutorial_message_tip8"> Lorsque vous choisissez un mot en utilisant la drague, le jeu ne fera que mettre en évidence en lettres jaunes dans une ligne droite allant directement au-dessus, en dessous, à gauche, à droite ou en diagonale entre l'endroit où vous avez commencé à mettre en lumière et où votre doigt est actuellement . Si votre doigt n'est pas en ligne directe de la lettre de démarrage, la mise en évidence ne suivra pas votre doigt jusqu'à ce que vos déclarations de doigt pour une ligne directe de la lettre de départ. Le jeu sera de trouver le mot qui est mis en évidence, indépendamment du lieu où votre doigt lorsque vous l'ascenseur. </string> 
 
+<string name="size"> Taille de la grille </string> 
+<string name="enter_initials"> Vous avez fait un nouveau score% élevé! \nEntrez vos initiales </string> 
+<string name="no_high_scores"> Pas de score élevé </string> 
 
-	<string name="adjectives">Adjectifs</string>
-	<string name="misc">Divers</string>
-	<string name="custom">Personnalisé</string>
-	<string name="custom_editor">Personnaliser</string>
-	
-	<string name="wordlist_name">Word Search Éditeur pour la catégorie « Personnalisé »</string>
-	<string name="custom_empty">Votre catégorie « Personnalisé » n'a pas de mots. \nCliquez sur Menu puis sur Nouveau mot.</string>
-	<string name="no_words_custom">Il n'y a pas de mots dans la catégorie « Personnalisé », s'il vous plaît allez à l'Éditeur pour la catégorie « Personnalisé » et ajoutez un peu ou choisissez une catégorie différente.</string>
-	<string name="wordlist_no_words">Il n'y a pas actuellement de mots dans  la catégorie « Personnalisé, » s'il vous plaît cliquez sur Menu puis sur Ajoutez mot.</string>
-	<string name="new_word">Nouveau mot</string>
-	<string name="edit_word">Éditer mot</string>
-	<string name="delete">Supprimer</string>
-	<string name="add_word">Ajouter Word</string>
-	<string name="invalid_word">Les mots doivent être plus de 4 lettres</string>
+<string name="input_type"> Type d'entrée </string> 
+<string name="drag"> Drag </string> 
+<string name="tap"> Touchez </string> 
 
-	<string name="tutorial">Didacticiel</string>
-	<string name="tutorial_heading_touch">Toucher</string>
-	<string name="tutorial_heading_trackball">Boule de commande</string>
-	<string name="tutorial_heading_tips">Conseils</string>
-	<string name="tutorial_message">Le but du jeu Word Search est de trouver tous les mots dans la liste de mots. Il y a deux moyens pour les trouver :</string>
-	<string name="tutorial_message_touch1">Touchez du doigt à la première lettre d'un mot.</string>
-	<string name="tutorial_message_touch2">Sans lever du doigt, glissez-le à travers l'écran à la dernière lettre du mot.</string>
-	<string name="tutorial_message_touch3">Tandis que vous glissez le doigt, les lettres que vous êtes en cours de surligner deviennent jaunes. Vous pouvez voir la lettre en cours d'être surlignée dans le coin supérieur gauche de l'écran (où se trouve habituellement le flèche à gauche \"&lt;\").</string>
-	<string name="tutorial_message_touch4">Quand vous avez surligné le mot entier (et pas plus que le mot), soulevez le doigt de l'écran. Le mot changera de couleur dans la grille et s'eliminera de la liste de mots.</string>
-	<string name="tutorial_message_trackball1">Roulez la boule de commande partout pour trouver la première lettre d'un mot. Cette lettre sera en vert.</string>
-	<string name="tutorial_message_trackball2">Tandis que vous êtes sur la première lettre cliquez sur la boule de commande pour commencer surligner la reste du mot.</string>
-	<string name="tutorial_message_trackball3">Roulez la boule de commande à la dernière lettre du mot et cliquez-la de nouveau pour capturer le mot entier. Le mot changera de couleur dans la grille et s'éliminera de la liste de mots.</string>
-	<string name="tutorial_message_tip1">Vous pouvez également surligner un mot en commençant à la dernière lettre et en terminant à la première lettre.</string>
-	<string name="tutorial_message_tip2">Cliquez sur les flèches \"&lt;\" et \"&gt;\" pour parcourir les mots sur la liste de mots. Afin de changer la liste de mots, allez au menu et cliquez sur \ "Catégories. \</string>
-	<string name="tutorial_message_tip3">Vous pouvez chercher n'importe quel mot dans la liste de mots, pas seulement celui qui est actuellement affiché.</string>
-	<string name="tutorial_message_tip4">Si vous éprouvez des difficultés en utilisant le contact du doigt sur l'écran, allez au menu et cliquez sur \"Taille \" et choisissez une grille avec moins de lettres (c.-à-d. 7 x 7). Parce qu'il y a moins de lettres il y a plus d'espace et il est plus facile de toucher les lettres avec le doigt.</string>
-	<string name="tutorial_message_tip5">Si vous utilisez la boule de commande, n'oubliez pas cliquer la boule de commande en commençant et en terminant la capture du mot. Si vous ne cliquez pas la boule de commande, le jeu ne sait pas que vous essayez de capturer un mot.</string>
-	<string name="tutorial_message_tip6">Car la grille est généré de manière aléatoire vous pouvez voir quelques mots qui ne font pas partie de la liste de mots. Vous ne pouvez pas les surligner et les \ "trouver. \</string>
-	<string name="tutorial_message_tip7">Si vous utilisez le doigt à surligner les mots, faites attention de ne s'en aller pas hors de l'écran. De s'en aller hors de l'écran tactile est égal à lever le doigt.</string>
-	<string name="tutorial_message_tip8">À tout moment lorsque vous selectionnez un mot avec le doigt le jeu le surligne en lettres jaunes en lignes droites en haut, en bas, à gauche, à droit ou en diagonale entre la lettre sur laquelle vous avez commencé et où se trouve actuellement votre doigt. Si votre doigt n'est pas en ligne droite de la lettre choisie premièrement, le surlignement ne suit pas votre doigt jusqu'à le doigt revient en ligne droite de la lettre choisie premièrement. Le jeu trouvera le mot quand il est surligné indépendamment d'où se trouve votre doigt quand vous l'enlevez.</string>
-	
-	<string name="size">Taille</string>
-</resources>
+<string name="game_over"> Souhaitez-vous commencer une nouvelle partie? </string> 
+
+<string name="options"> Préférences </string> 
+
+<string name="prefs_size_summary"> actuelle Taille de la grille: replaceme% </string> 
+<string name="prefs_category_summary"> actuel Word Bank: replaceme% </string> 
+<string name="prefs_touch_mode_summary"> actuel Type d'entrée: replaceme% </string> 
+</resources> 

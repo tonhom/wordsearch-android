@@ -19,22 +19,18 @@
 	<string name="high_score">High Scores</string>
 	<string name="new_game">New</string>
 	<string name="quit">Quit</string>
-	<string name="congradulations">You found all the words your score was %time, congratulations!</string>
+	<string name="congratulations">Congratulations, you found all the words!  Your score was %time.</string>
 
 	<string name="wordlist_name">Word Search Custom Category Editor</string>
-	<string name="custom_empty">Your custom category has no words.\nClick menu then
-		click new word</string>
+	<string name="custom_empty">Your custom category has no words.\nClick menu then click new word</string>
 	<string name="no_words">No words could be found for this grid, please choose a different grid size or category.</string>
-	<string name="no_words_custom">There are no words available in the custom
-		category, please goto the custom category editor and add some or
-		choose a different category.</string>
-	<string name="wordlist_no_words">There are no words currently in the custom
-		category, please click menu then add word.</string>
+	<string name="no_words_custom">There are no words available in your custom category, please go to the custom category editor and add some wprds or choose a different category.</string>
+	<string name="wordlist_no_words">There are no words currently in your custom category, please click menu then add word.</string>
 	<string name="new_word">New Word</string>
 	<string name="edit_word">Edit Word</string>
 	<string name="delete">Delete</string>
 	<string name="add_word">Add Word</string>
-	<string name="invalid_word">Words must be more then 4 letters</string>
+	<string name="invalid_word">Words must be at least 4 letters</string>
 
 	<string name="tutorial">Tutorial</string>
 	<string name="tutorial_heading_touch">Touch</string>
@@ -64,14 +60,14 @@
 	<string name="tutorial_message_tip8">When selecting a word using drag, the game will only highlight in yellow letters in a straight line going directly above, below, left, right, or diagonally between where you started highlighting and where your finger currently is.  If your finger is not in a direct line from the start letter, the highlight will not follow your finger until your finger returns to a direct line from the start letter.  The game will find the word that is highlighted, regardless of where your finger is when you lift it.</string>
 
 	<string name="size">Grid Size</string>
-	<string name="enter_initials">You made a new record %score!\nPlease enter your initials</string>
+	<string name="enter_initials">You made a new high %score!\nPlease enter your initials</string>
 	<string name="no_high_scores">No High Scores</string>
 	
 	<string name="input_type">Input Type</string>
 	<string name="drag">Drag</string>
 	<string name="tap">Tap</string>
 
-	<string name="game_over">Game over, would you like to start a new game?</string>
+	<string name="game_over">Would you like to start a new game?</string>
 	
 	<string name="options">Preferences</string>
 	

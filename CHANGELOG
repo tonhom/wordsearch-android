@@ -1,3 +1,10 @@
+Version 1.8 (14):
+full screen game
+hs initials allow longer and numbers
+centralize settings
+add german and update french interfaces
+code base checkout fully compiles now
+
 Version 1.7 (13):
 greatly improves touch responsiveness
 can now toggle between existing drag interface and new tap interface (Thanks Adam/Arica)

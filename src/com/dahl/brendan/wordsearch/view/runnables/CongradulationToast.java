@@ -42,7 +42,7 @@ public class CongradulationToast implements Runnable {
 		this.controller = controller;
 	}
 	public void run() {
-		NewGameDialog newGameDialog = new NewGameDialog(controller, wordSearch, wordSearch.getString(R.string.congradulations).replace(
+		NewGameDialog newGameDialog = new NewGameDialog(controller, wordSearch, wordSearch.getString(R.string.congratulations).replace(
 				"%time",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
 		newGameDialog.run();
 	}

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources> 
+<string name="app_name"> Word Search </string> 
+
+<string name="places"> Orte </string> 
+<string name="animals"> Tiere </string> 
+<string name="people"> People </string> 
+<string name="adjectives"> Adjektive </string> 
+<string name="misc"> Misc </string> 
+<string name="numbers"> Zahlen </string> 
+<string name="custom"> Custom </string> 
+<string name="insane"> Insane </string> 
+<string name="random"> Random </string> 
+
+<string name="custom_editor"> Custom Editor </string> 
+<string name="category"> Word Bank </string> 
+<string name="reset"> zurücksetzen </string> 
+<string name="ok"> OK </string> 
+<string name="high_score"> High Scores </string> 
+<string name="new_game"> Neu </string> 
+<string name="quit"> Beenden </string> 
+<string name="congratulations"> Herzlichen Glückwunsch, Sie finden alle Wörter! Ihr Ergebnis war% Zeit. </string> 
+
+<string name="wordlist_name"> Word Search Custom Kategorie Editor </string> 
+<string name="custom_empty"> Ihre benutzerdefinierte Kategorie hat keine Worte. \nKlicken Sie im Menü klicken Sie dann auf neues Wort </string> 
+<string name="no_words"> keine Worte für dieses Netz gefunden werden, wählen Sie bitte ein anderes Gitter Größe oder Kategorie. </string> 
+<string name="no_words_custom"> Es gibt keine Worte in Ihrer benutzerdefinierten Kategorie, klicken Sie auf den benutzerdefinierten Kategorie-Editor gehen und fügen Sie einige wprds oder wählen Sie eine andere Kategorie. </string> 
+<string name="wordlist_no_words"> Es gibt keine Worte derzeit in Ihrem benutzerdefinierten Kategorie, klicken Sie bitte fügen Sie dann im Menü Wort. </string> 
+<string name="new_word"> New Word </string> 
+<string name="edit_word"> Word bearbeiten </string> 
+<string name="delete"> Löschen </string> 
+<string name="add_word"> Wort hinzufügen </string> 
+<string name="invalid_word"> Wörter müssen mindestens 4 Buchstaben </string> 
+
+<string name="tutorial"> Tutorial </string> 
+<string name="tutorial_heading_touch"> Touch </string> 
+<string name="tutorial_heading_drag"> Ziehen Sie </string> 
+<string name="tutorial_heading_tap"> Tippen Sie auf </string> 
+<string name="tutorial_heading_trackball"> Trackball </string> 
+<string name="tutorial_heading_tips"> Tipps </string> 
+<string name="tutorial_message"> In WordSearch, ist Ihr Ziel, alle die Wörter in der Wortliste zu finden. Es gibt zwei Möglichkeiten, wie Sie Worte zu finden: </string> 
+<string name="tutorial_message2"> Drag und Tap beide verwenden den Touchscreen. Ziehen Sie ist standardmäßig aktiviert, aber Sie können zwischen Drag und Tap, indem Sie auf das Menü und die Kommissionierung Schalter \"Input Type. \" </string> 
+<string name="tutorial_message_drag1"> mit dem Finger, berühren Sie den ersten Buchstaben eines Wortes. </string> 
+<string name="tutorial_message_drag2">, ohne abzuheben Ihren Finger, ziehen Sie über den Bildschirm bis zum letzten Buchstaben des Wortes. </string> 
+<string name="tutorial_message_drag3"> Wie Sie Ihre Finger ziehen um, die Briefe die Sie gerade hervorgehoben wird gelb. Sie können das Schreiben Sie Ihren Finger ist derzeit in der linken oberen Ecke des Bildschirms (wo die \"&lt;\" Pfeil in der Regel ist). </string> 
+<string name="tutorial_message_drag4"> Wenn Sie das ganze Wort (und nicht mehr als das ganze Wort hervorgehoben), heben Sie Ihre Finger vom Bildschirm. Das Wort wird dann Wechsel zu einer anderen Farbe in das Netz und wird aus dem Wort Liste gestrichen werden. </string> 
+<string name="tutorial_message_trackball1"> Drehen Sie den Trackball um auf der Suche nach den ersten Buchstaben eines Wortes. Der Brief, den Sie derzeit auf grün. </string> 
+<string name="tutorial_message_trackball2"> Wenn Sie sich auf den ersten Buchstaben eines Wortes, klicken Sie auf den Trackball zu starten Hervorhebung des Wortes. </string> 
+<string name="tutorial_message_trackball3"> Drehen Sie den Trackball, um den letzten Buchstaben des Wortes ein und klicken Sie auf den Trackball wieder zu finden, das Wort. Das Wort ändert sich in einer anderen Farbe in das Netz und wird aus dem Wort Liste gestrichen werden. </string> 
+<string name="tutorial_message_tap1"> mit dem Finger, tippen Sie den ersten Buchstaben des Wortes ein und heben Sie Ihre Finger. </string> 
+<string name="tutorial_message_tap2"> mit dem Finger, tippen Sie auf den letzten Buchstaben des Wortes. Das gesamte Wort wird hervorgehoben und das Wort wird aus dem Wort Liste gestrichen werden. </string> 
+<string name="tutorial_message_tap3"> Der Brief ist nicht aktiviert, bis Sie Ihre Finger zu rühren. Wenn, wenn Sie zu erschließen versuchen, wählen Sie den falschen Buchstaben, heben Sie nicht Ihre Finger - ziehen Sie einfach Ihren Finger über den Bildschirm, bis Sie den richtigen Buchstaben zu finden (verwenden Sie den Briefkasten in der oberen linken Ecke, wenn Sie Hilfe) und heben Sie Ihre Finger, wenn man über den richtigen Buchstaben. </string> 
+<string name="tutorial_message_tip1"> Außerdem können Sie markieren ein Wort ab dem letzten Buchstaben und endet am ersten. </string> 
+<string name="tutorial_message_tip2"> Verwenden Sie die \"&lt;\" und \"&gt;\" Pfeile, um durch die Wörter in das aktuelle Wort Liste blättern. Wortlisten zu ändern, öffnen Sie das Menü und klicken Sie auf \"Kategorien. \" </string> 
+<string name="tutorial_message_tip3"> Sie können jedes Wort in der Wortliste zu finden, nicht nur die, die momentan angezeigt wird </string> 
+<string name="tutorial_message_tip4"> Wenn Sie Probleme unter Verwendung von Leitungswasser oder ziehen Sie um ein Wort hervorzuheben sind, gehen Sie in das Menü, klicken Sie auf \"Größe \" und wählen Sie ein Gitter mit weniger Buchstaben (zB 7x7). Weil es weniger Briefe sind, sind die Buchstaben mehr gestaffelt und einfacher zu holen mit dem Finger. </string> 
+<string name="tutorial_message_tip5"> Wenn Sie den Trackball benutzen, denken Sie daran, klicken Sie auf den Trackball, um Anfang und Ende der Suche nach einem Wort. wenn Sie nicht auf den Trackball, funktioniert das Spiel nicht, dass Sie versuchen, ein Wort zu finden. </string> 
+<string name="tutorial_message_tip6"> Da das Netz zufällig generiert, können Sie einige Wörter, die nicht Teil des Wortes Liste zu sehen, man kann nicht markieren und \"finden \" diese Worte </string> 
+<string name="tutorial_message_tip7"> Wenn Sie ziehen mit den Worten Highlight sind, achten Sie nicht Ihre Finger ziehen Sie aus der Touch-Screen. Going aus dem Touch-Screen ist die gleiche wie Heben Sie mit dem Finger. </string> 
+<string name="tutorial_message_tip8"> Bei der Auswahl eines Wortes durch ziehen, wird das Spiel nur in gelben Buchstaben in einer geraden Linie zu markieren gehen direkt oben, unten, links, rechts oder diagonal zwischen hervorgehoben, wo Sie begonnen und wo Ihre Finger derzeit . Wenn Sie den Finger nicht in direkter Linie von Anfang an Schreiben wird das Highlight nicht Ihren Finger, bis Sie den Finger wieder ein direkter Linie von dem Schreiben beginnen. Das Spiel wird das Wort, das markiert ist zu finden, unabhängig davon, wo Sie mit dem Finger ist, wenn Sie es. </string> 
+
+<string name="size"> Grid Size </string> 
+<string name="enter_initials"> Sie haben einen neuen Höchststand% der Gäste! \nBitte geben Sie Ihre Initialen </string> 
+<string name="no_high_scores"> Nr. High Scores </string> 
+
+<string name="input_type"> Input Type </string> 
+<string name="drag"> Ziehen Sie </string> 
+<string name="tap"> Tippen Sie auf </string> 
+
+<string name="game_over"> Möchten Sie ein neues Spiel zu starten? </string> 
+
+<string name="options"> Einstellungen </string> 
+
+<string name="prefs_size_summary"> Aktuelle Grid Größe: replaceme% </string>
+<string name="prefs_category_summary"> Aktuelle Word Bank: replaceme% </string> 
+<string name="prefs_touch_mode_summary"> Aktuelle Eingabetyp: replaceme% </string> 
+</resources>
