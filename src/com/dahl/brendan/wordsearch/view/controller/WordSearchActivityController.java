@@ -129,7 +129,7 @@ public class WordSearchActivityController {
 			this.setGridSize(prefs.getSize());
 		}
 		prefs.getTouchMode();
-//		this.updateTouchMode();
+		this.updateTouchMode();
 	}
 
 	protected void foundWord(String word) {
@@ -154,10 +154,6 @@ public class WordSearchActivityController {
 		return prefs;
 	}
 	
-	public boolean getTouchMode() {
-		return this.gridManager.getTouchMode();
-	}
-
 	public String guessWord(Point pointStart, Point pointEnd) {
 		return grid.guessWord(pointStart, pointEnd);
 	}
