@@ -17,29 +17,34 @@
 
 package com.dahl.brendan.wordsearch.view;
 
+import java.util.Date;
+import java.util.LinkedList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.InputType;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
 import com.dahl.brendan.wordsearch.view.controller.TextViewGridController;
 import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
-import com.dahl.brendan.wordsearch.view.listeners.DialogNoWordsCustomListener;
-import com.dahl.brendan.wordsearch.view.listeners.DialogNoWordsListener;
-import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
+import com.firegnom.rat.DefaultExceptionHandler;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 /**
  * 
@@ -48,16 +53,90 @@ import com.dahl.brendan.wordsearch.view.runnables.HighScoresShow;
  * Activity for the word search game itself
  */
 public class WordSearchActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+	class DialogGameNewListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == DialogInterface.BUTTON_POSITIVE) {
+				getControl().newWordSearch();
+			}
+		}
+	}
+	class DialogHighScoresInitialsListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == DialogInterface.BUTTON_POSITIVE) {
+				String name = ((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).getText().toString();
+				HighScore hs = getControl().getCurrentHighScore();
+				if (!TextUtils.isEmpty(name)) {
+					hs.setInitials(name);
+				} else {
+					hs.setInitials("?");
+				}
+				LinkedList<HighScore> scores = getControl().getPrefs().getTopScores();
+				scores.add(hs);
+				getControl().getPrefs().setTopScores(scores);
+				showDialog(WordSearchActivity.DIALOG_ID_HIGH_SCORES_SHOW);
+			} else {
+				showDialog(WordSearchActivity.DIALOG_ID_GAME_NEW);
+			}
+		}
+	}
+	class DialogHighScoresShowListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == DialogInterface.BUTTON_NEGATIVE) {
+				getControl().resetScores();
+			}
+			if (!getControl().isGameRunning()) {
+				showDialog(WordSearchActivity.DIALOG_ID_GAME_NEW);
+			}
+		}
+	}
+	class DialogNoWordsCustomListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				Intent intent = new Intent(Intent.ACTION_EDIT, com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word.CONTENT_URI);
+				intent.setType(com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word.CONTENT_TYPE);
+				startActivity(intent);
+				break;
+			case DialogInterface.BUTTON_NEGATIVE:
+				startActivity(new Intent(WordSearchActivity.this, WordSearchPreferences.class));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	class DialogNoWordsListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				getControl().newWordSearch();
+				break;
+			case DialogInterface.BUTTON_NEUTRAL:
+				startActivity(new Intent(WordSearchActivity.this, WordSearchPreferences.class));
+				break;
+			case DialogInterface.BUTTON_NEGATIVE:
+				startActivity(new Intent(WordSearchActivity.this, WordSearchPreferences.class));
+				break;
+			default:
+				break;
+			}
+		}
+	}
 	final public static int DIALOG_ID_NO_WORDS = 0;
 	final public static int DIALOG_ID_NO_WORDS_CUSTOM = 1;
-	final private DialogNoWordsListener DIALOG_LISTENER_NO_WORDS = new DialogNoWordsListener(this);
-	final private DialogNoWordsCustomListener DIALOG_LISTENER_NO_WORDS_CUSTOM = new DialogNoWordsCustomListener(this);
+	final public static int DIALOG_ID_HIGH_SCORES_INITIALS = 2;
+	final public static int DIALOG_ID_HIGH_SCORES_SHOW = 3;
+	final public static int DIALOG_ID_GAME_NEW = 4;
+	final private DialogNoWordsListener DIALOG_LISTENER_NO_WORDS = new DialogNoWordsListener();
+	final private DialogNoWordsCustomListener DIALOG_LISTENER_NO_WORDS_CUSTOM = new DialogNoWordsCustomListener();
 
 	//	final private static String LOG_TAG = "WordSearchActivity";
 	/**
 	 * control classes were made to segment the complex game logic away from the display logic
 	 */
 	private WordSearchActivityController control;
+	private GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
+	private String androidVer;
 
 	public WordSearchActivityController getControl() {
 		return control;
@@ -77,11 +156,8 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			break;
 		case DialogInterface.BUTTON_NEGATIVE:
 			startActivity(new Intent(this, WordSearchPreferences.class));
-//			showCategorySelector(); TODO
 			break;
 		default:
-//			control.setTheme(which); TODO ensure no references to this are left
-//			control.newWordSearch();
 			break;
 		}
 	}
@@ -90,6 +166,14 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		DefaultExceptionHandler.register(this,CrashActivity.class);
+		try {
+			androidVer = this.getPackageManager().getPackageInfo("android", 0).versionName;
+		} catch (NameNotFoundException e) {
+			androidVer = "unknown";
+		}
+		tracker.start("UA-146333-5", 60, this);
+		tracker.trackPageView("/app/"+androidVer+"/WordSearchActivity");
 //		Log.v(LOG_TAG, "onCreate");
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
@@ -129,6 +213,38 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			dialog = builder.create();
 			break;
 		}
+		case DIALOG_ID_HIGH_SCORES_INITIALS: {
+			final DialogHighScoresInitialsListener DIALOG_LISTENER_HIGH_SCORES_INITIALS = new DialogHighScoresInitialsListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("blank");
+			EditText text = new EditText(this);
+			text.setSingleLine();
+			text.setId(android.R.id.input);
+			builder.setView(text);
+			builder.setPositiveButton(android.R.string.ok, DIALOG_LISTENER_HIGH_SCORES_INITIALS);
+			builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_HIGH_SCORES_INITIALS);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_HIGH_SCORES_SHOW: {
+			final DialogHighScoresShowListener DIALOG_LISTENER_HIGH_SCORES_SHOW = new DialogHighScoresShowListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("blank");
+			builder.setTitle(R.string.high_score);
+			builder.setNegativeButton(R.string.reset, DIALOG_LISTENER_HIGH_SCORES_SHOW);
+			builder.setNeutralButton(android.R.string.ok, DIALOG_LISTENER_HIGH_SCORES_SHOW);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_GAME_NEW: {
+			final DialogGameNewListener DIALOG_LISTENER_GAME_NEW = new DialogGameNewListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("blank");
+			builder.setPositiveButton(R.string.new_game, DIALOG_LISTENER_GAME_NEW);
+			builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_GAME_NEW);
+			dialog = builder.create();
+			break;
+		}
 		default:
 			dialog = super.onCreateDialog(id);
 			break;
@@ -148,13 +264,54 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_ID_HIGH_SCORES_INITIALS: {
+			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
+			HighScore hs = control.getCurrentHighScore();
+			label.setText(this.getString(R.string.enter_initials).replace("%score", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
+			((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).setText("");
+			break;
+		}
+		case DIALOG_ID_HIGH_SCORES_SHOW: {
+			LinkedList<HighScore> highScores = this.getControl().getHighScores();
+			StringBuilder str = new StringBuilder();
+			if (highScores.size() == 0) {
+				str.append(this.getString(R.string.no_high_scores));
+			} else {
+				for (int index = 0; index < highScores.size(); index++) {
+					str.append(Integer.toString(index+1)+": "+highScores.get(index).getInitials()+" " + highScores.get(index).getScore() + " ( " + ConversionUtil.formatTime.format(new Date(highScores.get(index).getTime())) + " )\n");
+				}
+			}
+			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
+			label.setText(str);
+			break;
+		}
+		case DIALOG_ID_GAME_NEW: {
+			String extraText;
+			if (this.getControl().isHighScorer()) {
+				HighScore hs = this.getControl().getCurrentHighScore();
+				extraText = this.getString(R.string.congratulations).replace("%time",hs .getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")")+"\n";
+			} else {
+				extraText = "";
+			}
+			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
+			label.setText(extraText+this.getString(R.string.game_over));
+			break;
+		}
+		default:
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
 	/** when menu button option selected */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_scores:
-			HighScoresShow hsShow = new HighScoresShow(control, this, false);
-			hsShow.run();
+			this.showDialog(DIALOG_ID_HIGH_SCORES_SHOW);
 			return true;
 		case R.id.menu_options:
 			startActivity(new Intent(this, WordSearchPreferences.class));
@@ -234,11 +391,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			TextView[] rowText = new TextView[gridSize];
 			for (point.x = 0; point.x < gridSize; point.x++) {
 				TextView view = (TextView)this.getLayoutInflater().inflate(R.layout.grid_text_view, null);
-				view.setHeight(portion);
-//				Log.v(LOG_TAG, "point: "+point+"; id: "+ConversionUtil.convertPointToID(point)+"; point2: "+ConversionUtil.convertIDToPoint(ConversionUtil.convertPointToID(point)));
 				view.setId(ConversionUtil.convertPointToID(point));
-				view.setInputType(InputType.TYPE_NULL);
-
 				view.setOnKeyListener(controller);
 
 				rowText[point.x] = view;
@@ -246,9 +399,19 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 			gridView[point.y] = rowText;
 			gridTable.addView(row);
-			row.requestLayout();
-			row.invalidate();
 		}
 		gridTable.setOnTouchListener(controller);
+		gridTable.requestLayout();
+		gridTable.invalidate();
 	}
+
+	public void trackGame() {
+		String category = control.getPrefs().getCategory();
+		String input = "Touch";
+		if (control.getPrefs().getTouchMode()) {
+			input = "Tap";
+		}
+		tracker.trackEvent(category, input, "label", WordSearchActivityController.getGridSize());
+	}
+
 }

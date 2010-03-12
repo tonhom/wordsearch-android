@@ -33,8 +33,7 @@ import com.dahl.brendan.wordsearch.model.Preferences;
 import com.dahl.brendan.wordsearch.model.dictionary.DictionaryFactory;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
-import com.dahl.brendan.wordsearch.view.runnables.CongradulationToast;
-import com.dahl.brendan.wordsearch.view.runnables.HighScoresInitials;
+import com.dahl.brendan.wordsearch.view.runnables.GameOver;
 
 /**
  * 
@@ -79,6 +78,7 @@ public class WordSearchActivityController {
 	 * the activity this controls
 	 */
 	private WordSearchActivity wordSearch;
+	private HighScore hs;
 
 	/**
 	 * used to serialize the control to and from a bundle
@@ -142,6 +142,13 @@ public class WordSearchActivityController {
 		}
 	}
 
+	public HighScore getCurrentHighScore() {
+		if (hs == null) {
+			throw new RuntimeException("currentHighScore is null");
+		}
+		return hs;
+	}
+
 	public TextViewGridController getGridManager() {
 		return gridManager;
 	}
@@ -149,7 +156,7 @@ public class WordSearchActivityController {
 	public LinkedList<HighScore> getHighScores() {
 		return prefs.getTopScores();
 	}
-
+	
 	public Preferences getPrefs() {
 		return prefs;
 	}
@@ -157,7 +164,16 @@ public class WordSearchActivityController {
 	public String guessWord(Point pointStart, Point pointEnd) {
 		return grid.guessWord(pointStart, pointEnd);
 	}
-	
+
+	public boolean isGameRunning() {
+		return wordBoxManager.wordsLeft() != 0;
+	}
+
+	public boolean isHighScorer() {
+		LinkedList<HighScore> scores = prefs.getTopScores();
+		return (scores.size() < 3 || this.getCurrentHighScore().getScore() > scores.get(2).getScore());
+	}
+
 	public void newWordSearch() {
 		this.setGridSize(prefs.getSize());
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
@@ -171,6 +187,7 @@ public class WordSearchActivityController {
 		}
 		timeSum = 0L;
 		this.setGrid(grid);
+		wordSearch.trackGame();
 	}
 
 	public void resetScores() {
@@ -185,7 +202,7 @@ public class WordSearchActivityController {
 			this.gridManager.fromBundle(inState.getBundle(BUNDLE_VIEW));
 		}
 	}
-
+	
 	public void saveState(Bundle outState) {
 		if (outState != null) {
 			outState.putInt(BUNDLE_GRID_SIZE, gridSize);
@@ -194,35 +211,22 @@ public class WordSearchActivityController {
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
 		}
 	}
-
 	private void setGrid(Grid grid) {
 		gridManager.reset(grid);
 		wordBoxManager.resetWords(grid.getWordList());
 		timeStart = System.currentTimeMillis();
 	}
-
 	public void setGridSize(int gridSizeNew) {
 		gridSize = prefs.getSize();
 		gridManager.setGridView(new TextView[gridSize][]);
 		wordSearch.setupViewGrid(gridSize, gridManager);
 	}
-	
-	private boolean setHighScore(long time) {
-		boolean highScorer = false;
-		HighScore hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
-		LinkedList<HighScore> scores = prefs.getTopScores();
-		if (scores.size() < 3 || hs.getScore() > scores.get(2).getScore()) {
-			wordSearch.runOnUiThread(new HighScoresInitials(this, hs, wordSearch, prefs));
-		} else {
-			wordSearch.runOnUiThread(new CongradulationToast(this, hs, wordSearch));
-		}
-		return highScorer;
+	private void setHighScore(long time) {
+		hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
+		wordSearch.runOnUiThread(new GameOver(wordSearch));
 	}
 	protected void setLetter(CharSequence charSequence) {
 		wordBoxManager.setLetter(charSequence);
-	}
-	public void updateTouchMode() {
-		this.gridManager.setTouchMode(prefs.getTouchMode());
 	}
 
 	public void timePause() {
@@ -231,6 +235,10 @@ public class WordSearchActivityController {
 
 	public void timeResume() {
 		timeStart = System.currentTimeMillis();
+	}
+
+	public void updateTouchMode() {
+		this.gridManager.setTouchMode(prefs.getTouchMode());
 	}
 
 }

@@ -17,33 +17,29 @@
 
 package com.dahl.brendan.wordsearch.view.runnables;
 
-import java.util.Date;
-
-import com.dahl.brendan.wordsearch.model.HighScore;
-import com.dahl.brendan.wordsearch.util.ConversionUtil;
-import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
-import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
 
 /**
  * 
  * @author Brendan Dahl
  *
- * this class stores the action of showing a congratulation toast to the user for finishing the game
+ * this class stores the action of requesting the user's initials to store a new high score
  *
  */
-public class CongradulationToast implements Runnable {
-	final private HighScore hs;
+public class GameOver implements Runnable {
+
 	final private WordSearchActivity wordSearch;
-	final private WordSearchActivityController controller;
-	public CongradulationToast(WordSearchActivityController controller, HighScore hs, WordSearchActivity wordSearch) {
-		this.hs = hs;
-		this.wordSearch = wordSearch;
-		this.controller = controller;
+
+	public GameOver(WordSearchActivity wordSearch2) {
+		this.wordSearch = wordSearch2;
 	}
+
 	public void run() {
-		NewGameDialog newGameDialog = new NewGameDialog(controller, wordSearch, wordSearch.getString(R.string.congratulations).replace(
-				"%time",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
-		newGameDialog.run();
+		if (wordSearch.getControl().isHighScorer()) {
+			wordSearch.showDialog(WordSearchActivity.DIALOG_ID_HIGH_SCORES_INITIALS);
+		} else {
+			wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_NEW);
+		}
 	}
+
 }

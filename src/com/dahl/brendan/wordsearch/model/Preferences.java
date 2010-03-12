@@ -30,6 +30,7 @@ public class Preferences {
 	private final String PREFS_SIZE;
 	private final String PREFS_TOUCHMODE;
 	private final String PREFS_TOUCHMODE_DEFAULT;
+	private final String PREFS_CATEGORY;
 
 	private static final String PREFS_NAME = "MyPrefsFile";
 	private static final String PREFS_SCORE_TIME = "score_time";
@@ -48,9 +49,14 @@ public class Preferences {
 	public Preferences(Context ctx) {
 		settings_scores = ctx.getSharedPreferences(PREFS_NAME, 0);
 		settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+		PREFS_CATEGORY = ctx.getString(R.string.prefs_category);
 		PREFS_SIZE = ctx.getString(R.string.prefs_size);
 		PREFS_TOUCHMODE = ctx.getString(R.string.prefs_touch_mode);
 		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.DRAG); 
+	}
+	
+	public String getCategory() {
+		return settings.getString(PREFS_CATEGORY, "RANDOM");
 	}
 
 	public int getSize() {

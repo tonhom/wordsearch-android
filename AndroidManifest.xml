@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.dahl.brendan.wordsearch.view" android:versionCode="15"
-	android:versionName="1.8.1">
+	package="com.dahl.brendan.wordsearch.view" android:versionCode="20"
+	android:versionName="1.8.2">
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
 		android:anyDensity="true" />
@@ -13,7 +15,8 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<provider android:name="WordDictionaryProvider"
+		<activity android:name=".CrashActivity"/>
+		<provider android:name=".WordDictionaryProvider"
 			android:authorities="com.brendan.dahl.wordsearch.provider.words" />
 		<activity android:name=".WordListActivity" android:label="@string/wordlist_name"
 			android:launchMode="singleInstance">

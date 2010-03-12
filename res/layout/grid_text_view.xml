@@ -5,6 +5,7 @@
   android:layout_height="fill_parent"
   android:gravity="center"
   android:focusable="true"
+  android:inputType="none"
   android:typeface="monospace"
   android:textSize="@dimen/grid_view"/>
 

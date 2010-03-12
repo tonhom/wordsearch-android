@@ -117,4 +117,8 @@ public class WordBoxController implements OnClickListener {
 		this.updateWordBox();
 		return words.size();
 	}
+
+	protected int wordsLeft() {
+		return words.size();
+	}
 }
