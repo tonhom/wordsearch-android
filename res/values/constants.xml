@@ -65,6 +65,7 @@
 		<item>@string/animals</item>
 		<item>@string/people</item>
 		<item>@string/adjectives</item>
+		<item>@string/german</item>
 		<item>@string/misc</item>
 		<item>@string/insane</item>
 		<item>@string/numbers</item>
@@ -76,6 +77,7 @@
 		<item>@string/ANIMALS</item>
 		<item>@string/PEOPLE</item>
 		<item>@string/ADJECTIVES</item>
+		<item>@string/GERMAN</item>
 		<item>@string/MISC</item>
 		<item>@string/INSANE</item>
 		<item>@string/NUMBERS</item>
@@ -88,6 +90,7 @@
 	<string name="ANIMALS">ANIMALS</string>
 	<string name="PEOPLE">PEOPLE</string>
 	<string name="ADJECTIVES">ADJECTIVES</string>
+	<string name="GERMAN">GERMAN</string>
 	<string name="MISC">MISC</string>
 	<string name="NUMBERS">NUMBERS</string>
 	<string name="CUSTOM">CUSTOM</string>

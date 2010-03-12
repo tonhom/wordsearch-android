@@ -36,6 +36,7 @@ public class DictionaryFactory {
 		ANIMALS,
 		PEOPLE,
 		ADJECTIVES,
+		GERMAN,
 		MISC,
 		INSANE,
 		NUMBERS,
@@ -81,6 +82,9 @@ public class DictionaryFactory {
 			break;
 		case ADJECTIVES:
 			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.adjectives));
+			break;
+		case GERMAN:
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.german));
 			break;
 		case MISC:
 			dic = new DictionaryFlat(ctx, "dictionary");
@@ -136,15 +140,10 @@ public class DictionaryFactory {
 		float score = 1;
 		switch (this.currentDictionaryType) {
 		case PLACES:
-			score = 90;
-			break;
 		case ANIMALS:
-			score = 90;
-			break;
 		case PEOPLE:
-			score = 90;
-			break;
 		case ADJECTIVES:
+		case GERMAN:
 			score = 90;
 			break;
 		case MISC:
