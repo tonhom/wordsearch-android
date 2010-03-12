@@ -6,6 +6,7 @@
 <string name="animals"> Animals </string> 
 <string name="people"> People </string> 
 <string name="adjectives"> Adjectifs </string> 
+<string name="german"> Allemand </string> 
 <string name="misc"> Divers </string> 
 <string name="numbers"> Numéros </string> 
 <string name="custom"> personnalisé </string> 
@@ -19,7 +20,7 @@
 <string name="high_score"> High Scores </string> 
 <string name="new_game"> Nouveau </string> 
 <string name="quit"> Quit </string> 
-<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est temps%. </string> 
+<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est %time. </string> 
 
 <string name="wordlist_name"> Word recherche personnalisé Catégorie Editor </string> 
 <string name="custom_empty"> Votre catégorie personnalisée n'a pas de mots. \nCliquez menu puis cliquez sur nouveau mot </string> 
@@ -51,7 +52,7 @@
 <string name="tutorial_message_tap2"> Avec vos doigts, de tape la dernière lettre du mot. Le mot entier sera souligné et le mot sera retirée de la liste de mots. </string> 
 <string name="tutorial_message_tap3"> La lettre n'est pas sélectionné jusqu'à ce que vous lever le doigt. Si, lorsque vous essayez de robinet, vous choisissez la mauvaise lettre, ne soulevez pas votre doigt - faites simplement glisser votre doigt sur l'écran jusqu'à trouver la bonne lettre (utiliser la boîte aux lettres dans le coin supérieur gauche si vous avez besoin l'aide) et lever le doigt quand vous êtes sur la bonne lettre. </string> 
 <string name="tutorial_message_tip1"> Vous pouvez également sélectionner un mot à partir de la dernière lettre et se terminant à la première. </string> 
-<string name="tutorial_message_tip2"> Utilisez le \"&lt;\" et \"&gt;\" flèches pour naviguer à travers les mots dans la liste de mots en cours. Pour modifier des listes de mots, allez dans le menu et cliquez sur \"Catégories. \" </string> 
+<string name="tutorial_message_tip2"> Utilisez le \"&lt;\" et \"&gt;\" flèches pour naviguer à travers les mots dans la liste de mots en cours. Pour modifier des listes de mots, allez dans le menu et cliquez sur \"Catégories.\" </string> 
 <string name="tutorial_message_tip3"> Vous pouvez trouver n'importe quel mot dans la liste de mots, et pas seulement celle qui est actuellement affichée </string> 
 <string name="tutorial_message_tip4"> Si vous éprouvez des difficultés à utiliser du robinet ou glisser pour sélectionner un mot, allez dans le menu, cliquez sur \"size \" et choisissez une grille avec moins de lettres (soit 7x7). Parce qu'il ya moins de lettres, les lettres sont plus espacées et plus facile à régler avec votre doigt. </string> 
 <string name="tutorial_message_tip5"> Si vous utilisez la boule de commande, n'oubliez pas de cliquer sur la boule de commande pour commencer et finir de trouver un mot. si vous ne cliquez pas sur la boule de commande, le jeu ne sait pas que vous essayez de trouver un mot. </string> 
@@ -60,7 +61,7 @@
 <string name="tutorial_message_tip8"> Lorsque vous choisissez un mot en utilisant la drague, le jeu ne fera que mettre en évidence en lettres jaunes dans une ligne droite allant directement au-dessus, en dessous, à gauche, à droite ou en diagonale entre l'endroit où vous avez commencé à mettre en lumière et où votre doigt est actuellement . Si votre doigt n'est pas en ligne directe de la lettre de démarrage, la mise en évidence ne suivra pas votre doigt jusqu'à ce que vos déclarations de doigt pour une ligne directe de la lettre de départ. Le jeu sera de trouver le mot qui est mis en évidence, indépendamment du lieu où votre doigt lorsque vous l'ascenseur. </string> 
 
 <string name="size"> Taille de la grille </string> 
-<string name="enter_initials"> Vous avez fait un nouveau score% élevé! \nEntrez vos initiales </string> 
+<string name="enter_initials"> Vous avez fait un nouveau %score élevé! \nEntrez vos initiales </string> 
 <string name="no_high_scores"> Pas de score élevé </string> 
 
 <string name="input_type"> Type d'entrée </string> 
@@ -71,7 +72,12 @@
 
 <string name="options"> Préférences </string> 
 
-<string name="prefs_size_summary"> actuelle Taille de la grille: replaceme% </string> 
-<string name="prefs_category_summary"> actuel Word Bank: replaceme% </string> 
-<string name="prefs_touch_mode_summary"> actuel Type d'entrée: replaceme% </string> 
+<string name="prefs_size_summary"> actuelle Taille de la grille: %replaceme </string> 
+<string name="prefs_category_summary"> actuel Word Bank: %replaceme </string> 
+<string name="prefs_touch_mode_summary"> actuel Type d'entrée: %replaceme </string> 
+
+<string name="CRASH_MSG"> «Nous sommes très désolés mais WordSearch FREE a chuté de façon inattendue. \n \nVeuillez nous aider à rendre notre meilleure application en nous envoyant trace de la pile" </string> 
+<string name="CRASH_SENDING_WAIT"> Envoi S'il vous plaît patienter ...</string> 
+<string name="PREVIEW"> Aperçu </string> 
+<string name="SEND"> Envoyer </string> 
 </resources> 
