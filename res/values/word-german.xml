@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="german">
+		<item>ERDFERKEL</item>
+		<item>AMEISE</item>
+		<item>AMEISENBÄR</item>
+		<item>ANTILOPE</item>
+		<item>AFFE</item>
+		<item>PAVIAN</item>
+		<item>FLEDERMAUS</item>
+		<item>BIENE</item>
+		<item>KÄFER</item>
+		<item>VOGEL</item>
+		<item>EBER</item>
+		<item>LUCHS</item>
+		<item>SILBERLÖWE</item>
+		<item>BÜFFEL</item>
+		<item>STIER</item>
+		<item>HUMMEL</item>
+		<item>KAMEL</item>
+		<item>KATZE</item>
+		<item>RAUPE</item>
+		<item>GEPARD</item>
+		<item>KÜKEN</item>
+		<item>HUHN</item>
+		<item>SCHIMPANSE</item>
+		<item>SILBERLÖWE</item>
+		<item>KOJOTE</item>
+		<item>KREBS</item>
+		<item>KRANICH</item>
+		<item>KREBS</item>
+		<item>GRILLE</item>
+		<item>KROKODIL</item>
+		<item>KRÄHE</item>
+		<item>KUCKUCK</item>
+		<item>HUND</item>
+		<item>DELPHIN</item>
+		<item>ESEL</item>
+		<item>TAUBE</item>
+		<item>LIBELLE</item>
+		<item>ENTE</item>
+		<item>ADLER</item>
+		<item>ELEFANT</item>
+		<item>ELCH</item>
+	</string-array>
+</resources>
