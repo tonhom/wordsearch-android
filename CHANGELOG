@@ -1,16 +1,16 @@
 Version 1.8.2 (20):
-Add crash reporting
-Add initial German word bank
-Add Spanish interface and fix minor fixes to German/French
+Add crash reporting; if you get a crash please choose send
+Add initial German word bank (requested by siegi4444)
+Add Spanish interface and fix to German/French
 
 Version 1.8.1 (15):
 fixes tap setting not persisting
 
 Version 1.8 (14):
 full screen game
-hs initials allow longer and numbers
+high score initials allow longer and numbers
 centralize settings
-add german and update french interfaces
+add German and update French interfaces
 code base checkout fully compiles now
 
 Version 1.7 (13):
@@ -50,7 +50,7 @@ Fixed 10 misspelled words (thanks Jo)
 High Score reset option
 improve random category
 improve performance
-futher improved touch acuracy
+further improved touch accuracy
 
 Version 1.1.0:
 Touch accuracy improved
