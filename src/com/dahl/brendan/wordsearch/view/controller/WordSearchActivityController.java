@@ -84,11 +84,11 @@ public class WordSearchActivityController {
 	 * used to serialize the control to and from a bundle
 	 */
 	private static final String BUNDLE_TIME = "ws_time";
+
 	private static final String BUNDLE_VIEW = "ws_view";
 	private static final String BUNDLE_GRID = "ws_grid";
 	private static final String BUNDLE_GRID_SIZE = "ws_grid_size";
-	private static final String BUNDLE_HIGH_SCORE = "ws_high_score";
-
+	public static final String BUNDLE_HIGH_SCORE = "ws_high_score";
 	public static int getGridSize() {
 		return gridSize;
 	}
@@ -154,7 +154,7 @@ public class WordSearchActivityController {
 	public LinkedList<HighScore> getHighScores() {
 		return prefs.getTopScores();
 	}
-	
+
 	public Preferences getPrefs() {
 		return prefs;
 	}
@@ -162,7 +162,7 @@ public class WordSearchActivityController {
 	public String guessWord(Point pointStart, Point pointEnd) {
 		return grid.guessWord(pointStart, pointEnd);
 	}
-
+	
 	public boolean isGameRunning() {
 		return wordBoxManager.wordsLeft() != 0;
 	}
@@ -198,10 +198,9 @@ public class WordSearchActivityController {
 			this.grid = inState.getParcelable(BUNDLE_GRID);
 			this.setGrid(grid);
 			this.gridManager.fromBundle(inState.getBundle(BUNDLE_VIEW));
-			this.hs = inState.getParcelable(BUNDLE_HIGH_SCORE);
 		}
 	}
-	
+
 	public void saveState(Bundle outState) {
 		if (outState != null) {
 			outState.putInt(BUNDLE_GRID_SIZE, gridSize);
@@ -211,6 +210,7 @@ public class WordSearchActivityController {
 			outState.putParcelable(BUNDLE_HIGH_SCORE, this.hs);
 		}
 	}
+	
 	private void setGrid(Grid grid) {
 		gridManager.reset(grid);
 		wordBoxManager.resetWords(grid.getWordList());
@@ -224,6 +224,9 @@ public class WordSearchActivityController {
 	private void setHighScore(long time) {
 		hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
 		wordSearch.runOnUiThread(new GameOver(wordSearch));
+	}
+	public void setHs(HighScore hs) {
+		this.hs = hs;
 	}
 	protected void setLetter(CharSequence charSequence) {
 		wordBoxManager.setLetter(charSequence);

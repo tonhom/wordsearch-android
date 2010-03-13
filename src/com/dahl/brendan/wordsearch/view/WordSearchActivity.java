@@ -179,6 +179,9 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this, savedInstanceState);
+		if (savedInstanceState != null) {
+			control.setHs((HighScore)savedInstanceState.getParcelable(WordSearchActivityController.BUNDLE_HIGH_SCORE));
+		}
 		final Bundle savedInstanceStateInner = savedInstanceState;
 		findViewById(R.id.wordsearch_base).post(new Runnable() {
 			public void run() {
