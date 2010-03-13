@@ -34,7 +34,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -136,7 +135,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	 */
 	private WordSearchActivityController control;
 	private GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
-	private String androidVer;
+	private String appVer;
 
 	public WordSearchActivityController getControl() {
 		return control;
@@ -168,14 +167,13 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		super.onCreate(savedInstanceState);
 		DefaultExceptionHandler.register(this,CrashActivity.class);
 		try {
-			androidVer = this.getPackageManager().getPackageInfo("android", 0).versionName;
+			appVer = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
-			androidVer = "unknown";
+			appVer = "unknown";
 		}
 		tracker.start("UA-146333-5", 60, this);
-		tracker.trackPageView("/app/"+androidVer+"/WordSearchActivity");
+		tracker.trackPageView("/app/"+appVer+"/WordSearchActivity");
 //		Log.v(LOG_TAG, "onCreate");
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this, savedInstanceState);
@@ -414,7 +412,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		if (control.getPrefs().getTouchMode()) {
 			input = "Tap";
 		}
-		tracker.trackEvent(category, input, "label", WordSearchActivityController.getGridSize());
+		tracker.trackEvent(category, input, appVer, WordSearchActivityController.getGridSize());
 	}
 
 }
