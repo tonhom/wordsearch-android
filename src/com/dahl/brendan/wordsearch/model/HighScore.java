@@ -17,13 +17,17 @@
 
 package com.dahl.brendan.wordsearch.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * 
  * @author Brendan Dahl
- *
- * this class holds a single high score and can be used to compare one high score to another based on the score attribute
+ * 
+ *         this class holds a single high score and can be used to compare one
+ *         high score to another based on the score attribute
  */
-public class HighScore implements Comparable<HighScore> {
+public class HighScore implements Comparable<HighScore>, Parcelable {
 	final private static int SCORE_MAX = 1000000;
 	private String initials;
 	final private long time;
@@ -31,14 +35,36 @@ public class HighScore implements Comparable<HighScore> {
 	final private float themeModifier;
 	private Long score = null;
 
+	public static final Parcelable.Creator<HighScore> CREATOR = new Parcelable.Creator<HighScore>() {
+		public HighScore createFromParcel(Parcel in) {
+			return new HighScore(in);
+		}
+
+		public HighScore[] newArray(int size) {
+			return new HighScore[size];
+		}
+	};
+
 	public HighScore(long time, int size, float themeModifier) {
 		this.time = time;
 		this.size = size;
 		this.themeModifier = themeModifier;
 	}
 
+	public HighScore(Parcel in) {
+    	this.time = in.readLong();
+    	this.size = in.readInt();
+    	this.themeModifier = in.readFloat();
+    	this.score = in.readLong();
+    	this.initials = in.readString();
+	}
+
 	public int compareTo(HighScore arg0) {
 		return arg0.getScore().compareTo(getScore());
+	}
+
+	public int describeContents() {
+		return 0;
 	}
 
 	public String getInitials() {
@@ -47,7 +73,8 @@ public class HighScore implements Comparable<HighScore> {
 
 	public Long getScore() {
 		if (score == null) {
-			score = new Double(getScoreTime()*themeModifier*getScoreSize()*SCORE_MAX).longValue();
+			score = new Double(getScoreTime() * themeModifier * getScoreSize()
+					* SCORE_MAX).longValue();
 		}
 		return score;
 	}
@@ -69,12 +96,12 @@ public class HighScore implements Comparable<HighScore> {
 			score = 100;
 			break;
 		}
-		return score/100;
+		return score / 100;
 	}
-	
+
 	private double getScoreTime() {
-		double score = time/1000;
-		return 1/score;
+		double score = time / 1000;
+		return 1 / score;
 	}
 
 	public int getSize() {
@@ -96,5 +123,15 @@ public class HighScore implements Comparable<HighScore> {
 		}
 		this.initials = initials;
 	}
+
+	public void writeToParcel(Parcel out, int flags) {
+    	out.writeLong(this.time);
+    	out.writeInt(this.size);
+    	out.writeFloat(this.themeModifier);
+    	if (this.score == null) score = -1L;
+    	out.writeLong(this.score);
+    	if (this.initials == null) initials = "";
+    	out.writeString(this.initials);
+    }
 
 }
