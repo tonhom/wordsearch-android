@@ -193,7 +193,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				}
 			}
 		});
-		throw new RuntimeException("ff");
 	}
 
 	@Override
