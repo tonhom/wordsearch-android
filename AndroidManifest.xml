@@ -15,7 +15,8 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".CrashActivity"/>
+		<activity android:name=".CrashActivity" android:theme="@style/themeBase"
+		android:windowSoftInputMode="adjustResize"/>
 		<provider android:name=".WordDictionaryProvider"
 			android:authorities="com.brendan.dahl.wordsearch.provider.words" />
 		<activity android:name=".WordListActivity" android:label="@string/wordlist_name"

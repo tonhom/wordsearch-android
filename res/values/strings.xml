@@ -80,4 +80,6 @@
 	<string name="CRASH_SENDING_WAIT">Sending Please wait...</string>
 	<string name="PREVIEW">Preview</string>
 	<string name="SEND">Send</string>
+	
+	<string name="CRASH_DETAILS_HINT">steps to reproduce</string>
 </resources>

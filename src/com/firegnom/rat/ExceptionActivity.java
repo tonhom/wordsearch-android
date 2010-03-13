@@ -24,15 +24,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.EditText;
 
+import com.dahl.brendan.wordsearch.view.R;
 import com.firegnom.rat.net.HttpPoster;
 
 public abstract class ExceptionActivity extends Activity {
@@ -54,14 +51,7 @@ public abstract class ExceptionActivity extends Activity {
 	private String pac;
 	private String model;
 
-	private String preview;
-
 	private HttpPoster poster = new HttpPoster(getUrl());
-
-	final private String[] msgs = new String[] {
-			"Sending Please wait...",
-			"We are very sorry but Application has crashed unexpectedly.\n\nPlease help us make our application better by sending us stack trace",
-			"Preview", "Send", "Exit" };
 
 	private void buildTrace(Intent i) {
 		ver = i.getStringExtra(APPLICATION_VERSION);
@@ -69,30 +59,21 @@ public abstract class ExceptionActivity extends Activity {
 		pac = i.getStringExtra(APPLICATION_PACKAGE);
 		model = i.getStringExtra(PHONE_MODEL);
 		trace = i.getStringExtra(APPLICATION_STACKTRACE);
+	}
 
-		preview = "Application ver: ----ver----\nAndroid ver: ----aVer----\nPackage: ----pac----\nPhone model: ----model----\nDetails: ----details----\nStackTrace:\n----trace----";
+	private String getPreview() {
+		String preview = "Application ver: ----ver----\nAndroid ver: ----aVer----\nPackage: ----pac----\nPhone model: ----model----\nDetails: ----details----\nStackTrace:\n----trace----";
 		preview = preview.replace("----ver----", ver + "");
 		preview = preview.replace("----aVer----", aVer + "");
 		preview = preview.replace("----pac----", pac + "");
 		preview = preview.replace("----model----", model + "");
 		preview = preview.replace("----details----", getMoreDetails() + "");
 		preview = preview.replace("----trace----", trace + "");
-
+		return preview;
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String[] getMessages() {
-		return msgs;
+	public String getMoreDetails() {
+		return ((EditText)this.findViewById(R.id.CRASH_DETAILS)).getText().toString();
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract String getMoreDetails();
 
 	/**
 	 * 
@@ -106,80 +87,27 @@ public abstract class ExceptionActivity extends Activity {
 	 */
 	public abstract String getUrl();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract boolean isSend();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		Intent i = getIntent();
 		buildTrace(i);
-		LinearLayout ll = new LinearLayout(this);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		ll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT));
-
-		TextView tv = new TextView(this);
-
-		DisplayMetrics dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		int height = dm.heightPixels;
-		int width = dm.widthPixels;
-
-		tv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				height - 100));
-		String msg = getMessages()[1];
-		tv.setTextSize(20);
-		tv.setText(msg);
-		LinearLayout ll1 = new LinearLayout(this);
-		ll1.setOrientation(LinearLayout.HORIZONTAL);
-		ll1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT));
-
-		boolean send = isSend();
-		int buttonWidth = !send ? width : width / 3;
-		if (send) {
-			Button b = new Button(this);
-			b.setLayoutParams(new LayoutParams(buttonWidth,
-					LayoutParams.FILL_PARENT));
-			b.setText(getMessages()[2]);
-			b.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					showDialog(TRACE_DIALOG);
-				}
-			});
-
-			ll1.addView(b);
-			Button b1 = new Button(this);
-			b1.setLayoutParams(new LayoutParams(buttonWidth,
-					LayoutParams.FILL_PARENT));
-			b1.setText(getMessages()[3]);
-			b1.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					sendTrace();
-				}
-			});
-			ll1.addView(b1);
-		}
-		Button b2 = new Button(this);
-		b2.setLayoutParams(new LayoutParams(buttonWidth,
-				LayoutParams.FILL_PARENT));
-		b2.setText(getMessages()[4]);
-		b2.setOnClickListener(new OnClickListener() {
+		this.setContentView(R.layout.crash_main);
+		((Button)this.findViewById(R.id.CRASH_BUTTON_PREVIEW)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				showDialog(TRACE_DIALOG);
+			}
+		});
+		((Button)this.findViewById(R.id.CRASH_BUTTON_SEND)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				sendTrace();
+			}
+		});
+		((Button)this.findViewById(R.id.CRASH_BUTTON_QUIT)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Process.killProcess(Process.myPid());
 			}
 		});
-		ll1.addView(b2);
-
-		ll.addView(tv);
-		ll.addView(ll1);
-		setContentView(ll);
 	}
 
 	@Override
@@ -187,7 +115,7 @@ public abstract class ExceptionActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		switch (id) {
 		case TRACE_DIALOG:
-			builder.setMessage(preview).setPositiveButton(android.R.string.ok,
+			builder.setMessage(getPreview()).setPositiveButton(android.R.string.ok,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.dismiss();
@@ -195,7 +123,7 @@ public abstract class ExceptionActivity extends Activity {
 					});
 			return builder.create();
 		case PROGRESS_DIALOG:
-			return ProgressDialog.show(this, "", this.getMessages()[0], true);
+			return ProgressDialog.show(this, "", getString(R.string.CRASH_SENDING_WAIT), true);
 		}
 		return null;
 	}
