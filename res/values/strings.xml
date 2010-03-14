@@ -24,11 +24,11 @@
 	<string name="quit">Quit</string>
 	<string name="congratulations">Congratulations, you found all the words!  Your score was %time.</string>
 
-	<string name="wordlist_name">Word Search Custom Category Editor</string>
-	<string name="custom_empty">Your custom category has no words.\nClick menu then click new word</string>
-	<string name="no_words">No words could be found for this grid, please choose a different grid size or category.</string>
-	<string name="no_words_custom">There are no words available in your custom category, please go to the custom category editor and add some wprds or choose a different category.</string>
-	<string name="wordlist_no_words">There are no words currently in your custom category, please click menu then add word.</string>
+	<string name="wordlist_name">Word Search Custom Word Bank Editor</string>
+	<string name="custom_empty">Your custom word bank has no words.\nClick menu then click new word</string>
+	<string name="no_words">No words could be found for this grid, please choose a different grid size or word bank.</string>
+	<string name="no_words_custom">There are no words available in your custom word bank, please go to the custom word bank editor and add some words or choose a different word bank.</string>
+	<string name="wordlist_no_words">There are no words currently in your custom word bank, please click menu then add word.</string>
 	<string name="new_word">New Word</string>
 	<string name="edit_word">Edit Word</string>
 	<string name="delete">Delete</string>
@@ -54,7 +54,7 @@
 	<string name="tutorial_message_tap2">Using your finger, tap the last letter of the word.  The entire word will be highlighted and the word will be removed from the word list.</string>
 	<string name="tutorial_message_tap3">The letter is not selected until you lift your finger.  If, when you try to tap, you pick the wrong letter, don't lift up your finger--just drag your finger around the screen until you find the correct letter (use the letter box in the top-left corner if you need help) and lift your finger when you are over the correct letter.</string>
 	<string name="tutorial_message_tip1">You can also highlight a word starting from the last letter and ending on the first.</string>
-	<string name="tutorial_message_tip2">Use the \"&lt;\" and \"&gt;\" arrows to browse through the words in the current word list.  To change word lists, go to the menu and click on \"Categories.\"</string>
+	<string name="tutorial_message_tip2">Use the \"&lt;\" and \"&gt;\" arrows to browse through the words in the current word list.  To change word lists, go to the menu and click on \"Word Bank.\"</string>
 	<string name="tutorial_message_tip3">You can find any word in the word list, not just the one that is currently displayed</string>
 	<string name="tutorial_message_tip4">If you are having trouble using tap or drag to highlight a word, go to the menu, click on \"Size\" and choose a grid with fewer letters (i.e. 7x7).  Because there are fewer letters, the letters are more spaced out and easier to pick with your finger.</string>
 	<string name="tutorial_message_tip5">If you are using the trackball, remember to click the trackball to begin and end finding a word.  if you do not click the trackball, the game does not know that you are trying to find a word.</string>

@@ -1,3 +1,10 @@
+Version 1.8.4 (24):
+add SAT, kids word banks
+add repo steps to new crash dialog
+
+Version 1.8.3 (23):
+fixed null pointer restore issue on high scores
+
 Version 1.8.2 (20):
 Add crash reporting; if you get a crash please choose send
 Add initial German word bank (requested by siegi4444)
