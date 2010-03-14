@@ -34,10 +34,12 @@ public class DictionaryFlat implements Dictionary {
 	private final static String LOG_TAG = "DictionaryFlat";
 	private final static Random random = new Random();
 	private final String fileName;
+	private final int fileSize;
 	private final Context ctx;
 	
-	public DictionaryFlat(Context ctx, String string) {
-		this.fileName = string;
+	public DictionaryFlat(Context ctx, String fileName2, int fileSize2) {
+		this.fileName = fileName2;
+		this.fileSize = fileSize2;
 		this.ctx = ctx;
 	}
 
@@ -47,7 +49,7 @@ public class DictionaryFlat implements Dictionary {
 		do {
 			try {
 				BufferedReader br = new BufferedReader(new InputStreamReader(ctx.getAssets().open(fileName)), 10000);
-				br.skip(random.nextInt(537300));
+				br.skip(random.nextInt(fileSize));
 				br.readLine();
 				str = br.readLine();
 				br.close();

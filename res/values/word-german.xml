@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="german">
+<string-array name="WORDS_GERMAN">
 <item>MONTAG</item>
 <item>DIENSTAG</item>
 <item>MITTWOCH</item>

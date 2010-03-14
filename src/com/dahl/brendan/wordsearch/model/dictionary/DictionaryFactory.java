@@ -36,8 +36,10 @@ public class DictionaryFactory {
 		ANIMALS,
 		PEOPLE,
 		ADJECTIVES,
-		GERMAN,
+		KIDS,
+		SAT,
 		MISC,
+		GERMAN,
 		INSANE,
 		NUMBERS,
 		CUSTOM,
@@ -72,22 +74,28 @@ public class DictionaryFactory {
 		Dictionary dic = null;
 		switch (themeIndex) {
 		case PLACES:
-			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.places));
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_PLACES));
 			break;
 		case ANIMALS:
-			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.animals));
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_ANIMALS));
 			break;
 		case PEOPLE:
-			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.people));
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_PEOPLE));
 			break;
 		case ADJECTIVES:
-			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.adjectives));
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_ADJECTIVES));
+			break;
+		case SAT:
+			dic = new DictionaryFlat(ctx, "sat", 5850);
+			break;
+		case KIDS:
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_KIDS));
 			break;
 		case GERMAN:
-			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.german));
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_GERMAN));
 			break;
 		case MISC:
-			dic = new DictionaryFlat(ctx, "dictionary");
+			dic = new DictionaryFlat(ctx, "dictionary", 537360);
 			break;
 		case INSANE:
 			dic = new DictionaryLetters();
@@ -101,7 +109,7 @@ public class DictionaryFactory {
 		default:
 			Log.e(LOG_TAG, "invalid index received");
 		case RANDOM:
-			dic = getDictionary(DictionaryType.values()[random.nextInt(DictionaryType.values().length-4)]);
+			dic = getDictionary(DictionaryType.values()[random.nextInt(DictionaryType.values().length-5)]);
 			break;
 		}
 		return dic;

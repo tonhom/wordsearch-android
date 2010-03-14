@@ -343,6 +343,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	protected void onPause() {
 		super.onPause();
 //		Log.v(LOG_TAG, "onPause");
+		tracker.dispatch();
 		control.timePause();
 	}
 
