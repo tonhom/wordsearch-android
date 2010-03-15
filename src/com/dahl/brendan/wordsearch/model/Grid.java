@@ -318,4 +318,8 @@ public class Grid implements Parcelable {
     		out.writeByte((byte)c.charValue());
     	}
     }
+
+	public int getSize() {
+		return size;
+	}
 }
