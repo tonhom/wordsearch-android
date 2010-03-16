@@ -151,6 +151,8 @@ public class DictionaryFactory {
 		case ANIMALS:
 		case PEOPLE:
 		case ADJECTIVES:
+		case SAT:
+		case KIDS:
 		case GERMAN:
 			score = 90;
 			break;
