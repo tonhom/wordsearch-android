@@ -21,8 +21,6 @@ import java.text.SimpleDateFormat;
 
 import android.graphics.Point;
 
-import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
-
 /**
  * 
  * @author Brendan Dahl
@@ -41,10 +39,10 @@ public class ConversionUtil {
 	 * @param id from grid TextView indicating which position in the grid it is
 	 * @return point equivalent of id parameter
 	 */
-	public static Point convertIDToPoint(int id) {
+	public static Point convertIDToPoint(int id, int size) {
 		Point point = new Point();
-		point.x = id % WordSearchActivityController.getGridSize();
-		point.y = id / WordSearchActivityController.getGridSize();
+		point.x = id % size;
+		point.y = id / size;
 		return point;
 	}
 	/**
@@ -53,7 +51,7 @@ public class ConversionUtil {
 	 * @param point with x and y set to convert into an Id
 	 * @return Id equivalent of point parameter
 	 */
-	public static int convertPointToID(Point point) {
-		return (point.x + point.y * WordSearchActivityController.getGridSize());
+	public static int convertPointToID(Point point, int size) {
+		return (point.x + point.y * size);
 	}
 }

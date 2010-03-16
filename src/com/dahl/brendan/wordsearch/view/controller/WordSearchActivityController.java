@@ -43,10 +43,6 @@ import com.dahl.brendan.wordsearch.view.runnables.GameOver;
  */
 public class WordSearchActivityController {
 	/**
-	 * this is the size of the current grid, also used by convertionUtil
-	 */
-	private static int gridSize = -1;
-	/**
 	 * sub-control module
 	 */
 	private WordBoxController wordBoxManager;
@@ -84,17 +80,14 @@ public class WordSearchActivityController {
 	 * used to serialize the control to and from a bundle
 	 */
 	private static final String BUNDLE_TIME = "ws_time";
-
 	private static final String BUNDLE_VIEW = "ws_view";
 	private static final String BUNDLE_GRID = "ws_grid";
-	private static final String BUNDLE_GRID_SIZE = "ws_grid_size";
 	public static final String BUNDLE_HIGH_SCORE = "ws_high_score";
-	public static int getGridSize() {
-		return gridSize;
+	public int getGridSize() {
+		return grid.getSize();
 	}
 
-	public WordSearchActivityController(WordSearchActivity wordSearch,
-			Bundle savedInstanceState) {
+	public WordSearchActivityController(WordSearchActivity wordSearch) {
 		super();
 		this.wordSearch = wordSearch;
 		prefs = new Preferences(this.wordSearch);
@@ -116,16 +109,11 @@ public class WordSearchActivityController {
 			ColorStateList normal = wordSearch.getResources()
 					.getColorStateList(R.drawable.color_standard);
 			gridManager = new TextViewGridController(this,
-					new TextView[prefs.getSize()][],
+					null,
 					found, picked, normal);
 		}
 		this.setLetter("l");
 		this.setLetter(null);
-		if (savedInstanceState != null) {
-			this.setGridSize(savedInstanceState.getInt(BUNDLE_GRID_SIZE));
-		} else {
-			this.setGridSize(prefs.getSize());
-		}
 		prefs.getTouchMode();
 		this.updateTouchMode();
 	}
@@ -173,9 +161,10 @@ public class WordSearchActivityController {
 	}
 
 	public void newWordSearch() {
-		this.setGridSize(prefs.getSize());
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
-		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, getGridSize());
+		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, prefs.getSize());
+		wordSearch.setupViewGrid();
+		gridManager.reset(grid);
 		if (grid.getWordListLength() == 0) {
 			if (dictionaryFactory.isCustomDictionary()) {
 				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_NO_WORDS_CUSTOM);
@@ -197,13 +186,14 @@ public class WordSearchActivityController {
 			this.timeSum = inState.getLong(BUNDLE_TIME, 0);
 			this.grid = inState.getParcelable(BUNDLE_GRID);
 			this.setGrid(grid);
+			wordSearch.setupViewGrid();
+			gridManager.reset(grid);
 			this.gridManager.fromBundle(inState.getBundle(BUNDLE_VIEW));
 		}
 	}
 
 	public void saveState(Bundle outState) {
 		if (outState != null) {
-			outState.putInt(BUNDLE_GRID_SIZE, gridSize);
 			outState.putLong(BUNDLE_TIME, this.timeSum);
 			outState.putParcelable(BUNDLE_GRID, this.grid);
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
@@ -212,17 +202,12 @@ public class WordSearchActivityController {
 	}
 	
 	private void setGrid(Grid grid) {
-		gridManager.reset(grid);
 		wordBoxManager.resetWords(grid.getWordList());
 		timeStart = System.currentTimeMillis();
 	}
-	public void setGridSize(int gridSizeNew) {
-		gridSize = prefs.getSize();
-		gridManager.setGridView(new TextView[gridSize][]);
-		wordSearch.setupViewGrid(gridSize, gridManager);
-	}
+
 	private void setHighScore(long time) {
-		hs = new HighScore(time, gridSize, dictionaryFactory.getScoreThemeMultiplier());
+		hs = new HighScore(time, getGridSize(), dictionaryFactory.getScoreThemeMultiplier());
 		wordSearch.runOnUiThread(new GameOver(wordSearch));
 	}
 	public void setHs(HighScore hs) {

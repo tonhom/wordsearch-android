@@ -20,7 +20,7 @@
 <string name="high_score"> High Scores </string> 
 <string name="new_game"> Nouveau </string> 
 <string name="quit"> Quit </string> 
-<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est %time. </string> 
+<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est %replaceme. </string> 
 
 <string name="wordlist_name"> Word recherche personnalisé Catégorie Editor </string> 
 <string name="custom_empty"> Votre catégorie personnalisée n'a pas de mots. \nCliquez menu puis cliquez sur nouveau mot </string> 
@@ -61,7 +61,7 @@
 <string name="tutorial_message_tip8"> Lorsque vous choisissez un mot en utilisant la drague, le jeu ne fera que mettre en évidence en lettres jaunes dans une ligne droite allant directement au-dessus, en dessous, à gauche, à droite ou en diagonale entre l'endroit où vous avez commencé à mettre en lumière et où votre doigt est actuellement . Si votre doigt n'est pas en ligne directe de la lettre de démarrage, la mise en évidence ne suivra pas votre doigt jusqu'à ce que vos déclarations de doigt pour une ligne directe de la lettre de départ. Le jeu sera de trouver le mot qui est mis en évidence, indépendamment du lieu où votre doigt lorsque vous l'ascenseur. </string> 
 
 <string name="size"> Taille de la grille </string> 
-<string name="enter_initials"> Vous avez fait un nouveau %score élevé! \nEntrez vos initiales </string> 
+<string name="enter_initials"> Vous avez fait un nouveau %replaceme élevé! \nEntrez vos initiales </string> 
 <string name="no_high_scores"> Pas de score élevé </string> 
 
 <string name="input_type"> Type d'entrée </string> 

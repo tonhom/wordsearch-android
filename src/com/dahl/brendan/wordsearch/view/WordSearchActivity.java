@@ -31,6 +31,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -129,12 +130,12 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	final private DialogNoWordsListener DIALOG_LISTENER_NO_WORDS = new DialogNoWordsListener();
 	final private DialogNoWordsCustomListener DIALOG_LISTENER_NO_WORDS_CUSTOM = new DialogNoWordsCustomListener();
 
-	//	final private static String LOG_TAG = "WordSearchActivity";
+	final private static String LOG_TAG = "WordSearchActivity";
 	/**
 	 * control classes were made to segment the complex game logic away from the display logic
 	 */
 	private WordSearchActivityController control;
-	private GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
+	private GoogleAnalyticsTracker tracker = null;
 	private String appVer;
 
 	public WordSearchActivityController getControl() {
@@ -165,25 +166,36 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try {
+			tracker = GoogleAnalyticsTracker.getInstance();
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
+		}
 		DefaultExceptionHandler.register(this,CrashActivity.class);
 		try {
 			appVer = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			appVer = "unknown";
 		}
-		tracker.start("UA-146333-5", 60, this);
-		tracker.trackPageView("/app/"+appVer+"/WordSearchActivity");
-//		Log.v(LOG_TAG, "onCreate");
+		try {
+			tracker.start("UA-146333-5", 60, this);
+			tracker.trackPageView("/app/"+appVer+"/WordSearchActivity");
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
+		}
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
-		control = new WordSearchActivityController(this, savedInstanceState);
+		control = new WordSearchActivityController(this);
 		if (savedInstanceState != null) {
 			control.setHs((HighScore)savedInstanceState.getParcelable(WordSearchActivityController.BUNDLE_HIGH_SCORE));
 		}
 		final Bundle savedInstanceStateInner = savedInstanceState;
 		findViewById(R.id.wordsearch_base).post(new Runnable() {
 			public void run() {
-				setupViewGrid(WordSearchActivityController.getGridSize(), control.getGridManager());
 				if (savedInstanceStateInner == null) {
 					control.newWordSearch();
 				} else {
@@ -271,7 +283,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		case DIALOG_ID_HIGH_SCORES_INITIALS: {
 			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
 			HighScore hs = control.getCurrentHighScore();
-			label.setText(this.getString(R.string.enter_initials).replace("%score", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
+			label.setText(this.getString(R.string.enter_initials).replace("%replaceme", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
 			((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).setText("");
 			break;
 		}
@@ -292,8 +304,8 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		case DIALOG_ID_GAME_NEW: {
 			String extraText;
 			if (this.getControl().isHighScorer()) {
-				HighScore hs = this.getControl().getCurrentHighScore();
-				extraText = this.getString(R.string.congratulations).replace("%time",hs .getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")")+"\n";
+				HighScore hs = control.getCurrentHighScore();
+				extraText = this.getString(R.string.congratulations).replace("%replaceme",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")")+"\n";
 			} else {
 				extraText = "";
 			}
@@ -343,7 +355,13 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	protected void onPause() {
 		super.onPause();
 //		Log.v(LOG_TAG, "onPause");
-		tracker.dispatch();
+		try {
+			tracker.dispatch();
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
+		}
 		control.timePause();
 	}
 
@@ -380,40 +398,55 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	 * @param gridSize square size of the new grid to make
 	 * @param controller the onkeyListener used for the grid's textViews, also holds the gridView an array of the new textView's in the grid
 	 */
-	public void setupViewGrid(int gridSize, TextViewGridController controller) {
+	public void setupViewGrid() {
+		int gridSize = control.getGridSize();
+		TextViewGridController controller = control.getGridManager();
 		ViewGroup gridTable = (ViewGroup) this.findViewById(R.id.gridTable);
-		gridTable.removeAllViews();
-		int portion = gridTable.getHeight()/gridSize;
-		gridTable.setKeepScreenOn(true);
-		Point point = new Point();
-		TextView[][] gridView = controller.getGridView();
-		for (point.y = 0; point.y < gridSize; point.y++) {
-			ViewGroup row = (ViewGroup)this.getLayoutInflater().inflate(R.layout.grid_row, null);
-			row.setMinimumHeight(portion);
-			TextView[] rowText = new TextView[gridSize];
-			for (point.x = 0; point.x < gridSize; point.x++) {
-				TextView view = (TextView)this.getLayoutInflater().inflate(R.layout.grid_text_view, null);
-				view.setId(ConversionUtil.convertPointToID(point));
-				view.setOnKeyListener(controller);
-
-				rowText[point.x] = view;
-				row.addView(view);
+		if (gridTable.getChildCount() != gridSize) {
+			if (gridTable.getChildCount() == 0) {
+				gridTable.setKeepScreenOn(true);
+				gridTable.setOnTouchListener(controller);
+				Point pointDemension = new Point();
+				pointDemension.x = gridTable.getWidth()/gridSize;
+				pointDemension.y = gridTable.getHeight()/gridSize;
+				control.getGridManager().setPointDemension(pointDemension);
 			}
-			gridView[point.y] = rowText;
-			gridTable.addView(row);
+			gridTable.removeAllViews();
+			int portion = gridTable.getHeight()/gridSize;
+			Point point = new Point();
+			controller.setGridView(new TextView[gridSize][]);
+			TextView[][] gridView = controller.getGridView();
+			for (point.y = 0; point.y < gridSize; point.y++) {
+				ViewGroup row = (ViewGroup)this.getLayoutInflater().inflate(R.layout.grid_row, null);
+				row.setMinimumHeight(portion);
+				TextView[] rowText = new TextView[gridSize];
+				for (point.x = 0; point.x < gridSize; point.x++) {
+					TextView view = (TextView)this.getLayoutInflater().inflate(R.layout.grid_text_view, null);
+					view.setId(ConversionUtil.convertPointToID(point, control.getGridSize()));
+					view.setOnKeyListener(controller);
+
+					rowText[point.x] = view;
+					row.addView(view);
+				}
+				gridView[point.y] = rowText;
+				gridTable.addView(row);
+			}
 		}
-		gridTable.setOnTouchListener(controller);
-		gridTable.requestLayout();
-		gridTable.invalidate();
 	}
 
 	public void trackGame() {
-		String category = control.getPrefs().getCategory();
-		String input = "Touch";
-		if (control.getPrefs().getTouchMode()) {
-			input = "Tap";
+		try {
+			String category = control.getPrefs().getCategory();
+			String input = "Touch";
+			if (control.getPrefs().getTouchMode()) {
+				input = "Tap";
+			}
+			tracker.trackEvent(category, input, appVer, control.getGridSize());
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
 		}
-		tracker.trackEvent(category, input, appVer, WordSearchActivityController.getGridSize());
 	}
 
 }

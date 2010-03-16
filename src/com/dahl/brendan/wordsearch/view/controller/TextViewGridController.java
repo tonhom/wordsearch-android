@@ -28,7 +28,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
@@ -307,9 +306,9 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			setTextViewColor(view, colorPicked);
 		} else if (!view.equals(selection.getStart())
 				&& !view.equals(selection.getEnd())) {
-			Point pointStart = ConversionUtil.convertIDToPoint(selection.getStart().getId());
-			Point pointEnd = ConversionUtil.convertIDToPoint(selection.getEnd().getId());
-			Point pointNew = ConversionUtil.convertIDToPoint(view.getId());
+			Point pointStart = ConversionUtil.convertIDToPoint(selection.getStart().getId(), control.getGridSize());
+			Point pointEnd = ConversionUtil.convertIDToPoint(selection.getEnd().getId(), control.getGridSize());
+			Point pointNew = ConversionUtil.convertIDToPoint(view.getId(), control.getGridSize());
 			Point delta = Selection.getDeltas(pointStart, pointNew);
 			if (delta == null) {
 				return false;
@@ -339,8 +338,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 */
 	private void selectionEnd() {
 		if (this.selection.hasBegun()) {// if selection has been started
-			Point pointStart = ConversionUtil.convertIDToPoint(this.selection.getStart().getId());
-			Point pointEnd = ConversionUtil.convertIDToPoint(this.selection.getEnd().getId());
+			Point pointStart = ConversionUtil.convertIDToPoint(this.selection.getStart().getId(), control.getGridSize());
+			Point pointEnd = ConversionUtil.convertIDToPoint(this.selection.getEnd().getId(), control.getGridSize());
 			String word = control.guessWord(pointStart, pointEnd);
 			if (word == null) {// selection was not a word in the grid so revert the colors of all leters in the selection
 				this.selectionPaint(pointStart, pointEnd, null);
@@ -391,8 +390,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 */
 	private void selectionStart(TextView view) {
 		if (this.selection.hasBegun()) {
-			Point pointStart = ConversionUtil.convertIDToPoint(this.selection.getStart().getId());
-			Point pointEnd = ConversionUtil.convertIDToPoint(this.selection.getEnd().getId());
+			Point pointStart = ConversionUtil.convertIDToPoint(this.selection.getStart().getId(), control.getGridSize());
+			Point pointEnd = ConversionUtil.convertIDToPoint(this.selection.getEnd().getId(), control.getGridSize());
 			this.selectionPaint(pointStart, pointEnd, null);
 			this.selection.reset();
 		}
@@ -432,6 +431,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			colorChangeDelta = 250 / grid.getWordListLength();
 		}
 		colorCurrent = Color.rgb(255, 0, 0);
+		eventsQue.clear();
 		Point point = new Point();
 		for (point.y = 0; point.y < gridView.length; point.y++) {
 			for (point.x = 0; point.x < gridView[point.y].length; point.x++) {
@@ -441,11 +441,6 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 				gridView[point.y][point.x].setTextColor(colorNormal);
 			}
 		}
-		pointDemension = new Point();
-		ViewGroup viewGroup = (ViewGroup)gridView[0][0].getParent().getParent();
-		pointDemension.x = viewGroup.getWidth()/gridView.length;
-		pointDemension.y = viewGroup.getHeight()/gridView.length;
-		eventsQue.clear();
 	}
 
 	/**
@@ -481,5 +476,9 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			}
 		}
 		return bundle;
+	}
+
+	public void setPointDemension(Point pointDemension2) {
+		this.pointDemension = pointDemension2;
 	}
 }

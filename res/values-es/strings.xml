@@ -20,7 +20,7 @@
 <string name="high_score"> Altos Puntajes </string> 
 <string name="new_game"> Nuevo </string> 
 <string name="quit"> Salir </string> 
-<string name="congratulations"> Felicidades, has encontrado todas las palabras! Su puntuación era el %time. </string> 
+<string name="congratulations"> Felicidades, has encontrado todas las palabras! Su puntuación era el %replaceme. </string> 
 
 <string name="wordlist_name"> Palabra de búsqueda personalizado Categoría Editor </string> 
 <string name="custom_empty"> su categoría personalizada no tiene palabras. \nHaz clic en el menú a continuación, haga clic en la palabra nuevo </string> 
@@ -61,7 +61,7 @@
 <string name="tutorial_message_tip8"> Al seleccionar una palabra con el arrastre, el único juego que pondrá de relieve en letras amarillas en una línea recta que va directamente arriba, abajo, izquierda, derecha o en diagonal entre el lugar en que comenzó destacando y donde el dedo en la actualidad es . Si su dedo no está en línea directa de la carta de inicio, el punto culminante no seguirá su dedo hasta que retorne el dedo a una línea directa de la carta de inicio. El juego se encuentra la palabra que se destaca, sin importar donde el dedo cuando se lo levanta. </string> 
 
 <string name="size"> malla </string> 
-<string name="enter_initials"> Usted hizo una nueva %score de alto! \n Por favor escriba sus iniciales </string> 
+<string name="enter_initials"> Usted hizo una nueva %replaceme de alto! \n Por favor escriba sus iniciales </string> 
 <string name="no_high_scores"> no hay calificaciones de alto </string> 
 
 <string name="input_type"> Tipo de entrada </string> 

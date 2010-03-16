@@ -22,7 +22,7 @@
 	<string name="high_score">High Scores</string>
 	<string name="new_game">New</string>
 	<string name="quit">Quit</string>
-	<string name="congratulations">Congratulations, you found all the words!  Your score was %time.</string>
+	<string name="congratulations">Congratulations, you found all the words!  Your score was %replaceme.</string>
 
 	<string name="wordlist_name">Word Search Custom Word Bank Editor</string>
 	<string name="custom_empty">Your custom word bank has no words.\nClick menu then click new word</string>
@@ -63,7 +63,7 @@
 	<string name="tutorial_message_tip8">When selecting a word using drag, the game will only highlight in yellow letters in a straight line going directly above, below, left, right, or diagonally between where you started highlighting and where your finger currently is.  If your finger is not in a direct line from the start letter, the highlight will not follow your finger until your finger returns to a direct line from the start letter.  The game will find the word that is highlighted, regardless of where your finger is when you lift it.</string>
 
 	<string name="size">Grid Size</string>
-	<string name="enter_initials">You made a new high %score!\nPlease enter your initials</string>
+	<string name="enter_initials">You made a new high %replaceme!\nPlease enter your initials</string>
 	<string name="no_high_scores">No High Scores</string>
 	
 	<string name="input_type">Input Type</string>

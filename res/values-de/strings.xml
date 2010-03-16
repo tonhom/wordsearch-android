@@ -20,7 +20,7 @@
 <string name="high_score"> High Scores </string> 
 <string name="new_game"> Neu </string> 
 <string name="quit"> Beenden </string> 
-<string name="congratulations"> Herzlichen Glückwunsch, Sie finden alle Wörter! Ihr Ergebnis war %time. </string> 
+<string name="congratulations"> Herzlichen Glückwunsch, Sie finden alle Wörter! Ihr Ergebnis war %replaceme. </string> 
 
 <string name="wordlist_name"> Word Search Custom Kategorie Editor </string> 
 <string name="custom_empty"> Ihre benutzerdefinierte Kategorie hat keine Worte. \nKlicken Sie im Menü klicken Sie dann auf neues Wort </string> 
@@ -61,7 +61,7 @@
 <string name="tutorial_message_tip8"> Bei der Auswahl eines Wortes durch ziehen, wird das Spiel nur in gelben Buchstaben in einer geraden Linie zu markieren gehen direkt oben, unten, links, rechts oder diagonal zwischen hervorgehoben, wo Sie begonnen und wo Ihre Finger derzeit . Wenn Sie den Finger nicht in direkter Linie von Anfang an Schreiben wird das Highlight nicht Ihren Finger, bis Sie den Finger wieder ein direkter Linie von dem Schreiben beginnen. Das Spiel wird das Wort, das markiert ist zu finden, unabhängig davon, wo Sie mit dem Finger ist, wenn Sie es. </string> 
 
 <string name="size"> Grid Size </string> 
-<string name="enter_initials"> Sie haben einen neuen Höchststand der %score! \nBitte geben Sie Ihre Initialen </string> 
+<string name="enter_initials"> Sie haben einen neuen Höchststand der %replaceme! \nBitte geben Sie Ihre Initialen </string> 
 <string name="no_high_scores"> Nr. High Scores </string> 
 
 <string name="input_type"> Input Type </string> 
