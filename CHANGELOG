@@ -1,6 +1,7 @@
-Version 1.8.4 (24):
+Version 1.8.4 (25):
 add SAT, kids word banks
 add repo steps to new crash dialog
+fixed game time not counting correctly
 
 Version 1.8.3 (23):
 fixed null pointer restore issue on high scores

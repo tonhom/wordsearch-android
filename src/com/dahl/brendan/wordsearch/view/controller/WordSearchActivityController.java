@@ -17,7 +17,6 @@
 
 package com.dahl.brendan.wordsearch.view.controller;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 
 import android.content.res.ColorStateList;
@@ -121,9 +120,7 @@ public class WordSearchActivityController {
 	protected void foundWord(String word) {
 		int remainingWordCount = wordBoxManager.wordFound(word);
 		if (remainingWordCount == 0) {
-			Calendar diffTime = Calendar.getInstance();
 			Long diffMill = System.currentTimeMillis() - timeStart + timeSum;
-			diffTime.setTimeInMillis(diffMill);
 			setHighScore(diffMill);
 		}
 	}
@@ -183,17 +180,18 @@ public class WordSearchActivityController {
 
 	public void restoreState(Bundle inState) {
 		if (inState != null) {
-			this.timeSum = inState.getLong(BUNDLE_TIME, 0);
 			this.grid = inState.getParcelable(BUNDLE_GRID);
 			this.setGrid(grid);
 			wordSearch.setupViewGrid();
 			gridManager.reset(grid);
 			this.gridManager.fromBundle(inState.getBundle(BUNDLE_VIEW));
+			this.timeSum = inState.getLong(BUNDLE_TIME, 0);
 		}
 	}
 
 	public void saveState(Bundle outState) {
 		if (outState != null) {
+			this.timePause();
 			outState.putLong(BUNDLE_TIME, this.timeSum);
 			outState.putParcelable(BUNDLE_GRID, this.grid);
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
@@ -218,7 +216,10 @@ public class WordSearchActivityController {
 	}
 
 	public void timePause() {
-		timeSum += System.currentTimeMillis() - timeStart;
+		if (timeStart != 0) {
+			timeSum += System.currentTimeMillis() - timeStart;
+			timeStart = 0;
+		}
 	}
 
 	public void timeResume() {

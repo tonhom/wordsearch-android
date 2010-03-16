@@ -355,6 +355,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	protected void onPause() {
 		super.onPause();
 //		Log.v(LOG_TAG, "onPause");
+		control.timePause();
 		try {
 			tracker.dispatch();
 		} catch (RuntimeException re) {
@@ -362,7 +363,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "tracker failed!");
 		}
-		control.timePause();
 	}
 
 	@Override
@@ -377,6 +377,13 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		super.onSaveInstanceState(outState);
 //		Log.v(LOG_TAG, "onSaveInstanceState");
 		control.saveState(outState);
+		try {
+			tracker.dispatch();
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
+		}
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -412,25 +419,24 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				control.getGridManager().setPointDemension(pointDemension);
 			}
 			gridTable.removeAllViews();
-			int portion = gridTable.getHeight()/gridSize;
 			Point point = new Point();
 			controller.setGridView(new TextView[gridSize][]);
 			TextView[][] gridView = controller.getGridView();
 			for (point.y = 0; point.y < gridSize; point.y++) {
-				ViewGroup row = (ViewGroup)this.getLayoutInflater().inflate(R.layout.grid_row, null);
-				row.setMinimumHeight(portion);
+				this.getLayoutInflater().inflate(R.layout.grid_row, gridTable, true);
+				ViewGroup row = (ViewGroup)gridTable.getChildAt(point.y);
 				TextView[] rowText = new TextView[gridSize];
 				for (point.x = 0; point.x < gridSize; point.x++) {
-					TextView view = (TextView)this.getLayoutInflater().inflate(R.layout.grid_text_view, null);
+					this.getLayoutInflater().inflate(R.layout.grid_text_view, row, true);
+					TextView view = (TextView)row.getChildAt(point.x);
 					view.setId(ConversionUtil.convertPointToID(point, control.getGridSize()));
 					view.setOnKeyListener(controller);
 
 					rowText[point.x] = view;
-					row.addView(view);
 				}
 				gridView[point.y] = rowText;
-				gridTable.addView(row);
 			}
+			gridTable.requestLayout();
 		}
 	}
 
