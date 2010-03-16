@@ -413,11 +413,11 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			if (gridTable.getChildCount() == 0) {
 				gridTable.setKeepScreenOn(true);
 				gridTable.setOnTouchListener(controller);
-				Point pointDemension = new Point();
-				pointDemension.x = gridTable.getWidth()/gridSize;
-				pointDemension.y = gridTable.getHeight()/gridSize;
-				control.getGridManager().setPointDemension(pointDemension);
 			}
+			Point pointDemension = new Point();
+			pointDemension.x = gridTable.getWidth()/gridSize;
+			pointDemension.y = gridTable.getHeight()/gridSize;
+			control.getGridManager().setPointDemension(pointDemension);
 			gridTable.removeAllViews();
 			Point point = new Point();
 			controller.setGridView(new TextView[gridSize][]);
