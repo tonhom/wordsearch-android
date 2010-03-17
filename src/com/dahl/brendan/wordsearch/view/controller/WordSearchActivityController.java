@@ -126,9 +126,6 @@ public class WordSearchActivityController {
 	}
 
 	public HighScore getCurrentHighScore() {
-		if (hs == null) {
-			throw new RuntimeException("currentHighScore is null");
-		}
 		return hs;
 	}
 
@@ -170,6 +167,7 @@ public class WordSearchActivityController {
 			}
 		}
 		timeSum = 0L;
+		hs = null;
 		this.setGrid(grid);
 		wordSearch.trackGame();
 	}
