@@ -11,7 +11,7 @@
 		android:entryValues="@array/categories_list_values"
 		android:entries="@array/categories_list_labels" />
 	<ListPreference android:key="@string/prefs_touch_mode"
-		android:title="@string/input_type" android:defaultValue="@string/DRAG"
+		android:title="@string/input_type" android:defaultValue="@string/TAP"
 		android:summary="@string/prefs_touch_mode_summary"
 		android:entryValues="@array/touch_mode_list_values"
 		android:entries="@array/touch_mode_list_labels" />

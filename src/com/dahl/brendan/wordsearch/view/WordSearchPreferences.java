@@ -47,7 +47,7 @@ public class WordSearchPreferences extends PreferenceActivity implements SharedP
 	private void updateTouchmodeSummary() {
 		String touchmodeSum = this.getString(R.string.prefs_touch_mode_summary);
 		Preference p = this.findPreference(this.getString(R.string.prefs_touch_mode));
-		String touchmode = p.getSharedPreferences().getString(p.getKey(), getString(R.string.DRAG));
+		String touchmode = p.getSharedPreferences().getString(p.getKey(), getString(R.string.TAP));
 		List<String> modeValues = Arrays.asList(this.getResources().getStringArray(R.array.touch_mode_list_values));
 		String[] modeLabels = this.getResources().getStringArray(R.array.touch_mode_list_labels);
 		int index = modeValues.indexOf(touchmode);

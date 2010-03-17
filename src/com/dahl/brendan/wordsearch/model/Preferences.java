@@ -30,6 +30,7 @@ public class Preferences {
 	private final String PREFS_SIZE;
 	private final String PREFS_TOUCHMODE;
 	private final String PREFS_TOUCHMODE_DEFAULT;
+	private final String PREFS_TOUCHMODE_DRAG;
 	private final String PREFS_CATEGORY;
 
 	private static final String PREFS_NAME = "MyPrefsFile";
@@ -52,7 +53,8 @@ public class Preferences {
 		PREFS_CATEGORY = ctx.getString(R.string.prefs_category);
 		PREFS_SIZE = ctx.getString(R.string.prefs_size);
 		PREFS_TOUCHMODE = ctx.getString(R.string.prefs_touch_mode);
-		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.DRAG); 
+		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.TAP);
+		PREFS_TOUCHMODE_DRAG = ctx.getString(R.string.DRAG);
 	}
 	
 	public String getCategory() {
@@ -103,7 +105,7 @@ public class Preferences {
 	}
 
 	public boolean getTouchMode() {
-		return PREFS_TOUCHMODE_DEFAULT.equals(settings.getString(PREFS_TOUCHMODE, PREFS_TOUCHMODE_DEFAULT));
+		return PREFS_TOUCHMODE_DRAG.equals(settings.getString(PREFS_TOUCHMODE, PREFS_TOUCHMODE_DEFAULT));
 	}
 
 	public void resetTopScores() {

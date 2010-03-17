@@ -50,12 +50,16 @@
 		<item>8x8</item>
 		<item>9x9</item>
 		<item>10x10</item>
+		<item>11x11</item>
+		<item>12x12</item>
 	</string-array>
 	<string-array name="sizes_list_values">
 		<item>7</item>
 		<item>8</item>
 		<item>9</item>
 		<item>10</item>
+		<item>11</item>
+		<item>12</item>
 	</string-array>
 	<string name="SIZE_DEFAULT">10</string>
 
