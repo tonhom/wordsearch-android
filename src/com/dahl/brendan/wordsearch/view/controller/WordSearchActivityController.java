@@ -178,6 +178,7 @@ public class WordSearchActivityController {
 
 	public void restoreState(Bundle inState) {
 		if (inState != null) {
+			hs = ((HighScore)inState.getParcelable(WordSearchActivityController.BUNDLE_HIGH_SCORE));
 			this.grid = inState.getParcelable(BUNDLE_GRID);
 			this.setGrid(grid);
 			wordSearch.setupViewGrid();

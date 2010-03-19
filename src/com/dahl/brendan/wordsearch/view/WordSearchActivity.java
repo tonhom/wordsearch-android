@@ -166,6 +166,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		DefaultExceptionHandler.register(this,CrashActivity.class);
 		try {
 			tracker = GoogleAnalyticsTracker.getInstance();
 		} catch (RuntimeException re) {
@@ -173,7 +174,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "tracker failed!");
 		}
-		DefaultExceptionHandler.register(this,CrashActivity.class);
 		try {
 			appVer = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
@@ -190,19 +190,11 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this);
-		if (savedInstanceState != null) {
-			control.setHs((HighScore)savedInstanceState.getParcelable(WordSearchActivityController.BUNDLE_HIGH_SCORE));
+		if (savedInstanceState == null) {
+			control.newWordSearch();
+		} else {
+			control.restoreState(savedInstanceState);
 		}
-		final Bundle savedInstanceStateInner = savedInstanceState;
-		findViewById(R.id.wordsearch_base).post(new Runnable() {
-			public void run() {
-				if (savedInstanceStateInner == null) {
-					control.newWordSearch();
-				} else {
-					control.restoreState(savedInstanceStateInner);
-				}
-			}
-		});
 	}
 
 	@Override
@@ -414,10 +406,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				gridTable.setKeepScreenOn(true);
 				gridTable.setOnTouchListener(controller);
 			}
-			Point pointDemension = new Point();
-			pointDemension.x = gridTable.getWidth()/gridSize;
-			pointDemension.y = gridTable.getHeight()/gridSize;
-			control.getGridManager().setPointDemension(pointDemension);
+			control.getGridManager().setPointDemension(null);
 			gridTable.removeAllViews();
 			Point point = new Point();
 			controller.setGridView(new TextView[gridSize][]);
