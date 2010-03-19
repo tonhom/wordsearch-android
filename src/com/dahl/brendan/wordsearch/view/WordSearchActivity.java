@@ -303,7 +303,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		}
 		case DIALOG_ID_GAME_NEW: {
 			String extraText;
-			if (this.getControl().isHighScorer()) {
+			if (!this.getControl().isGameRunning()) {
 				HighScore hs = control.getCurrentHighScore();
 				extraText = this.getString(R.string.congratulations).replace("%replaceme",hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")")+"\n";
 			} else {

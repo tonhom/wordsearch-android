@@ -95,6 +95,9 @@ public class HighScore implements Comparable<HighScore>, Parcelable {
 		case 10:
 			score = 100;
 			break;
+		case 11:
+			score = 115;
+			break;
 		}
 		return score / 100;
 	}
