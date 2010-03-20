@@ -152,10 +152,6 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		}
 	}
 	
-	protected boolean getTouchMode() {
-		return touchMode;
-	}
-
 	public void run() {
 		MotionEvent event = null;
 		boolean running = true;
