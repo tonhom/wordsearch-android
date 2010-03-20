@@ -185,6 +185,8 @@ public class WordSearchActivityController {
 			gridManager.reset(grid);
 			this.gridManager.fromBundle(inState.getBundle(BUNDLE_VIEW));
 			this.timeSum = inState.getLong(BUNDLE_TIME, 0);
+		} else {
+			this.newWordSearch();
 		}
 	}
 

@@ -60,7 +60,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 		}
 	}
-	class DialogHighScoresInitialsListener implements DialogInterface.OnClickListener {
+	class DialogHighScoresInitialsListener implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 		public void onClick(DialogInterface dialog, int which) {
 			if (which == DialogInterface.BUTTON_POSITIVE) {
 				String name = ((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).getText().toString();
@@ -77,6 +77,11 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			} else {
 				showDialog(WordSearchActivity.DIALOG_ID_GAME_NEW);
 			}
+			removeDialog(DIALOG_ID_HIGH_SCORES_INITIALS);
+		}
+
+		public void onCancel(DialogInterface dialog) {
+			removeDialog(DIALOG_ID_HIGH_SCORES_INITIALS);
 		}
 	}
 	class DialogHighScoresShowListener implements DialogInterface.OnClickListener {
@@ -187,14 +192,10 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "tracker failed!");
 		}
-		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this);
-		if (savedInstanceState == null) {
-			control.newWordSearch();
-		} else {
-			control.restoreState(savedInstanceState);
-		}
+		control.restoreState(savedInstanceState);
+		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -228,6 +229,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			builder.setView(text);
 			builder.setPositiveButton(android.R.string.ok, DIALOG_LISTENER_HIGH_SCORES_INITIALS);
 			builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_HIGH_SCORES_INITIALS);
+			builder.setOnCancelListener(DIALOG_LISTENER_HIGH_SCORES_INITIALS);
 			dialog = builder.create();
 			break;
 		}
@@ -271,6 +273,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
 		switch(id) {
 		case DIALOG_ID_HIGH_SCORES_INITIALS: {
 			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
@@ -308,7 +311,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		default:
 			break;
 		}
-		super.onPrepareDialog(id, dialog);
 	}
 
 	/** when menu button option selected */
@@ -376,6 +378,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "tracker failed!");
 		}
+		this.removeDialog(DIALOG_ID_HIGH_SCORES_INITIALS);
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -432,9 +435,9 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	public void trackGame() {
 		try {
 			String category = control.getPrefs().getCategory();
-			String input = "Touch";
+			String input = "Tap";
 			if (control.getPrefs().getTouchMode()) {
-				input = "Tap";
+				input = "Drag";
 			}
 			tracker.trackEvent(category, input, appVer, control.getGridSize());
 		} catch (RuntimeException re) {

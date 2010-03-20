@@ -244,6 +244,7 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
 		switch(id) {
 		case DIALOG_ID_ADD: {
 			index = INSERT_INDEX;
@@ -256,6 +257,5 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 		default:
 			break;
 		}
-		super.onPrepareDialog(id, dialog);
 	}
 }
