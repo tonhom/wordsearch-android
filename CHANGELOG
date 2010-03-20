@@ -1,3 +1,8 @@
+Version 1.8.5 (27):
+fixed missing time at end of games, thanks Linda
+add 11x11 size
+fixed creation hack :)
+
 Version 1.8.4 (25):
 add SAT, kids word banks
 add repo steps to new crash dialog
