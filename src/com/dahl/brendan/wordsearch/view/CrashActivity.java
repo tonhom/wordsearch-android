@@ -25,7 +25,7 @@ public class CrashActivity extends ExceptionActivity {
 			tracker.start("UA-146333-5", this);
 			tracker.trackPageView("/app/"+appVer+"/CrashActivity");
 			tracker.dispatch();
-			tracker.stop();
+//			tracker.stop();
 		} catch (RuntimeException re) {
 		} catch (Exception e) {
 		}
