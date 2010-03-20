@@ -51,7 +51,7 @@ public class HighScore implements Comparable<HighScore>, Parcelable {
 		this.themeModifier = themeModifier;
 	}
 
-	public HighScore(Parcel in) {
+	private HighScore(Parcel in) {
     	this.time = in.readLong();
     	this.size = in.readInt();
     	this.themeModifier = in.readFloat();
