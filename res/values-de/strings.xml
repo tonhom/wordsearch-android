@@ -80,4 +80,7 @@
 <string name="CRASH_SENDING_WAIT"> Senden Bitte warten ...</string> 
 <string name="PREVIEW"> Vorschau </string> 
 <string name="SEND"> Senden </string> 
+
+<string name="CRASH_DETAILS_HINT"> Schritte zu reproduzieren [optional] </string>
+<string name="INTRO"> Sie können das Rastermaß, Wort -Konto wechseln, und wie Sie Wörter markieren, indem Sie die \"menu\"-Schaltfläche und wählen Sie \"Einstellungen.\" Oder Sie können wählen, wie Sie Wörter markieren jetzt.\n \"Tippen Sie auf\" bedeutet, dass Sie auf der ersten und letzten Buchstaben, aber nichts dazwischen.\n \"Drag tippen Sie auf\" bedeutet, dass Sie das ganze Wort zu markieren, ohne Heben Sie mit dem Finger. </string>
 </resources>

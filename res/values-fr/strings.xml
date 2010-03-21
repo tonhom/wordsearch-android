@@ -80,4 +80,7 @@
 <string name="CRASH_SENDING_WAIT"> Envoi S'il vous plaît patienter ...</string> 
 <string name="PREVIEW"> Aperçu </string> 
 <string name="SEND"> Envoyer </string> 
+
+<string name="CRASH_DETAILS_HINT"> étapes pour reproduire [facultatif] </string>
+<string name="INTRO"> Vous pouvez changer la taille de la grille, banque de mots, et comment vous mettez en surbrillance les mots en appuyant sur le \"menu\" et en sélectionnant le bouton \"Préférences.\" Ou, vous pouvez choisir comment vous mettez en surbrillance les mots maintenant.\n- \"Appuyez sur\" signifie que vous tapez sur la première et la dernière lettre, mais rien entre les deux.\n- \"Drag\" signifie que vous souligner le mot entier sans lever le doigt. </string>
 </resources> 

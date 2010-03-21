@@ -80,4 +80,7 @@
 <string name="CRASH_SENDING_WAIT"> Envío Por favor espere ...</string> 
 <string name="PREVIEW"> Preview </string> 
 <string name="SEND"> Enviar </string> 
+
+<string name="CRASH_DETAILS_HINT"> pasos para reproducir [opcional] </string>
+<string name="INTRO"> Puede cambiar el tamaño de la cuadrícula, banco de palabras, y cómo resaltar las palabras pulsando el \"Menú\" y seleccionar el botón \"preferencias.\" O bien, usted puede escoger cómo resaltar las palabras ahora.\n- \"Pulse\" significa que usted toque en la primera y la última letra, pero nada en medio.\n- \"Arrastre\" significa que resaltar la palabra entera sin levantar el dedo. </string>
 </resources>
