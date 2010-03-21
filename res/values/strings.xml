@@ -84,4 +84,5 @@
 	<string name="SEND">Send</string>
 	
 	<string name="CRASH_DETAILS_HINT">steps to reproduce [optional]</string>
+	<string name="INTRO">Did you know this game is customizable? Push the "menu" button and select "preferences" to change the grid size, word bank, and how you highlight words. You can change how you highlight words right now by picking a button below. "Drag" means you touch the first letter of the word, drag your finger to the last letter, then lift your finger. "Tap" means you tap on the first letter, lift up your finger, then tap the last letter.</string>
 </resources>

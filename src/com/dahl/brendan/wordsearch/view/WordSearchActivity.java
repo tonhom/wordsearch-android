@@ -127,11 +127,32 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 		}
 	}
+	class DialogIntroListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE: {
+				SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(WordSearchActivity.this);
+				sp.edit().putString(getString(R.string.prefs_touch_mode), getString(R.string.TAP)).commit();
+				break;
+			}
+			case DialogInterface.BUTTON_NEUTRAL:
+				break;
+			case DialogInterface.BUTTON_NEGATIVE: {
+				SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(WordSearchActivity.this);
+				sp.edit().putString(getString(R.string.prefs_touch_mode), getString(R.string.DRAG)).commit();
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
 	final public static int DIALOG_ID_NO_WORDS = 0;
 	final public static int DIALOG_ID_NO_WORDS_CUSTOM = 1;
 	final public static int DIALOG_ID_HIGH_SCORES_INITIALS = 2;
 	final public static int DIALOG_ID_HIGH_SCORES_SHOW = 3;
 	final public static int DIALOG_ID_GAME_NEW = 4;
+	final private DialogIntroListener DIALOG_LISTENER_INTRO = new DialogIntroListener();
 	final private DialogNoWordsListener DIALOG_LISTENER_NO_WORDS = new DialogNoWordsListener();
 	final private DialogNoWordsCustomListener DIALOG_LISTENER_NO_WORDS_CUSTOM = new DialogNoWordsCustomListener();
 
@@ -196,6 +217,19 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		control = new WordSearchActivityController(this);
 		control.restoreState(savedInstanceState);
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+		{
+			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+			String key = getString(R.string.KEY_INTRO_VER);
+			if (!appVer.equals(sp.getString(key, null)) && sp.getString(getString(R.string.prefs_touch_mode), null) == null) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(R.string.INTRO);
+				builder.setPositiveButton(R.string.tap, DIALOG_LISTENER_INTRO);
+				builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_INTRO);
+				builder.setNegativeButton(R.string.drag, DIALOG_LISTENER_INTRO);
+				builder.show();
+				sp.edit().putString(key, appVer).commit();
+			}
+		}
 	}
 
 	@Override
@@ -385,9 +419,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		if (control == null) {// hack fix later
 			return;
 		}
-//		if (this.getString(R.string.prefs_size).equals(key) || this.getString(R.string.prefs_category).equals(key)) {
-//			control.newWordSearch();
-//		}
 		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
 			control.updateTouchMode();
 		}

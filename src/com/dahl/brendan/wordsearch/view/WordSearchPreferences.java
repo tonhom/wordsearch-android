@@ -14,7 +14,7 @@ import android.view.MenuItem;
 public class WordSearchPreferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener { 
 	@Override 
 	public void onCreate(Bundle savedInstanceState) { 
-		super.onCreate(savedInstanceState); 
+		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
 		this.updateCategorySummary();
 		this.updateSizeSummary();
@@ -47,7 +47,7 @@ public class WordSearchPreferences extends PreferenceActivity implements SharedP
 	private void updateTouchmodeSummary() {
 		String touchmodeSum = this.getString(R.string.prefs_touch_mode_summary);
 		Preference p = this.findPreference(this.getString(R.string.prefs_touch_mode));
-		String touchmode = p.getSharedPreferences().getString(p.getKey(), getString(R.string.TAP));
+		String touchmode = p.getSharedPreferences().getString(p.getKey(), getString(R.string.DRAG));
 		List<String> modeValues = Arrays.asList(this.getResources().getStringArray(R.array.touch_mode_list_values));
 		String[] modeLabels = this.getResources().getStringArray(R.array.touch_mode_list_labels);
 		int index = modeValues.indexOf(touchmode);

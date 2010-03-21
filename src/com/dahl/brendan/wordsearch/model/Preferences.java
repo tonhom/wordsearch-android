@@ -53,7 +53,7 @@ public class Preferences {
 		PREFS_CATEGORY = ctx.getString(R.string.prefs_category);
 		PREFS_SIZE = ctx.getString(R.string.prefs_size);
 		PREFS_TOUCHMODE = ctx.getString(R.string.prefs_touch_mode);
-		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.TAP);
+		PREFS_TOUCHMODE_DEFAULT = ctx.getString(R.string.DRAG);
 		PREFS_TOUCHMODE_DRAG = ctx.getString(R.string.DRAG);
 	}
 	
