@@ -1,19 +1,20 @@
-//    This file is part of WordSearch FREE.
+//    This file is part of Open WordSearch.
 //
-//    WordSearch FREE is free software: you can redistribute it and/or modify
+//    Open WordSearch is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//    WordSearch FREE is distributed in the hope that it will be useful,
+//    Open WordSearch is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License
-//    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
+//    along with Open WordSearch.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009, 2010 Brendan Dahl <dahl.brendan@brendandahl.com>
+//	  	http://www.brendandahl.com
 
 package com.dahl.brendan.wordsearch.view.controller;
 
@@ -369,6 +370,9 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		Point point = new Point();
 		point.x = pointStart.x;
 		point.y = pointStart.y;
+		if (!Selection.isValidPoint(point, gridView.length)) {
+			throw new NullPointerException("point: "+point.x+","+point.y+"; delta: "+delta.x+","+delta.y);
+		}
 		this.setTextViewColor(this.gridView[point.y][point.x], color);
 		do {
 			point.x += delta.x;

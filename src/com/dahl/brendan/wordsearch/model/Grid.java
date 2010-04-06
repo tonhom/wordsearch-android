@@ -1,19 +1,20 @@
-//    This file is part of WordSearch FREE.
+//    This file is part of Open WordSearch.
 //
-//    WordSearch FREE is free software: you can redistribute it and/or modify
+//    Open WordSearch is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//    WordSearch FREE is distributed in the hope that it will be useful,
+//    Open WordSearch is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License
-//    along with WordSearch FREE.  If not, see <http://www.gnu.org/licenses/>.
+//    along with Open WordSearch.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009 Brendan Dahl
+//	  Copyright 2009, 2010 Brendan Dahl <dahl.brendan@brendandahl.com>
+//	  	http://www.brendandahl.com
 
 package com.dahl.brendan.wordsearch.model;
 
@@ -26,7 +27,7 @@ import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dahl.brendan.wordsearch.model.dictionary.Dictionary;
+import com.dahl.brendan.wordsearch.model.dictionary.IDictionary;
 
 /**
  * 
@@ -113,7 +114,7 @@ public class Grid implements Parcelable {
 		return false;
 	}
 
-	public static Grid generateGrid(Dictionary dic, Integer maxWords,
+	public static Grid generateGrid(IDictionary dic, Integer maxWords,
 			Integer minLength, int size) {
 		// Log.v(LOG_TAG, "generatedGrid:");
 		Grid grid = new Grid(size);

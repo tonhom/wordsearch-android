@@ -1,3 +1,8 @@
+Version 1.8.6 (30):
+default back to DRAG
+fix initials dialog crash
+add intro dialog
+
 Version 1.8.5 (27):
 fixed missing time at end of games, thanks Linda
 add 11x11 size
