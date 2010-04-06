@@ -30,7 +30,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import com.firegnom.rat.ExceptionActivity;
+import com.dahl.brendan.wordsearch.view.CrashActivity;
 
 public class HttpPoster {
   private URI url;
@@ -50,13 +50,13 @@ public class HttpPoster {
     DefaultHttpClient httpClient = new DefaultHttpClient();
     HttpPost httpPost = new HttpPost(url);
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-    nvps.add(new BasicNameValuePair(ExceptionActivity.SECURITY_TOKEN, token));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.APPLICATION_VERSION, applicationVer));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.APPLICATION_PACKAGE, appPkg));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.PHONE_MODEL, phoneModel));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.ANDROID_VERSION, androidVersion));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.APPLICATION_STACKTRACE, stackTrace));
-    nvps.add(new BasicNameValuePair(ExceptionActivity.ADDITIONAL_DATA, additionalData));
+    nvps.add(new BasicNameValuePair(CrashActivity.SECURITY_TOKEN, token));
+    nvps.add(new BasicNameValuePair(CrashActivity.APPLICATION_VERSION, applicationVer));
+    nvps.add(new BasicNameValuePair(CrashActivity.APPLICATION_PACKAGE, appPkg));
+    nvps.add(new BasicNameValuePair(CrashActivity.PHONE_MODEL, phoneModel));
+    nvps.add(new BasicNameValuePair(CrashActivity.ANDROID_VERSION, androidVersion));
+    nvps.add(new BasicNameValuePair(CrashActivity.APPLICATION_STACKTRACE, stackTrace));
+    nvps.add(new BasicNameValuePair(CrashActivity.ADDITIONAL_DATA, additionalData));
     try {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
       httpClient.execute(httpPost);

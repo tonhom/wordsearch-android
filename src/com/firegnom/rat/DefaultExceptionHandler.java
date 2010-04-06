@@ -29,15 +29,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Process;
 import android.util.Log;
 
+import com.dahl.brendan.wordsearch.view.CrashActivity;
+
 public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 
 	private Context context;
 	public static final String TAG = DefaultExceptionHandler.class.getName();
-	private Class<? extends ExceptionActivity> a;
+	private Class<? extends CrashActivity> a;
 
 	// constructor
 	public DefaultExceptionHandler(Context context,
-			Class<? extends ExceptionActivity> a) {
+			Class<? extends CrashActivity> a) {
 		this.context = context;
 		this.a = a;
 	}
@@ -52,15 +54,15 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pi;
 			pi = pm.getPackageInfo(context.getPackageName(), 0);
-			intent.putExtra(ExceptionActivity.APPLICATION_VERSION,
+			intent.putExtra(CrashActivity.APPLICATION_VERSION,
 					pi.versionName);
-			intent.putExtra(ExceptionActivity.APPLICATION_PACKAGE,
+			intent.putExtra(CrashActivity.APPLICATION_PACKAGE,
 					pi.packageName);
-			intent.putExtra(ExceptionActivity.PHONE_MODEL,
+			intent.putExtra(CrashActivity.PHONE_MODEL,
 					android.os.Build.MODEL);
-			intent.putExtra(ExceptionActivity.ANDROID_VERSION,
+			intent.putExtra(CrashActivity.ANDROID_VERSION,
 					android.os.Build.VERSION.RELEASE);
-			intent.putExtra(ExceptionActivity.APPLICATION_STACKTRACE, result
+			intent.putExtra(CrashActivity.APPLICATION_STACKTRACE, result
 					.toString());
 
 		} catch (NameNotFoundException ex) {
@@ -71,7 +73,7 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 	}
 
 	public static boolean register(Context context,
-			Class<? extends ExceptionActivity> a) {
+			Class<? extends CrashActivity> a) {
 		Log.i(TAG, "Registering default exceptions handler");
 
 		UncaughtExceptionHandler currentHandler = Thread

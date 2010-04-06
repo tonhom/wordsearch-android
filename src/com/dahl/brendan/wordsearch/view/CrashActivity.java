@@ -18,19 +18,130 @@
 
 package com.dahl.brendan.wordsearch.view;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
+import android.os.Process;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 
-import com.firegnom.rat.ExceptionActivity;
+import com.firegnom.rat.net.HttpPoster;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class CrashActivity extends ExceptionActivity {
+public class CrashActivity extends Activity {
+
+	// intent params
+	public final static String APPLICATION_VERSION = "APPLICATION_VERSION";
+	public final static String APPLICATION_PACKAGE = "APPLICATION_PACKAGE";
+	public final static String APPLICATION_STACKTRACE = "APPLICATION_STACKTRACE";
+	public final static String PHONE_MODEL = "PHONE_MODEL";
+	public final static String ANDROID_VERSION = "ANDROID_VERSION";
+	public final static String SECURITY_TOKEN = "SECURITY_TOKEN";
+	public final static String ADDITIONAL_DATA = "ADDITIONAL_DATA";
+
+	protected static final int TRACE_DIALOG = 1;
+	protected static final int PROGRESS_DIALOG = 2;
+
+	private String ver;
+	private String trace;
+	private String aVer;
+	private String pac;
+	private String model;
+
+	private HttpPoster poster = new HttpPoster(getUrl());
+
+	private void buildTrace(Intent i) {
+		ver = i.getStringExtra(APPLICATION_VERSION);
+		aVer = i.getStringExtra(ANDROID_VERSION);
+		pac = i.getStringExtra(APPLICATION_PACKAGE);
+		model = i.getStringExtra(PHONE_MODEL);
+		trace = i.getStringExtra(APPLICATION_STACKTRACE);
+	}
+
+	private String getPreview() {
+		String preview = "Application ver: ----ver----\nAndroid ver: ----aVer----\nPackage: ----pac----\nPhone model: ----model----\nDetails: ----details----\nStackTrace:\n----trace----";
+		preview = preview.replace("----ver----", ver + "");
+		preview = preview.replace("----aVer----", aVer + "");
+		preview = preview.replace("----pac----", pac + "");
+		preview = preview.replace("----model----", model + "");
+		preview = preview.replace("----details----", getMoreDetails() + "");
+		preview = preview.replace("----trace----", trace + "");
+		return preview;
+	}
+	public String getMoreDetails() {
+		return ((EditText)this.findViewById(R.id.CRASH_DETAILS)).getText().toString();
+	}
 
 	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Intent i = getIntent();
+		buildTrace(i);
+		this.setContentView(R.layout.crash_main);
+		((Button)this.findViewById(R.id.CRASH_BUTTON_PREVIEW)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				showDialog(TRACE_DIALOG);
+			}
+		});
+		((Button)this.findViewById(R.id.CRASH_BUTTON_SEND)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				sendTrace();
+			}
+		});
+		((Button)this.findViewById(R.id.CRASH_BUTTON_QUIT)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Process.killProcess(Process.myPid());
+			}
+		});
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		switch (id) {
+		case TRACE_DIALOG:
+			builder.setMessage(getPreview()).setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					});
+			return builder.create();
+		case PROGRESS_DIALOG:
+			return ProgressDialog.show(this, "", getString(R.string.CRASH_SENDING_WAIT), true);
+		}
+		return null;
+	}
+
+	private void sendTrace() {
+		showDialog(PROGRESS_DIALOG);
+		new Thread() {
+			public void run() {
+				poster.sendStackTrace(getSecurityToken(), ver, pac, model,
+						aVer, trace, getMoreDetails());
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					return;
+				}
+				Process.killProcess(Process.myPid());
+			};
+		}.start();
+
+	}
+
 	public String getSecurityToken() {
 		return this.getString(R.string.KEY_SECRET);
 	}
 
-	@Override
 	public String getUrl() {
 		try {
 			GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
