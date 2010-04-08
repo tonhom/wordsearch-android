@@ -5,7 +5,7 @@
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/wordrow">
-		<ViewFlipper android:id="@+id/ViewFlipper"
+		<FrameLayout android:id="@+id/ViewFlipper"
 			android:layout_width="wrap_content" android:layout_below="@+id/letterBox"
 			android:layout_height="wrap_content" android:layout_alignParentLeft="true">
 			<Button android:id="@+id/prev" android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
 			<TextView android:id="@+id/letterBox" android:layout_width="fill_parent"
 				android:gravity="center" android:layout_height="wrap_content" android:textColor="@color/picked"
 				android:text="" android:textSize="@dimen/letter_box" />
-		</ViewFlipper>
+		</FrameLayout>
 		<Button android:id="@+id/next" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:gravity="center"
 			android:layout_alignParentRight="true" android:text="@string/next"
