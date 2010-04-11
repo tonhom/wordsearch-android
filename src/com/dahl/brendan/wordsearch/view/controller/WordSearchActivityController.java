@@ -213,7 +213,7 @@ public class WordSearchActivityController {
 	public void setHs(HighScore hs) {
 		this.hs = hs;
 	}
-	protected void setLetter(CharSequence charSequence) {
+	public void setLetter(CharSequence charSequence) {
 		wordBoxManager.setLetter(charSequence);
 	}
 

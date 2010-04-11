@@ -68,6 +68,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				HighScore hs = getControl().getCurrentHighScore();
 				if (!TextUtils.isEmpty(name)) {
 					hs.setInitials(name);
+					getControl().getPrefs().setDetaultName(name);
 				} else {
 					hs.setInitials("?");
 				}
@@ -314,7 +315,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			TextView label = (TextView)((AlertDialog)dialog).findViewById(android.R.id.message);
 			HighScore hs = control.getCurrentHighScore();
 			label.setText(this.getString(R.string.enter_initials).replace("%replaceme", hs.getScore().toString()+" ("+ConversionUtil.formatTime.format(new Date(hs.getTime()))+")"));
-			((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).setText("");
+			((EditText)((AlertDialog)dialog).findViewById(android.R.id.input)).setText(getControl().getPrefs().getDefaultName());
 			break;
 		}
 		case DIALOG_ID_HIGH_SCORES_SHOW: {
@@ -437,6 +438,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	 * @param controller the onkeyListener used for the grid's textViews, also holds the gridView an array of the new textView's in the grid
 	 */
 	public void setupViewGrid() {
+		control.setLetter(null);
 		int gridSize = control.getGridSize();
 		TextViewGridController controller = control.getGridManager();
 		ViewGroup gridTable = (ViewGroup) this.findViewById(R.id.gridTable);

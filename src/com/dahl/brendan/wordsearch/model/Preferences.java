@@ -35,6 +35,7 @@ public class Preferences {
 	private final String PREFS_CATEGORY;
 
 	private static final String PREFS_NAME = "MyPrefsFile";
+	private static final String PREFS_SCORE_DEFAULT_NAME = "score_default_name";
 	private static final String PREFS_SCORE_TIME = "score_time";
 	private static final String PREFS_SCORE_NAME = "score_name";
 	private static final String PREFS_SCORE_THEME = "score_theme";
@@ -138,5 +139,15 @@ public class Preferences {
 			}
 		}
 		editor.commit();
+	}
+
+	public void setDetaultName(String name) {
+		SharedPreferences.Editor editor = settings_scores.edit();
+		editor.putString(PREFS_SCORE_DEFAULT_NAME, name);
+		editor.commit();
+	}
+	
+	public String getDefaultName() {
+		return settings_scores.getString(PREFS_SCORE_DEFAULT_NAME, "");
 	}
 }
