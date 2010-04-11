@@ -47,7 +47,7 @@ public class Preferences {
 
 	private static int GRID_SIZE_DEFAULT = 10;
 
-	final private static int MAX_TOP_SCORES = 3;
+	public static final int MAX_TOP_SCORES = 10;
 
 	public Preferences(Context ctx) {
 		settings_scores = ctx.getSharedPreferences(PREFS_NAME, 0);

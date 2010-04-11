@@ -82,7 +82,7 @@ public class WordSearchActivityController {
 	private static final String BUNDLE_TIME = "ws_time";
 	private static final String BUNDLE_VIEW = "ws_view";
 	private static final String BUNDLE_GRID = "ws_grid";
-	public static final String BUNDLE_HIGH_SCORE = "ws_high_score";
+	private static final String BUNDLE_HIGH_SCORE = "ws_high_score";
 	public int getGridSize() {
 		return grid.getSize();
 	}
@@ -152,7 +152,7 @@ public class WordSearchActivityController {
 
 	public boolean isHighScorer() {
 		LinkedList<HighScore> scores = prefs.getTopScores();
-		return (scores.size() < 3 || (this.getCurrentHighScore() != null && this.getCurrentHighScore().getScore() > scores.get(2).getScore()));
+		return (scores.size() < Preferences.MAX_TOP_SCORES || (this.getCurrentHighScore() != null && this.getCurrentHighScore().getScore() > scores.get(scores.size()-1).getScore()));
 	}
 
 	public void newWordSearch() {

@@ -422,11 +422,10 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (control == null) {// hack fix later
-			return;
-		}
 		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
-			control.updateTouchMode();
+			if (control != null) {// safety check
+				control.updateTouchMode();
+			}
 		}
 	}
 
