@@ -371,7 +371,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		point.x = pointStart.x;
 		point.y = pointStart.y;
 		if (!Selection.isValidPoint(point, gridView.length)) {
-			throw new NullPointerException("point: "+point.x+","+point.y+"; delta: "+delta.x+","+delta.y);
+			throw new NullPointerException("point: "+point.x+","+point.y+"; delta: "+delta.x+","+delta.y + "; length: "+gridView.length);
 		}
 		this.setTextViewColor(this.gridView[point.y][point.x], color);
 		do {

@@ -1,7 +1,7 @@
 package com.dahl.brendan.wordsearch;
 
 public class Constants {
-	public static final String API_URL_BASE = "http://5.latest.wordsearchfree.appspot.com/app/";
+	public static final String API_URL_BASE = "http://wordsearchapp.brendandahl.com/app/";
 	public static final String API_URL_CRASH = API_URL_BASE + "crash";
 	private static final String API_URL_SCORE = API_URL_BASE + "score";
 	public static final String API_URL_SCORE_RANK = API_URL_SCORE + "/rank";
