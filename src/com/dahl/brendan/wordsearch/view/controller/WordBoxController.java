@@ -42,6 +42,7 @@ public class WordBoxController implements OnClickListener {
 	final private TextView letterBox;
 	private LinkedList<String> words;
 	private int wordsIndex = 0;
+	private int wordFound;
 
 	protected WordBoxController(Button prev, Button next, TextView wordBox, TextView letterBox) {
 		this.letterBox = letterBox;
@@ -77,6 +78,7 @@ public class WordBoxController implements OnClickListener {
 	 */
 	protected void resetWords(LinkedList<String> wordList) {
 		this.words = wordList;
+		this.wordFound = words.size();
 		this.wordsIndex = 0;
 		this.updateWordBox();
 	}
@@ -121,5 +123,9 @@ public class WordBoxController implements OnClickListener {
 
 	protected int wordsLeft() {
 		return words.size();
+	}
+
+	public int getWordsFount() {
+		return this.wordFound;
 	}
 }

@@ -20,7 +20,6 @@
 <string name="high_score"> High Scores </string> 
 <string name="new_game"> Nouveau </string> 
 <string name="quit"> Quit </string> 
-<string name="congratulations"> Félicitations, vous avez trouvé tout les mots! Votre score est %replaceme. </string> 
 
 <string name="wordlist_name"> Word recherche personnalisé Catégorie Editor </string> 
 <string name="custom_empty"> Votre catégorie personnalisée n'a pas de mots. \nCliquez menu puis cliquez sur nouveau mot </string> 
@@ -61,7 +60,6 @@
 <string name="tutorial_message_tip8"> Lorsque vous choisissez un mot en utilisant la drague, le jeu ne fera que mettre en évidence en lettres jaunes dans une ligne droite allant directement au-dessus, en dessous, à gauche, à droite ou en diagonale entre l'endroit où vous avez commencé à mettre en lumière et où votre doigt est actuellement . Si votre doigt n'est pas en ligne directe de la lettre de démarrage, la mise en évidence ne suivra pas votre doigt jusqu'à ce que vos déclarations de doigt pour une ligne directe de la lettre de départ. Le jeu sera de trouver le mot qui est mis en évidence, indépendamment du lieu où votre doigt lorsque vous l'ascenseur. </string> 
 
 <string name="size"> Taille de la grille </string> 
-<string name="enter_initials"> Vous avez fait un nouveau %replaceme élevé! \nEntrez vos initiales </string> 
 <string name="no_high_scores"> Pas de score élevé </string> 
 
 <string name="input_type"> Type d'entrée </string> 
@@ -83,4 +81,22 @@
 
 <string name="CRASH_DETAILS_HINT"> étapes pour reproduire [facultatif] </string>
 <string name="INTRO"> Vous pouvez changer la taille de la grille, banque de mots, et comment vous mettez en surbrillance les mots en appuyant sur le \"menu\" et en sélectionnant le bouton \"Préférences.\" Ou, vous pouvez choisir comment vous mettez en surbrillance les mots maintenant.\n- \"Appuyez sur\" signifie que vous tapez sur la première et la dernière lettre, mais rien entre les deux.\n- \"Drag\" signifie que vous souligner le mot entier sans lever le doigt. </string>
+
+<string name="SCORE_CONGRATULATIONS"> \nFélicitations, vous avez gagné! Votre score était replaceme%.> </string>
+<string name="SCORE_LOCAL_HIGH">\nLocal High Score #replaceme% </string>
+<string name="SCORE_GLOBAL_HIGH">\nScore nRecent Global #replaceme% </string>
+<string name="SCORE_GLOBAL_PERCENT">\nScore nGlobal #replaceme% percentile </string>
+<string name="SCORE_INITIALS">\nEntrez votre nom / initiales </string>
+<string name="SCORE_GLOBAL_ERROR">\nErreur Global Ranking MIA </string>
+
+<string name="SAVE">Enregistrer</string>
+<string name="SAVE_SUBMIT">Sauvegarder &amp; Déposer</string>
+
+<string name="HIGH_SCORE_CALCULATING"> Calcul High Score </string>
+<string name="GLOBAL_HIGH_SCORES"> Global High Scores </string>
+<string name="LOCAL_HIGH_SCORES"> locaux scores </string>
+<string name="GLOBAL"> Global </string>
+<string name="LOCAL"> local </string>
+<string name="LOADING"> Chargement </string>
+
 </resources> 

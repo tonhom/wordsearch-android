@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.view.R;
 
 public class Preferences {
@@ -40,14 +41,11 @@ public class Preferences {
 	private static final String PREFS_SCORE_NAME = "score_name";
 	private static final String PREFS_SCORE_THEME = "score_theme";
 	private static final String PREFS_SCORE_SIZE = "score_size";
+	private static final String PREFS_SCORE = "score";
 	private static final String PREFS_SEPARATOR = ":";
 //	private static final String LOG_TAG = "Preferences";
 	private final SharedPreferences settings_scores;
 	private final SharedPreferences settings;
-
-	private static int GRID_SIZE_DEFAULT = 10;
-
-	public static final int MAX_TOP_SCORES = 10;
 
 	public Preferences(Context ctx) {
 		settings_scores = ctx.getSharedPreferences(PREFS_NAME, 0);
@@ -64,46 +62,56 @@ public class Preferences {
 	}
 
 	public int getSize() {
-		int size_int = GRID_SIZE_DEFAULT;
+		int size_int = Constants.GRID_SIZE_DEFAULT;
 		try {
 			String size = settings.getString(PREFS_SIZE, null);
 			size_int = Integer.valueOf(size);
 		} catch (Exception e) {
-			size_int = GRID_SIZE_DEFAULT;
+			size_int = Constants.GRID_SIZE_DEFAULT;
 		}
 		return size_int;
 	}
 
-	private String getTopScoreNameKey(int level) {
-		return PREFS_SCORE_NAME + PREFS_SEPARATOR + Integer.toString(level);
-	}
-	
 	public LinkedList<HighScore> getTopScores() {
 		LinkedList<HighScore> scores = new LinkedList<HighScore>();
-		for (int level = 0; level < MAX_TOP_SCORES; level++) {
-			long time = settings_scores.getLong(getTopScoreTimeKey(level), -1);
+		for (int levelNum = 0; levelNum < Constants.MAX_TOP_SCORES; levelNum++) {
+			String level = Integer.toString(levelNum);
 			String name = settings_scores.getString(getTopScoreNameKey(level), "");
-			int size = settings_scores.getInt(getTopScoreSizeKey(level), -1);
-			float theme = settings_scores.getFloat(getTopScoreThemeKey(level), -1);
-			if (time != -1) {
-				HighScore highScore = new HighScore(time, size, theme);
-				highScore.setInitials(name);
+			long score = settings_scores.getLong(getTopScoreKey(level), -1);
+			long time = settings_scores.getLong(getTopScoreTimeKey(level), -1);
+			if (score != -1) {
+				HighScore highScore = new HighScore(name, score, time);
 				scores.add(highScore);
+			} else {// TODO REMOVE in 2.0 most likely
+				int size = settings_scores.getInt(getTopScoreSizeKey(level), -1);
+				float theme = settings_scores.getFloat(getTopScoreThemeKey(level), -1);
+				if (theme != -1) {
+					HighScore highScore = new HighScore(name, time, size, theme);
+					scores.add(highScore);
+				}
 			}
 		}
-		Collections.sort(scores);
 		return scores;
 	}
 	
-	private String getTopScoreSizeKey(int level) {
-		return PREFS_SCORE_SIZE + PREFS_SEPARATOR + Integer.toString(level);
+	private String getTopScoreKey(String level) {
+		return PREFS_SCORE + PREFS_SEPARATOR + level;
 	}
-	
-	private String getTopScoreThemeKey(int level) {
-		return PREFS_SCORE_THEME + PREFS_SEPARATOR + Integer.toString(level);
+	private String getTopScoreNameKey(String level) {
+		return PREFS_SCORE_NAME + PREFS_SEPARATOR + level;
 	}
-	private String getTopScoreTimeKey(int level) {
-		return PREFS_SCORE_TIME + PREFS_SEPARATOR + Integer.toString(level);
+	// TODO REMOVE in 2.0 most likely
+	@Deprecated
+	private String getTopScoreSizeKey(String level) {
+		return PREFS_SCORE_SIZE + PREFS_SEPARATOR + level;
+	}
+	// TODO REMOVE in 2.0 most likely
+	@Deprecated
+	private String getTopScoreThemeKey(String level) {
+		return PREFS_SCORE_THEME + PREFS_SEPARATOR + level;
+	}
+	private String getTopScoreTimeKey(String level) {
+		return PREFS_SCORE_TIME + PREFS_SEPARATOR + level;
 	}
 
 	public boolean getTouchMode() {
@@ -112,9 +120,13 @@ public class Preferences {
 
 	public void resetTopScores() {
 		SharedPreferences.Editor editor = settings_scores.edit();
-		for (int level = 0; level < MAX_TOP_SCORES; level++) {
-			editor.remove(getTopScoreTimeKey(level));
+		for (int levelNum = 0; levelNum < Constants.MAX_TOP_SCORES; levelNum++) {
+			String level = Integer.toString(levelNum);
+			editor.remove(getTopScoreKey(level));
 			editor.remove(getTopScoreNameKey(level));
+			editor.remove(getTopScoreTimeKey(level));
+			
+			// TODO REMOVE in 2.0 most likely
 			editor.remove(getTopScoreSizeKey(level));
 			editor.remove(getTopScoreThemeKey(level));
 		}
@@ -124,16 +136,23 @@ public class Preferences {
 	public void setTopScores(LinkedList<HighScore> highScores) {
 		SharedPreferences.Editor editor = settings_scores.edit();
 		Collections.sort(highScores);
-		for (int level = 0; level < MAX_TOP_SCORES; level++) {
-			if (level < highScores.size()) {
-				HighScore highScore = highScores.get(level);
+		for (int levelNum = 0; levelNum < Constants.MAX_TOP_SCORES; levelNum++) {
+			String level = Integer.toString(levelNum);
+			if (levelNum < highScores.size()) {
+				HighScore highScore = highScores.get(levelNum);
+				editor.putString(getTopScoreNameKey(level), highScore.getName());
+				editor.putLong(getTopScoreKey(level), highScore.getScore());
 				editor.putLong(getTopScoreTimeKey(level), highScore.getTime());
-				editor.putString(getTopScoreNameKey(level), highScore.getInitials());
-				editor.putInt(getTopScoreSizeKey(level), highScore.getSize());
-				editor.putFloat(getTopScoreThemeKey(level), highScore.getThemeModifier());
+
+				// TODO REMOVE in 2.0 most likely
+				editor.remove(getTopScoreSizeKey(level));
+				editor.remove(getTopScoreThemeKey(level));
 			} else {
-				editor.remove(getTopScoreTimeKey(level));
+				editor.remove(getTopScoreKey(level));
 				editor.remove(getTopScoreNameKey(level));
+				editor.remove(getTopScoreTimeKey(level));
+				
+				// TODO REMOVE in 2.0 most likely
 				editor.remove(getTopScoreSizeKey(level));
 				editor.remove(getTopScoreThemeKey(level));
 			}
@@ -142,12 +161,12 @@ public class Preferences {
 	}
 
 	public void setDetaultName(String name) {
-		SharedPreferences.Editor editor = settings_scores.edit();
+		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(PREFS_SCORE_DEFAULT_NAME, name);
 		editor.commit();
 	}
 	
 	public String getDefaultName() {
-		return settings_scores.getString(PREFS_SCORE_DEFAULT_NAME, "");
+		return settings.getString(PREFS_SCORE_DEFAULT_NAME, "");
 	}
 }

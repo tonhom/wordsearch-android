@@ -110,8 +110,4 @@
 	<string name="prefs_touch_mode">touch_mode1</string>
 	<string name="prefs_category">category1</string>
 
-	<!-- keys -->
-	<string name="KEY_SECRET">wordsearchfreepw</string>
-	<string name="KEY_INTRO_VER">intro_app_ver</string>
-	
 </resources>

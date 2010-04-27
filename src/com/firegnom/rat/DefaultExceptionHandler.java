@@ -29,6 +29,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Process;
 import android.util.Log;
 
+import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.view.CrashActivity;
 
 public class DefaultExceptionHandler implements UncaughtExceptionHandler {
@@ -54,15 +55,15 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pi;
 			pi = pm.getPackageInfo(context.getPackageName(), 0);
-			intent.putExtra(CrashActivity.APPLICATION_VERSION,
+			intent.putExtra(Constants.APPLICATION_VERSION,
 					pi.versionName);
-			intent.putExtra(CrashActivity.APPLICATION_PACKAGE,
+			intent.putExtra(Constants.APPLICATION_PACKAGE,
 					pi.packageName);
-			intent.putExtra(CrashActivity.PHONE_MODEL,
+			intent.putExtra(Constants.PHONE_MODEL,
 					android.os.Build.MODEL);
-			intent.putExtra(CrashActivity.ANDROID_VERSION,
+			intent.putExtra(Constants.ANDROID_VERSION,
 					android.os.Build.VERSION.RELEASE);
-			intent.putExtra(CrashActivity.APPLICATION_STACKTRACE, result
+			intent.putExtra(Constants.APPLICATION_STACKTRACE, result
 					.toString());
 
 		} catch (NameNotFoundException ex) {

@@ -20,7 +20,6 @@
 <string name="high_score"> High Scores </string> 
 <string name="new_game"> Neu </string> 
 <string name="quit"> Beenden </string> 
-<string name="congratulations"> Herzlichen Glückwunsch, Sie finden alle Wörter! Ihr Ergebnis war %replaceme. </string> 
 
 <string name="wordlist_name"> Word Search Custom Kategorie Editor </string> 
 <string name="custom_empty"> Ihre benutzerdefinierte Kategorie hat keine Worte. \nKlicken Sie im Menü klicken Sie dann auf neues Wort </string> 
@@ -61,7 +60,6 @@
 <string name="tutorial_message_tip8"> Bei der Auswahl eines Wortes durch ziehen, wird das Spiel nur in gelben Buchstaben in einer geraden Linie zu markieren gehen direkt oben, unten, links, rechts oder diagonal zwischen hervorgehoben, wo Sie begonnen und wo Ihre Finger derzeit . Wenn Sie den Finger nicht in direkter Linie von Anfang an Schreiben wird das Highlight nicht Ihren Finger, bis Sie den Finger wieder ein direkter Linie von dem Schreiben beginnen. Das Spiel wird das Wort, das markiert ist zu finden, unabhängig davon, wo Sie mit dem Finger ist, wenn Sie es. </string> 
 
 <string name="size"> Grid Size </string> 
-<string name="enter_initials"> Sie haben einen neuen Höchststand der %replaceme! \nBitte geben Sie Ihre Initialen </string> 
 <string name="no_high_scores"> Nr. High Scores </string> 
 
 <string name="input_type"> Input Type </string> 
@@ -83,4 +81,22 @@
 
 <string name="CRASH_DETAILS_HINT"> Schritte zu reproduzieren [optional] </string>
 <string name="INTRO"> Sie können das Rastermaß, Wort -Konto wechseln, und wie Sie Wörter markieren, indem Sie die \"menu\"-Schaltfläche und wählen Sie \"Einstellungen.\" Oder Sie können wählen, wie Sie Wörter markieren jetzt.\n \"Tippen Sie auf\" bedeutet, dass Sie auf der ersten und letzten Buchstaben, aber nichts dazwischen.\n \"Drag tippen Sie auf\" bedeutet, dass Sie das ganze Wort zu markieren, ohne Heben Sie mit dem Finger. </string>
+
+<string name="SCORE_CONGRATULATIONS"> \nHerzlichen Glückwunsch, Sie haben gewonnen! Die Gäste war replaceme%. </string>
+<string name="SCORE_LOCAL_HIGH"> \nLocal High Score #replaceme% </string>
+<string name="SCORE_GLOBAL_HIGH"> \nRecent Global Ergebnis #replaceme% </string>
+<string name="SCORE_GLOBAL_PERCENT"> \nGlobal Ergebnis Perzentil #replaceme% </string>
+<string name="SCORE_INITIALS"> \nBitte geben Sie Ihren Namen / Initialen </string>
+<string name="SCORE_GLOBAL_ERROR"> \nFehler Global Ranking MIA </string>
+
+<string name="SAVE"> Speichern </string>
+<string name="SAVE_SUBMIT"> Save &amp; Submit </string>
+
+<string name="HIGH_SCORE_CALCULATING"> Berechnung High Score </string>
+<string name="GLOBAL_HIGH_SCORES"> Global High Scores </string>
+<string name="LOCAL_HIGH_SCORES"> Local High Scores </string>
+<string name="GLOBAL"> Global </string>
+<string name="LOCAL"> Local </string>
+<string name="LOADING"> Loading </string>
+
 </resources>

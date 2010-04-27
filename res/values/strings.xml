@@ -22,7 +22,6 @@
 	<string name="high_score">High Scores</string>
 	<string name="new_game">New</string>
 	<string name="quit">Quit</string>
-	<string name="congratulations">Congratulations, you found all the words!  Your score was %replaceme.</string>
 
 	<string name="wordlist_name">Word Search Custom Word Bank Editor</string>
 	<string name="custom_empty">Your custom word bank has no words.\nClick menu then click new word</string>
@@ -63,7 +62,6 @@
 	<string name="tutorial_message_tip8">When selecting a word using drag, the game will only highlight in yellow letters in a straight line going directly above, below, left, right, or diagonally between where you started highlighting and where your finger currently is.  If your finger is not in a direct line from the start letter, the highlight will not follow your finger until your finger returns to a direct line from the start letter.  The game will find the word that is highlighted, regardless of where your finger is when you lift it.</string>
 
 	<string name="size">Grid Size</string>
-	<string name="enter_initials">You made a new high %replaceme!\nPlease enter your initials</string>
 	<string name="no_high_scores">No High Scores</string>
 	
 	<string name="input_type">Input Type</string>
@@ -85,4 +83,21 @@
 	
 	<string name="CRASH_DETAILS_HINT">steps to reproduce [optional]</string>
 	<string name="INTRO">You can change the grid size, word bank, and how you highlight words by pushing the \"menu\" button and selecting \"preferences.\"  Or, you can pick how you highlight words now.\n- \"Tap\" means you tap on the first and last letters but nothing in between.\n- \"Drag\" means you highlight the entire word without lifting your finger.</string>
+
+	<string name="SCORE_CONGRATULATIONS">Congratulations, you won!\nYour score was %replaceme.</string>
+	<string name="SCORE_LOCAL_HIGH">\nLocal High Score #%replaceme</string>
+	<string name="SCORE_GLOBAL_HIGH">\nRecent Global Score #%replaceme</string>
+	<string name="SCORE_GLOBAL_PERCENT">\nGlobal Score #%replaceme percentile</string>
+	<string name="SCORE_INITIALS">\nPlease enter your name/initials</string>
+	<string name="SCORE_GLOBAL_ERROR">\nError Global Ranking MIA</string>
+
+	<string name="SAVE">Save</string>
+	<string name="SAVE_SUBMIT">Save &amp; Submit</string>
+
+	<string name="HIGH_SCORE_CALCULATING">Calculating High Score</string>
+	<string name="GLOBAL_HIGH_SCORES">Global High Scores</string>
+	<string name="LOCAL_HIGH_SCORES">Local High Scores</string>
+	<string name="GLOBAL">Global</string>
+	<string name="LOCAL">Local</string>
+	<string name="LOADING">Loading</string>
 </resources>

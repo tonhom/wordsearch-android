@@ -18,22 +18,40 @@
 
 package com.dahl.brendan.wordsearch.view.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ProgressDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.model.Preferences;
 import com.dahl.brendan.wordsearch.model.dictionary.DictionaryFactory;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
-import com.dahl.brendan.wordsearch.view.runnables.GameOver;
 
 /**
  * 
@@ -42,6 +60,71 @@ import com.dahl.brendan.wordsearch.view.runnables.GameOver;
  * controls game logic and sub-control modules for word search activity
  */
 public class WordSearchActivityController {
+	class GameOverTask extends AsyncTask<Integer, Integer, Boolean> {
+		final private ProgressDialog pd = new ProgressDialog(wordSearch);
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if (pd.isShowing()) {
+				pd.dismiss();
+				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			pd.setMessage(wordSearch.getString(R.string.HIGH_SCORE_CALCULATING));
+			pd.setIndeterminate(true);
+			pd.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(Integer... res) {
+//			Debug.startMethodTracing("ranking");
+			hs = getCurrentHighScore();
+			LinkedList<HighScore> scores = wordSearch.getControl().getHighScores();
+			scores.add(hs);
+			Collections.sort(scores);
+			int positionLocal = scores.indexOf(hs);
+			hs.setRank(positionLocal);
+			JSONObject json = null;
+			try {
+				HttpPost httpPost = new HttpPost(Constants.API_URL_SCORE_RANK);
+				List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+				nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
+				nvps.add(new BasicNameValuePair(Constants.KEY_PAYLOAD, hs.toJSON().toString()));
+				httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+				HttpResponse response = WordSearchActivity.httpClient.execute(httpPost);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				response.getEntity().writeTo(baos);
+				json = new JSONObject(baos.toString());
+				hs.setGlobalHighScore(json.getBoolean(Constants.KEY_GLOBAL_HIGH_SCORE));
+				hs.setGlobalRank(json.getInt(Constants.KEY_GLOBAL_RANK));
+			} catch (UnsupportedEncodingException e) {
+				hs.setGlobalRank(-1);
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				hs.setGlobalRank(-1);
+				e.printStackTrace();
+			} catch (IOException e) {
+				hs.setGlobalRank(-1);
+				e.printStackTrace();
+			} catch (JSONException e) {
+				hs.setGlobalRank(-1);
+				e.printStackTrace();
+			} catch (NullPointerException npe) {
+				hs.setGlobalRank(-1);
+				npe.printStackTrace();
+			}
+//			Debug.stopMethodTracing();
+			return true;
+		}
+	}
+	class GameOver implements Runnable {
+		public void run() {
+			new GameOverTask().execute(new Integer[0]);
+		}
+	}
 	/**
 	 * sub-control module
 	 */
@@ -150,11 +233,6 @@ public class WordSearchActivityController {
 		return wordBoxManager.wordsLeft() != 0;
 	}
 
-	public boolean isHighScorer() {
-		LinkedList<HighScore> scores = prefs.getTopScores();
-		return (scores.size() < Preferences.MAX_TOP_SCORES || (this.getCurrentHighScore() != null && this.getCurrentHighScore().getScore() > scores.get(scores.size()-1).getScore()));
-	}
-
 	public void newWordSearch() {
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
 		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, prefs.getSize());
@@ -179,7 +257,12 @@ public class WordSearchActivityController {
 
 	public void restoreState(Bundle inState) {
 		if (inState != null) {
-			hs = ((HighScore)inState.getParcelable(WordSearchActivityController.BUNDLE_HIGH_SCORE));
+			Bundle hsBundle = inState.getBundle(BUNDLE_HIGH_SCORE);
+			if (hsBundle != null) {
+				hs = new HighScore(hsBundle);
+			} else {
+				hs = null;
+			}
 			this.grid = inState.getParcelable(BUNDLE_GRID);
 			this.setGrid(grid);
 			wordSearch.setupViewGrid();
@@ -197,7 +280,9 @@ public class WordSearchActivityController {
 			outState.putLong(BUNDLE_TIME, this.timeSum);
 			outState.putParcelable(BUNDLE_GRID, this.grid);
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
-			outState.putParcelable(BUNDLE_HIGH_SCORE, this.hs);
+			if (this.hs != null) {
+				outState.putBundle(BUNDLE_HIGH_SCORE, this.hs.toBundle());
+			}
 		}
 	}
 	
@@ -207,12 +292,10 @@ public class WordSearchActivityController {
 	}
 
 	private void setHighScore(long time) {
-		hs = new HighScore(time, getGridSize(), dictionaryFactory.getScoreThemeMultiplier());
-		wordSearch.runOnUiThread(new GameOver(wordSearch));
+		hs = new HighScore(time, getGridSize(), dictionaryFactory.getCurrentTheme(), this.wordBoxManager.getWordsFount());
+		wordSearch.runOnUiThread(new GameOver());
 	}
-	public void setHs(HighScore hs) {
-		this.hs = hs;
-	}
+
 	public void setLetter(CharSequence charSequence) {
 		wordBoxManager.setLetter(charSequence);
 	}
@@ -232,4 +315,7 @@ public class WordSearchActivityController {
 		this.gridManager.setTouchMode(prefs.getTouchMode());
 	}
 
+	public String getCurrentTheme() {
+		return dictionaryFactory.getCurrentTheme();
+	}
 }

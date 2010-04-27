@@ -142,35 +142,7 @@ public class DictionaryFactory {
 		return this.currentDic;
 	}
 
-	/**
-	 * @return a score multiplier based on the expected difficulty of the current dictionary provider
-	 */
-	public float getScoreThemeMultiplier() {
-		float score = 1;
-		switch (this.currentDictionaryType) {
-		case PLACES:
-		case ANIMALS:
-		case PEOPLE:
-		case ADJECTIVES:
-		case SAT:
-		case KIDS:
-		case GERMAN:
-			score = 90;
-			break;
-		case MISC:
-			score = 95;
-			break;
-		case INSANE:
-		case NUMBERS:
-			score = 100;
-			break;
-		case CUSTOM:
-			score = 80;
-			break;
-		case RANDOM:
-			score = 95;
-			break;
-		}
-		return score/100;
+	public String getCurrentTheme() {
+		return this.currentDictionaryType.toString();
 	}
 }

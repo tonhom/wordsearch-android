@@ -18,6 +18,19 @@
 
 package com.dahl.brendan.wordsearch.view;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,19 +45,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firegnom.rat.net.HttpPoster;
+import com.dahl.brendan.wordsearch.Constants;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class CrashActivity extends Activity {
-
-	// intent params
-	public final static String APPLICATION_VERSION = "APPLICATION_VERSION";
-	public final static String APPLICATION_PACKAGE = "APPLICATION_PACKAGE";
-	public final static String APPLICATION_STACKTRACE = "APPLICATION_STACKTRACE";
-	public final static String PHONE_MODEL = "PHONE_MODEL";
-	public final static String ANDROID_VERSION = "ANDROID_VERSION";
-	public final static String SECURITY_TOKEN = "SECURITY_TOKEN";
-	public final static String ADDITIONAL_DATA = "ADDITIONAL_DATA";
 
 	protected static final int TRACE_DIALOG = 1;
 	protected static final int PROGRESS_DIALOG = 2;
@@ -55,14 +59,12 @@ public class CrashActivity extends Activity {
 	private String pac;
 	private String model;
 
-	private HttpPoster poster = new HttpPoster(getUrl());
-
 	private void buildTrace(Intent i) {
-		ver = i.getStringExtra(APPLICATION_VERSION);
-		aVer = i.getStringExtra(ANDROID_VERSION);
-		pac = i.getStringExtra(APPLICATION_PACKAGE);
-		model = i.getStringExtra(PHONE_MODEL);
-		trace = i.getStringExtra(APPLICATION_STACKTRACE);
+		ver = i.getStringExtra(Constants.APPLICATION_VERSION);
+		aVer = i.getStringExtra(Constants.ANDROID_VERSION);
+		pac = i.getStringExtra(Constants.APPLICATION_PACKAGE);
+		model = i.getStringExtra(Constants.PHONE_MODEL);
+		trace = i.getStringExtra(Constants.APPLICATION_STACKTRACE);
 	}
 
 	private String getPreview() {
@@ -124,8 +126,28 @@ public class CrashActivity extends Activity {
 		showDialog(PROGRESS_DIALOG);
 		new Thread() {
 			public void run() {
-				poster.sendStackTrace(getSecurityToken(), ver, pac, model,
-						aVer, trace, getMoreDetails());
+			    DefaultHttpClient httpClient = new DefaultHttpClient();
+			    HttpPost httpPost = new HttpPost(getUrl());
+			    List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+			    nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
+			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_VERSION, ver));
+			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_PACKAGE, pac));
+			    nvps.add(new BasicNameValuePair(Constants.PHONE_MODEL, model));
+			    nvps.add(new BasicNameValuePair(Constants.ANDROID_VERSION, aVer));
+			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_STACKTRACE, trace));
+			    nvps.add(new BasicNameValuePair(Constants.ADDITIONAL_DATA, getMoreDetails()));
+			    try {
+			      httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+			      httpClient.execute(httpPost);
+			      
+			      
+			    } catch (UnsupportedEncodingException e) {
+			      e.printStackTrace();
+			    } catch (ClientProtocolException e) {
+			      e.printStackTrace();
+			    } catch (IOException e) {
+			      e.printStackTrace();
+			    }
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -136,10 +158,6 @@ public class CrashActivity extends Activity {
 			};
 		}.start();
 
-	}
-
-	public String getSecurityToken() {
-		return this.getString(R.string.KEY_SECRET);
 	}
 
 	public String getUrl() {
@@ -158,7 +176,7 @@ public class CrashActivity extends Activity {
 		} catch (RuntimeException re) {
 		} catch (Exception e) {
 		}
-		return "http://wordsearchapp.brendandahl.com/app/crash";
+		return Constants.API_URL_CRASH;
 	}
 
 }
