@@ -72,7 +72,7 @@ public class HighScore implements Comparable<HighScore> {
 		bundle.putInt(Constants.KEY_GLOBAL_RANK, globalRank);
 		bundle.putBoolean(Constants.KEY_GLOBAL_HIGH_SCORE, globalHighScore);
 		bundle.putInt(Constants.KEY_RANK, rank);
-		bundle.putLong(Constants.KEY_HIGH_SCORE, score);
+		bundle.putLong(Constants.KEY_HIGH_SCORE, getScore());
 		return bundle;
 	}
 

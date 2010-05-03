@@ -1,3 +1,9 @@
+Version 1.9 (42):
+add online high scores
+ - top 10 for past 7 days
+ - percentile within all scores
+expand high scores to 10 places
+
 Version 1.8.7 (31):
 remove flipperview to fix 2.1+ restore crashes
 
