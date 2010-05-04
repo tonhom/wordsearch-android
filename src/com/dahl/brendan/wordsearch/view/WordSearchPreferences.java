@@ -37,6 +37,7 @@ public class WordSearchPreferences extends PreferenceActivity implements SharedP
 		this.updateCategorySummary();
 		this.updateSizeSummary();
 		this.updateTouchmodeSummary();
+		this.updateThemeSummary();
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 	}
 
@@ -73,6 +74,17 @@ public class WordSearchPreferences extends PreferenceActivity implements SharedP
 		p.setSummary(touchmodeSum);
 	}
 
+	private void updateThemeSummary() {
+		String themeSum = this.getString(R.string.PREFS_THEME_SUMMARY);
+		Preference p = this.findPreference(this.getString(R.string.PREFS_THEME));
+		String theme = p.getSharedPreferences().getString(p.getKey(), getString(R.string.THEME_ORIGINAL));
+		List<String> themeValues = Arrays.asList(this.getResources().getStringArray(R.array.THEME_VALUES));
+		String[] themeLabels = this.getResources().getStringArray(R.array.THEME_LABELS);
+		int index = themeValues.indexOf(theme);
+		themeSum = themeSum.replaceAll("%replaceme", themeLabels[index]);
+		p.setSummary(themeSum);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.getMenuInflater().inflate(R.menu.preferences_options, menu);
@@ -97,6 +109,8 @@ public class WordSearchPreferences extends PreferenceActivity implements SharedP
 			this.updateSizeSummary();
 		} else if (this.getString(R.string.prefs_touch_mode).equals(key)) {
 			this.updateTouchmodeSummary();
+		} else if (this.getString(R.string.PREFS_THEME).equals(key)) {
+			this.updateThemeSummary();
 		}
 	}
 }

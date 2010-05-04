@@ -14,7 +14,7 @@
 				android:paddingLeft="15sp" android:paddingRight="15sp"
 				android:textSize="@dimen/button" />
 			<TextView android:id="@+id/letterBox" android:layout_width="fill_parent"
-				android:gravity="center" android:layout_height="wrap_content" android:textColor="@color/picked"
+				android:gravity="center" android:layout_height="wrap_content"
 				android:text="" android:textSize="@dimen/letter_box" />
 		</FrameLayout>
 		<Button android:id="@+id/next" android:layout_width="wrap_content"

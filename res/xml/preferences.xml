@@ -15,4 +15,9 @@
 		android:summary="@string/prefs_touch_mode_summary"
 		android:entryValues="@array/touch_mode_list_values"
 		android:entries="@array/touch_mode_list_labels" />
+	<ListPreference android:key="@string/PREFS_THEME"
+		android:title="@string/THEME" android:defaultValue="@string/THEME_ORIGINAL"
+		android:summary="@string/PREFS_THEME_SUMMARY"
+		android:entryValues="@array/THEME_VALUES"
+		android:entries="@array/THEME_LABELS" />
 </PreferenceScreen>

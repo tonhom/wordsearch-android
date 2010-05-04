@@ -19,8 +19,10 @@
 package com.dahl.brendan.wordsearch.view.runnables;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.widget.TextView;
+
+import com.dahl.brendan.wordsearch.model.ColorState;
+import com.dahl.brendan.wordsearch.model.Theme;
 
 /**
  * 
@@ -30,63 +32,44 @@ import android.widget.TextView;
  *
  */
 public class ChangeTextViewColor implements Runnable {
-	/**
-	 * color to set the TextView to when it is part of a found word
-	 */
-	final private ColorStateList colorFound;
-	/**
-	 * color to set the TextView to when it has been picked
-	 */
-	final private ColorStateList colorPicked;
-	/**
-	 * color to set the TextView to when it is reverted to normal
-	 */
-	final private ColorStateList colorNormal;
-
-	final private int colorCurrent;
-
+	final private Theme theme;
+	final private ColorState color;
 	final private TextView view;
-	final private ColorStateList color;
 
 
-	public ChangeTextViewColor(ColorStateList colorFound,
-			ColorStateList colorPicked, ColorStateList colorNormal,
-			int colorCurrent, TextView view, ColorStateList color) {
-		this.colorFound = colorFound;
-		this.colorPicked = colorPicked;
-		this.colorNormal = colorNormal;
-		this.colorCurrent = colorCurrent;
+	public ChangeTextViewColor(Theme theme, ColorState color, TextView view) {
+		this.theme = theme;
+		if (color == null) {
+			this.color = ColorState.NORMAL;
+		} else {
+			this.color = color;
+		}
 		this.view = view;
-		this.color = color;
 	}
 
 
 	public void run() {
-		if (colorPicked.equals(color)) {
+		switch (color) {
+		case SELECTED:
 			if (view.getTag() == null) {
 				view.setTag(view.getTextColors());
-				view.setTextColor(colorPicked);
+				view.setTextColor(theme.picked);
 			}
-		} else if (colorFound.equals(color)) {
+			break;
+		case FOUND:
 			view.setTag(null);
-			view.setTextColor(new ColorStateList(new int[][] {
-					new int[] { android.R.attr.state_focused,
-							android.R.attr.state_enabled }, new int[1] },
-					new int[] {
-							colorFound.getColorForState(new int[] {
-									android.R.attr.state_focused,
-									android.R.attr.state_enabled }, Color.rgb(
-									255, 255, 255)), colorCurrent,
-
-					}));
-		} else {
+			view.setTextColor(theme.getCurrentFound());
+			break;
+		case NORMAL:
+		default:
 			Object tag = view.getTag();
 			if (tag instanceof ColorStateList) {
 				view.setTextColor((ColorStateList) tag);
 			} else {
-				view.setTextColor(colorNormal);
+				view.setTextColor(theme.normal);
 			}
 			view.setTag(null);
+			break;
 		}
 	}
 

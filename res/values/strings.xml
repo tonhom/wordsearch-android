@@ -100,4 +100,13 @@
 	<string name="GLOBAL">Global</string>
 	<string name="LOCAL">Local</string>
 	<string name="LOADING">Loading</string>
+	
+	<string name="THEME">Theme</string>
+	<string name="PREFS_THEME_SUMMARY">Current Theme: %replaceme</string>
+	<string name="ORIGINAL">Original</string>
+	<string name="NIGHTSKY">Night Sky</string>
+	<string name="SKY">Sky</string>
+	<string name="PINK">Pink</string>
+	<string name="SEAGREEN">Sea Green</string>
+	
 </resources>

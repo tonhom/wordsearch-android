@@ -37,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +48,7 @@ import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.model.Preferences;
+import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.model.dictionary.DictionaryFactory;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
@@ -125,6 +125,10 @@ public class WordSearchActivityController {
 			new GameOverTask().execute(new Integer[0]);
 		}
 	}
+	private Theme theme = Theme.NIGHTSKY;
+	public Theme getTheme() {
+		return theme;
+	}
 	/**
 	 * sub-control module
 	 */
@@ -165,6 +169,8 @@ public class WordSearchActivityController {
 	private static final String BUNDLE_TIME = "ws_time";
 	private static final String BUNDLE_VIEW = "ws_view";
 	private static final String BUNDLE_GRID = "ws_grid";
+	private static final String BUNDLE_THEME = "ws_theme";
+	private static final String BUNDLE_THEME_STR = "ws_theme_string";
 	private static final String BUNDLE_HIGH_SCORE = "ws_high_score";
 	public int getGridSize() {
 		return grid.getSize();
@@ -185,15 +191,7 @@ public class WordSearchActivityController {
 					letterBox);
 		}
 		{
-			ColorStateList found = wordSearch.getResources().getColorStateList(
-					R.drawable.color_found);
-			ColorStateList picked = wordSearch.getResources()
-					.getColorStateList(R.drawable.color_picked);
-			ColorStateList normal = wordSearch.getResources()
-					.getColorStateList(R.drawable.color_standard);
-			gridManager = new TextViewGridController(this,
-					null,
-					found, picked, normal);
+			gridManager = new TextViewGridController(this);
 		}
 		this.setLetter("l");
 		this.setLetter(null);
@@ -235,6 +233,11 @@ public class WordSearchActivityController {
 
 	public void newWordSearch() {
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
+		String themeStr = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.PREFS_THEME), Theme.ORIGINAL.toString());
+		this.theme = Theme.valueOf(themeStr);
+		if (this.theme == null) {
+			this.theme = Theme.ORIGINAL;
+		}
 		grid = Grid.generateGrid(dictionaryFactory.getDictionary(category), 12, 4, prefs.getSize());
 		wordSearch.setupViewGrid();
 		gridManager.reset(grid);
@@ -248,6 +251,7 @@ public class WordSearchActivityController {
 		timeSum = 0L;
 		hs = null;
 		this.setGrid(grid);
+		getTheme().reset(grid.getWordListLength());
 		wordSearch.trackGame();
 	}
 
@@ -257,6 +261,8 @@ public class WordSearchActivityController {
 
 	public void restoreState(Bundle inState) {
 		if (inState != null) {
+			this.theme = Theme.valueOf(inState.getString(BUNDLE_THEME_STR));
+			this.theme.fromBundle(inState.getBundle(BUNDLE_THEME));
 			Bundle hsBundle = inState.getBundle(BUNDLE_HIGH_SCORE);
 			if (hsBundle != null) {
 				hs = new HighScore(hsBundle);
@@ -280,6 +286,8 @@ public class WordSearchActivityController {
 			outState.putLong(BUNDLE_TIME, this.timeSum);
 			outState.putParcelable(BUNDLE_GRID, this.grid);
 			outState.putBundle(BUNDLE_VIEW, this.gridManager.toBundle());
+			outState.putBundle(BUNDLE_THEME, this.theme.toBundle());
+			outState.putString(BUNDLE_THEME_STR, this.theme.toString());
 			if (this.hs != null) {
 				outState.putBundle(BUNDLE_HIGH_SCORE, this.hs.toBundle());
 			}

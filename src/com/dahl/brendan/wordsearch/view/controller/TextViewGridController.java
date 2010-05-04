@@ -22,7 +22,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,8 +32,10 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.model.ColorState;
 import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Selection;
+import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
 import com.dahl.brendan.wordsearch.view.runnables.ChangeTextViewColor;
@@ -52,19 +53,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	/**
 	 * populated by the setupgridview in {@link WordSearchActivity.java}
 	 */
-	private TextView[][] gridView;
-	/**
-	 * color to set the TextView to when it is part of a found word
-	 */
-	final private ColorStateList colorFound;
-	/**
-	 * color to set the TextView to when it has been picked
-	 */
-	final private ColorStateList colorPicked;
-	/**
-	 * color to set the TextView to when it is reverted to normal
-	 */
-	final private ColorStateList colorNormal;
+	private TextView[][] gridView = null;
 	/**
 	 * overall word search game controller
 	 */
@@ -75,15 +64,6 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	final private Selection selection = new Selection();
 
 	/**
-	 * color to set the next word found as
-	 */
-	private int colorCurrent = Color.rgb(255, 0, 0);
-	/**
-	 * delta used to change colorCurrent between word findings
-	 */
-	private int colorChangeDelta = 250 / 20;
-
-	/**
 	 * width and height of one grid TextView
 	 */
 	private Point pointDemension;
@@ -92,15 +72,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 
 	final private BlockingQueue<MotionEvent> eventsQue = new LinkedBlockingQueue<MotionEvent>();
 
-	protected TextViewGridController(WordSearchActivityController control,
-			TextView[][] gridView,
-			ColorStateList colorFound,
-			ColorStateList colorPicked, ColorStateList colorNormal) {
-		this.gridView = gridView;
+	protected TextViewGridController(WordSearchActivityController control) {
 		this.control = control;
-		this.colorFound = colorFound;
-		this.colorPicked = colorPicked;
-		this.colorNormal = colorNormal;
 		this.eventThread.start();
 	}
 
@@ -300,7 +273,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		}
 		if (!selection.hasBegun()) {// starting
 			selection.setStart(view);
-			setTextViewColor(view, colorPicked);
+			setTextViewColor(view, ColorState.SELECTED);
 		} else if (!view.equals(selection.getStart())
 				&& !view.equals(selection.getEnd())) {
 			Point pointStart = ConversionUtil.convertIDToPoint(selection.getStart().getId(), control.getGridSize());
@@ -318,15 +291,19 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			int lengthOld = Selection.getLength(pointStart, pointEnd);
 			int lengthDiff = length - lengthOld;
 			if (lengthDiff > 0) {// growing
-				this.selectionPaint(pointEnd, pointNew, colorPicked);
+				this.selectionPaint(pointEnd, pointNew, ColorState.SELECTED);
 			} else {// shrinking
 				this.selectionPaint(pointNew, pointEnd, null);
-				this.setTextViewColor(view, colorPicked);
+				this.setTextViewColor(view, ColorState.SELECTED);
 			}
 			selection.setEnd(view);
 		}
 		control.setLetter(selection.getEnd().getText());
 		return true;
+	}
+	
+	private Theme getTheme() {
+		return control.getTheme();
 	}
 	
 	/**
@@ -339,13 +316,10 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			Point pointEnd = ConversionUtil.convertIDToPoint(this.selection.getEnd().getId(), control.getGridSize());
 			String word = control.guessWord(pointStart, pointEnd);
 			if (word == null) {// selection was not a word in the grid so revert the colors of all leters in the selection
-				this.selectionPaint(pointStart, pointEnd, null);
+				this.selectionPaint(pointStart, pointEnd, ColorState.NORMAL);
 			} else {// highlight found word in grid and pass found back to control main
-				this.selectionPaint(pointStart, pointEnd, colorFound);
-				colorCurrent = Color.rgb(
-						Color.red(colorCurrent) - colorChangeDelta, Color
-								.green(colorCurrent), Color.blue(colorCurrent)
-								+ colorChangeDelta);
+				this.selectionPaint(pointStart, pointEnd, ColorState.FOUND);
+				control.getTheme().updateCurrentFound();
 				control.foundWord(word);
 			}
 		}
@@ -362,7 +336,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 * 				colorPicked to set the color to colorPicked
 	 * 				colorFound to set the color to currentColor
 	 */
-	private void selectionPaint(Point pointStart, Point pointEnd, ColorStateList color) {
+	private void selectionPaint(Point pointStart, Point pointEnd, ColorState color) {
 		Point delta = Selection.getDeltas(pointStart, pointEnd);
 		if (delta == null) {
 			return;
@@ -418,8 +392,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 * @param view TextView in the grid to change the color of
 	 * @param color change the view to this color; or pass in null to revert the color to its old color
 	 */
-	private void setTextViewColor(TextView view, ColorStateList color) {
-		view.post(new ChangeTextViewColor(colorFound, colorPicked, colorNormal, colorCurrent, view, color));
+	private void setTextViewColor(TextView view, ColorState color) {
+		view.post(new ChangeTextViewColor(getTheme(), color, view));
 	}
 
 	/**
@@ -427,10 +401,6 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 * @param grid word search model of all the letters in a grid
 	 */
 	public void reset(Grid grid) {
-		if (grid.getWordListLength() != 0) {
-			colorChangeDelta = 250 / grid.getWordListLength();
-		}
-		colorCurrent = Color.rgb(255, 0, 0);
 		eventsQue.clear();
 		Point point = new Point();
 		for (point.y = 0; point.y < gridView.length; point.y++) {
@@ -438,7 +408,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 				gridView[point.y][point.x].setText(grid.getLetterAt(point)
 						.toString());
 				gridView[point.y][point.x].setTag(null);
-				gridView[point.y][point.x].setTextColor(colorNormal);
+				gridView[point.y][point.x].setTextColor(getTheme().normal);
 			}
 		}
 	}
@@ -446,14 +416,10 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	/**
 	 * handles bundle serializing
 	 */
-	final private static String BUNDLE_COLOR_CURRENT = "ws_color_current";
-	final private static String BUNDLE_COLOR_DELTA = "ws_color_delta";
 	final private static String BUNDLE_COLOR_STATE_PREFIX = "ws_color_state_";
 	final private static String BUNDLE_COLOR_STATE_SEP = ":";
 
 	protected void fromBundle(Bundle bundle) {
-		colorCurrent = bundle.getInt(BUNDLE_COLOR_CURRENT);
-		colorChangeDelta = bundle.getInt(BUNDLE_COLOR_DELTA);
 		for (int y = 0; y <gridView.length; y++) {
 			for (int x = 0; x < gridView[y].length; x++) {
 				ColorStateList csl = bundle.getParcelable(BUNDLE_COLOR_STATE_PREFIX+Integer.valueOf(y)+BUNDLE_COLOR_STATE_SEP+Integer.valueOf(x));
@@ -464,12 +430,10 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	
 	protected Bundle toBundle() {
 		Bundle bundle = new Bundle();
-		bundle.putInt(BUNDLE_COLOR_CURRENT, colorCurrent);
-		bundle.putInt(BUNDLE_COLOR_DELTA, colorChangeDelta);
 		for (int y = 0; y <gridView.length; y++) {
 			for (int x = 0; x < gridView[y].length; x++) {
 				TextView view = gridView[y][x];
-				if (view.getTextColors().equals(colorPicked)) {
+				if (view.getTextColors().equals(getTheme().picked)) {
 					this.setTextViewColor(view, null);
 				}
 				bundle.putParcelable(BUNDLE_COLOR_STATE_PREFIX+Integer.valueOf(y)+BUNDLE_COLOR_STATE_SEP+Integer.valueOf(x), view.getTextColors());

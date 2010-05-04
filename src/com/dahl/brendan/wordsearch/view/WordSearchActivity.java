@@ -617,6 +617,9 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		int gridSize = control.getGridSize();
 		TextViewGridController controller = control.getGridManager();
 		ViewGroup gridTable = (ViewGroup) this.findViewById(R.id.gridTable);
+		this.findViewById(R.id.wordsearch_base).setBackgroundResource(control.getTheme().background);
+		((TextView)this.findViewById(R.id.letterBox)).setTextColor(control.getTheme().picked);
+		((TextView)this.findViewById(R.id.wordBox)).setTextColor(control.getTheme().normal);
 		if (gridTable.getChildCount() != gridSize) {
 			if (gridTable.getChildCount() == 0) {
 				gridTable.setKeepScreenOn(true);

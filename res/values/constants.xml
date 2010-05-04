@@ -91,6 +91,27 @@
 		<item>@string/RANDOM</item>
 	</string-array>
 
+	<!-- category preference choices -->
+	<string name="THEME_ORIGINAL">ORIGINAL</string>
+	<string name="THEME_NIGHTSKY">NIGHTSKY</string>
+	<string name="THEME_SKY">SKY</string>
+	<string name="THEME_PINK">PINK</string>
+	<string name="THEME_SEAGREEN">SEAGREEN</string>
+	<string-array name="THEME_VALUES">
+		<item>@string/THEME_ORIGINAL</item>
+		<item>@string/THEME_NIGHTSKY</item>
+		<item>@string/THEME_SKY</item>
+		<item>@string/THEME_PINK</item>
+		<item>@string/THEME_SEAGREEN</item>
+	</string-array>
+	<string-array name="THEME_LABELS">
+		<item>@string/ORIGINAL</item>
+		<item>@string/NIGHTSKY</item>
+		<item>@string/SKY</item>
+		<item>@string/PINK</item>
+		<item>@string/SEAGREEN</item>
+	</string-array>
+
 	<!-- DictionaryType Enum values -->
 	<string name="PLACES">PLACES</string>
 	<string name="ANIMALS">ANIMALS</string>
@@ -109,5 +130,6 @@
 	<string name="prefs_size">size4</string>
 	<string name="prefs_touch_mode">touch_mode1</string>
 	<string name="prefs_category">category1</string>
+	<string name="PREFS_THEME">theme</string>
 
 </resources>
