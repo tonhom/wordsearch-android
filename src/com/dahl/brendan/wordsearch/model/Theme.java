@@ -9,7 +9,7 @@ import com.dahl.brendan.wordsearch.view.R;
 public enum Theme {
 	ORIGINAL(0, Color.parseColor("white"), Color.parseColor("green"), Color.parseColor("yellow"), Color.parseColor("red"), Color.parseColor("blue")),
 	NIGHTSKY(R.drawable.background1, Color.parseColor("white"), Color.parseColor("green"), Color.parseColor("yellow"), Color.parseColor("red"), Color.parseColor("blue")),
-	SKY(R.drawable.background2, Color.parseColor("black"), Color.parseColor("#FF3399"), Color.parseColor("#FF3366"), Color.parseColor("#ff0000"), Color.parseColor("#f0ff00")),
+	SKY(R.drawable.background2, Color.parseColor("black"), Color.parseColor("#33cc33"), Color.parseColor("#00cc00"), Color.parseColor("#ff0000"), Color.parseColor("#f0ff00")),
 	PINK(R.drawable.background3, Color.parseColor("black"), Color.parseColor("#05a9a7"), Color.parseColor("#00d0ce"), Color.parseColor("#0000ff"), Color.parseColor("#00ff00")),
 	SEAGREEN(R.drawable.background4, Color.parseColor("yellow"), Color.parseColor("#ffba00"), Color.parseColor("red"), Color.parseColor("#ff00fc"), Color.parseColor("#ffc000"));
 
@@ -49,6 +49,9 @@ public enum Theme {
 	}
 	
 	public void reset(int count) {
+		if (count == 0) {
+			count = 20;
+		}
 		foundCurrent = foundStart;
 		this.greenDelta = (Color.green(foundEnd)-Color.green(foundStart))/count;
 		this.redDelta = (Color.red(foundEnd)-Color.red(foundStart))/count;

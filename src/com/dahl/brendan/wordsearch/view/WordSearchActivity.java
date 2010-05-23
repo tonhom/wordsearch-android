@@ -41,7 +41,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,7 +49,6 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -82,7 +80,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 
 		@Override
 		protected void onPostExecute(List<HighScore> highScores) {
-			if (pd.isShowing()) {
+			if (!this.isCancelled() && pd.isShowing() && pd.getWindow() != null) {
 				pd.dismiss();
 				if (highScores != null) {
 					StringBuilder str = new StringBuilder();
@@ -129,7 +127,13 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
 				nvps.add(new BasicNameValuePair(Constants.KEY_HIGH_SCORE_THEME, getControl().getCurrentTheme()));
 				httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-				HttpResponse response = httpClient.execute(httpPost);
+				HttpResponse response = null;
+				try {
+					response = httpClient.execute(httpPost);
+				} catch (IllegalStateException ise) {
+					httpClient = AndroidHttpClient.newInstance("wordsearch");
+					response = httpClient.execute(httpPost);
+				}
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				response.getEntity().writeTo(baos);
 				JSONArray json = new JSONArray(baos.toString());
@@ -165,14 +169,14 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 				HttpPost httpPost = new HttpPost(Constants.API_URL_SCORE_SUBMIT);
 				List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 				nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
-				String did = ((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-				if (did == null) {
-					did = "unknown";
-				}
-				nvps.add(new BasicNameValuePair(Constants.KEY_DEVICE_ID, did));
 				nvps.add(new BasicNameValuePair(Constants.KEY_PAYLOAD, hs.toJSON().toString()));
 				httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-				httpClient.execute(httpPost);
+				try {
+					httpClient.execute(httpPost);
+				} catch (IllegalStateException ise) {
+					httpClient = AndroidHttpClient.newInstance("wordsearch");
+					httpClient.execute(httpPost);
+				}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {

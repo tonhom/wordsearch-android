@@ -51,7 +51,7 @@
 	<string name="tutorial_message_trackball3">Roll the trackball to the last letter of the word and click the trackball again to find the word.  The word will change to a different color in the grid and will be removed from the word list.</string>
 	<string name="tutorial_message_tap1">Using your finger, tap the first letter of the word and lift your finger.</string>
 	<string name="tutorial_message_tap2">Using your finger, tap the last letter of the word.  The entire word will be highlighted and the word will be removed from the word list.</string>
-	<string name="tutorial_message_tap3">The letter is not selected until you lift your finger.  If, when you try to tap, you pick the wrong letter, don't lift up your finger--just drag your finger around the screen until you find the correct letter (use the letter box in the top-left corner if you need help) and lift your finger when you are over the correct letter.</string>
+	<string name="tutorial_message_tap3">The letter is not selected until you lift your finger.  If, when you try to tap, you pick the wrong letter, don\'t lift up your finger--just drag your finger around the screen until you find the correct letter (use the letter box in the top-left corner if you need help) and lift your finger when you are over the correct letter.</string>
 	<string name="tutorial_message_tip1">You can also highlight a word starting from the last letter and ending on the first.</string>
 	<string name="tutorial_message_tip2">Use the \"&lt;\" and \"&gt;\" arrows to browse through the words in the current word list.  To change word lists, go to the menu and click on \"Word Bank.\"</string>
 	<string name="tutorial_message_tip3">You can find any word in the word list, not just the one that is currently displayed</string>

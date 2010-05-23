@@ -37,7 +37,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -50,6 +52,7 @@ import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.model.Preferences;
 import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.model.dictionary.DictionaryFactory;
+import com.dahl.brendan.wordsearch.util.AndroidHttpClient;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
 
@@ -65,23 +68,32 @@ public class WordSearchActivityController {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			if (pd.isShowing()) {
+			if (!this.isCancelled() && pd.isShowing() && pd.getWindow() != null) {
 				pd.dismiss();
-				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
 			}
+			wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
 		}
 
 		@Override
 		protected void onPreExecute() {
-			pd.setMessage(wordSearch.getString(R.string.HIGH_SCORE_CALCULATING));
-			pd.setIndeterminate(true);
-			pd.show();
+			ConnectivityManager conman = (ConnectivityManager)wordSearch.getSystemService(Context.CONNECTIVITY_SERVICE);
+			if (getCurrentHighScore() == null || conman.getActiveNetworkInfo() == null || !conman.getActiveNetworkInfo().isConnected()) {
+				this.cancel(true);
+				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+			} else {
+				pd.setMessage(wordSearch.getString(R.string.HIGH_SCORE_CALCULATING));
+				pd.setIndeterminate(true);
+				pd.show();
+			}
 		}
 
 		@Override
 		protected Boolean doInBackground(Integer... res) {
 //			Debug.startMethodTracing("ranking");
 			hs = getCurrentHighScore();
+			if (hs == null) {
+				return false;
+			}
 			LinkedList<HighScore> scores = wordSearch.getControl().getHighScores();
 			scores.add(hs);
 			Collections.sort(scores);
@@ -94,7 +106,13 @@ public class WordSearchActivityController {
 				nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
 				nvps.add(new BasicNameValuePair(Constants.KEY_PAYLOAD, hs.toJSON().toString()));
 				httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-				HttpResponse response = WordSearchActivity.httpClient.execute(httpPost);
+				HttpResponse response = null;
+				try {
+					response = WordSearchActivity.httpClient.execute(httpPost);
+				} catch (IllegalStateException ise) {
+					WordSearchActivity.httpClient = AndroidHttpClient.newInstance("wordsearch");
+					response = WordSearchActivity.httpClient.execute(httpPost);
+				}
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				response.getEntity().writeTo(baos);
 				json = new JSONObject(baos.toString());

@@ -1,3 +1,11 @@
+Version 2.0 (55):
+initial new set of theme options
+new icon (thanks Lindsey)
+remove phone identity permission
+allow 2.2 to install to sd card
+crash fixes for online score system
+improve performance when networking flaky
+
 Version 1.9 (42):
 add online high scores
  - top 10 for past 7 days
