@@ -19,8 +19,6 @@
 package com.dahl.brendan.wordsearch.view.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -28,12 +26,10 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
@@ -71,7 +67,9 @@ public class WordSearchActivityController {
 			if (!this.isCancelled() && pd.isShowing() && pd.getWindow() != null) {
 				pd.dismiss();
 			}
-			wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+			if (result && getCurrentHighScore() != null) {
+				wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+			}
 		}
 
 		@Override
@@ -90,17 +88,14 @@ public class WordSearchActivityController {
 		@Override
 		protected Boolean doInBackground(Integer... res) {
 //			Debug.startMethodTracing("ranking");
-			hs = getCurrentHighScore();
-			if (hs == null) {
-				return false;
-			}
-			LinkedList<HighScore> scores = wordSearch.getControl().getHighScores();
-			scores.add(hs);
-			Collections.sort(scores);
-			int positionLocal = scores.indexOf(hs);
-			hs.setRank(positionLocal);
-			JSONObject json = null;
 			try {
+				hs = getCurrentHighScore();
+				LinkedList<HighScore> scores = wordSearch.getControl().getHighScores();
+				scores.add(hs);
+				Collections.sort(scores);
+				int positionLocal = scores.indexOf(hs);
+				hs.setRank(positionLocal);
+				JSONObject json = null;
 				HttpPost httpPost = new HttpPost(Constants.API_URL_SCORE_RANK);
 				List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 				nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
@@ -118,24 +113,14 @@ public class WordSearchActivityController {
 				json = new JSONObject(baos.toString());
 				hs.setGlobalHighScore(json.getBoolean(Constants.KEY_GLOBAL_HIGH_SCORE));
 				hs.setGlobalRank(json.getInt(Constants.KEY_GLOBAL_RANK));
-			} catch (UnsupportedEncodingException e) {
-				hs.setGlobalRank(-1);
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				hs.setGlobalRank(-1);
-				e.printStackTrace();
-			} catch (IOException e) {
-				hs.setGlobalRank(-1);
-				e.printStackTrace();
-			} catch (JSONException e) {
-				hs.setGlobalRank(-1);
-				e.printStackTrace();
-			} catch (NullPointerException npe) {
-				hs.setGlobalRank(-1);
-				npe.printStackTrace();
+				return true;
+			} catch (Exception e) {
+				if (hs != null) {
+					hs.setGlobalRank(-1);
+				}
+				return false;
 			}
 //			Debug.stopMethodTracing();
-			return true;
 		}
 	}
 	class GameOver implements Runnable {
