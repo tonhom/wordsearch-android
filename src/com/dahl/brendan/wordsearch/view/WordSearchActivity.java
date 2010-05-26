@@ -192,8 +192,13 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	}
 	class DialogGameNewListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
-			if (which == DialogInterface.BUTTON_POSITIVE) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
 				getControl().newWordSearch();
+				break;
+			case DialogInterface.BUTTON_NEUTRAL:
+				getControl().resetGrid();
+				break;
 			}
 		}
 	}
@@ -209,7 +214,9 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 			switch(which) {
 			case DialogInterface.BUTTON_POSITIVE: {
-				new HighScoreSubmitTask(hs).execute(new Integer[0]);
+				if (getControl().isReplaying()) {
+					new HighScoreSubmitTask(hs).execute(new Integer[0]);
+				}
 			}
 			case DialogInterface.BUTTON_NEUTRAL: {
 				LinkedList<HighScore> scores = getControl().getPrefs().getTopScores();
@@ -449,7 +456,8 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(this.getString(R.string.game_over));
 			builder.setPositiveButton(R.string.new_game, DIALOG_LISTENER_GAME_NEW);
-			builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_GAME_NEW);
+			builder.setNeutralButton(R.string.REPLAY, DIALOG_LISTENER_GAME_NEW);
+			builder.setNegativeButton(android.R.string.cancel, DIALOG_LISTENER_GAME_NEW);
 			dialog = builder.create();
 			break;
 		}

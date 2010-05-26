@@ -99,4 +99,6 @@
 <string name="LOCAL">Local</string>
 <string name="LOADING">Cargando</string>
 
+<string name="REPLAY">Repetir</string>
+
 </resources>

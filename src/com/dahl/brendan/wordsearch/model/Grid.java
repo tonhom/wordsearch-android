@@ -152,6 +152,7 @@ public class Grid implements Parcelable {
 	public final Integer size;
 	private final List<Word> wordsHidden = new LinkedList<Word>();
 	private final List<Word> wordsFound = new LinkedList<Word>();
+	private boolean replaying = false;
 
 	public static final Parcelable.Creator<Grid> CREATOR
             = new Parcelable.Creator<Grid>() {
@@ -178,6 +179,7 @@ public class Grid implements Parcelable {
     	for (int index = 0; index < this.gridInternals.length; index++) {
     		this.gridInternals[index] = (char)in.readByte();
     	}
+    	this.replaying = Boolean.valueOf(in.readString());
     }
 
 	private void addWord(Word word) {
@@ -212,6 +214,10 @@ public class Grid implements Parcelable {
 			}
 		}
 		this.letterPoints.clear();
+	}
+
+	public boolean isReplaying() {
+		return replaying;
 	}
 
 	public Character getLetterAt(Point point) {
@@ -251,6 +257,12 @@ public class Grid implements Parcelable {
 			}
 		}
 		return null;
+	}
+	
+	final public void reset() {
+		replaying = true;
+		this.wordsHidden.addAll(this.wordsFound);
+		this.wordsFound.clear();
 	}
 
 	private void setLetterAt(Point point, Character letter) {
@@ -318,6 +330,7 @@ public class Grid implements Parcelable {
     	for (Character c : this.gridInternals) {
     		out.writeByte((byte)c.charValue());
     	}
+    	out.writeString(Boolean.toString(this.replaying));
     }
 
 	public int getSize() {
