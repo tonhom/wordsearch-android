@@ -106,11 +106,15 @@ public class WordSearchActivityController {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			if (!this.isCancelled() && pd.isShowing() && pd.getWindow() != null) {
-				pd.dismiss();
-				if (getCurrentHighScore() != null) {
-					wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+			try {
+				if (!this.isCancelled() && pd.isShowing()) {
+					pd.dismiss();
+					if (getCurrentHighScore() != null) {
+						wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+					}
 				}
+			} catch (IllegalArgumentException iae) {
+				
 			}
 		}
 
