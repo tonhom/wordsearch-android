@@ -1,4 +1,8 @@
-Version 2.0 (55):
+Version 2.0.1 (62):
+replay option (can't submit HS on a replay)
+fix crashes on game over async
+
+Version 2.0 (60):
 initial new set of theme options
 new icon (thanks Lindsey)
 remove phone identity permission

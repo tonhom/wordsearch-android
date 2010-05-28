@@ -39,6 +39,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.WindowManager.BadTokenException;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -113,8 +114,10 @@ public class WordSearchActivityController {
 						wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
 					}
 				}
+			} catch (BadTokenException bte) {
+				// activity no longer displayed
 			} catch (IllegalArgumentException iae) {
-				
+				// activity no longer displayed
 			}
 		}
 
