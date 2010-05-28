@@ -20,6 +20,7 @@ package com.dahl.brendan.wordsearch.view;
 
 import java.util.HashMap;
 
+import android.app.backup.BackupManager;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -182,6 +183,7 @@ public class WordDictionaryProvider extends ContentProvider {
         if (rowId > 0) {
             Uri wordUri = ContentUris.withAppendedId(Word.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(wordUri, null);
+            new BackupManager(this.getContext()).dataChanged();
             return wordUri;
         }
 
@@ -208,6 +210,7 @@ public class WordDictionaryProvider extends ContentProvider {
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
+        new BackupManager(this.getContext()).dataChanged();
         return count;
     }
 
@@ -256,6 +259,7 @@ public class WordDictionaryProvider extends ContentProvider {
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
+        new BackupManager(this.getContext()).dataChanged();
         return count;
     }
 
