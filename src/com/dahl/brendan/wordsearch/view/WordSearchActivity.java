@@ -214,7 +214,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 			switch(which) {
 			case DialogInterface.BUTTON_POSITIVE: {
-				if (getControl().isReplaying()) {
+				if (!getControl().isReplaying()) {
 					new HighScoreSubmitTask(hs).execute(new Integer[0]);
 				}
 			}
@@ -591,7 +591,11 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	protected void onResume() {
 		super.onResume();
 //		Log.v(LOG_TAG, "onResume");
-		control.timeResume();
+		if (control.isGameRunning()) {
+			control.timeResume();
+		} else if (control.getCurrentHighScore() != null) {
+			showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
+		}
 	}
 
 	@Override
@@ -675,4 +679,18 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		}
 	}
 
+	public void trackReplay() {
+		try {
+			String category = control.getPrefs().getCategory();
+			int input = 2;
+			if (control.getPrefs().getTouchMode()) {
+				input = 1;
+			}
+			tracker.trackEvent(category, "replay", appVer, input);
+		} catch (RuntimeException re) {
+			Log.e(LOG_TAG, "tracker failed!");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "tracker failed!");
+		}
+	}
 }

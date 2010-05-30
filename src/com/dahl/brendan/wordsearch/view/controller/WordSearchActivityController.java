@@ -39,6 +39,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Button;
 import android.widget.TextView;
@@ -60,6 +61,8 @@ import com.dahl.brendan.wordsearch.view.WordSearchActivity;
  * controls game logic and sub-control modules for word search activity
  */
 public class WordSearchActivityController {
+	private final static String LOG_TAG = WordSearchActivityController.class.getName();
+
 	class GameOver implements Runnable {
 		public void run() {
 			new GameOverTask().execute(new Integer[0]);
@@ -108,16 +111,18 @@ public class WordSearchActivityController {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			try {
-				if (!this.isCancelled() && pd.isShowing()) {
+				if (pd.isShowing()) {
 					pd.dismiss();
-					if (getCurrentHighScore() != null) {
+					if (getCurrentHighScore() != null && !this.isCancelled() && WordSearchActivityController.this.isVisible()) {
 						wordSearch.showDialog(WordSearchActivity.DIALOG_ID_GAME_OVER);
 					}
 				}
 			} catch (BadTokenException bte) {
 				// activity no longer displayed
+				Log.e(LOG_TAG, bte.getMessage());
 			} catch (IllegalArgumentException iae) {
 				// activity no longer displayed
+				Log.e(LOG_TAG, iae.getMessage());
 			}
 		}
 
@@ -273,6 +278,7 @@ public class WordSearchActivityController {
 		getTheme().reset(grid.getWordListLength());
 		timeSum = 0L;
 		hs = null;
+		wordSearch.trackReplay();
 		wordSearch.trackGame();
 	}
 
@@ -340,6 +346,9 @@ public class WordSearchActivityController {
 		timeStart = System.currentTimeMillis();
 	}
 
+	public boolean isVisible() {
+		return timeStart != 0;
+	}
 	public void updateTouchMode() {
 		this.gridManager.setTouchMode(prefs.getTouchMode());
 	}
