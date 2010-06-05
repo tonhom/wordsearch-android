@@ -217,6 +217,10 @@ public class WordSearchActivityController {
 	public HighScore getCurrentHighScore() {
 		return hs;
 	}
+	
+	public void clearCurrentHighScore() {
+		hs = null;
+	}
 
 	public String getCurrentTheme() {
 		return dictionaryFactory.getCurrentTheme();

@@ -189,6 +189,11 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 //			Debug.stopMethodTracing();
 			return true;
 		}
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			getControl().clearCurrentHighScore();
+		}
 	}
 	class DialogGameNewListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
