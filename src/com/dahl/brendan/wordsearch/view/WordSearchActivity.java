@@ -46,6 +46,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -482,6 +483,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		menu.findItem(R.id.menu_custom).setIcon(android.R.drawable.ic_menu_edit);
 		menu.findItem(R.id.menu_tutorial).setIcon(android.R.drawable.ic_menu_help);
 		menu.findItem(R.id.menu_scores).setIcon(android.R.drawable.ic_menu_gallery);
+		menu.findItem(R.id.menu_donate).setIcon(R.drawable.love);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -571,6 +573,14 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setClass(this, TutorialActivity.class);
 			startActivity(intent);
+			return true;
+		}
+		case R.id.menu_donate:
+		{
+			String url = "http://www.brendandahl.com/wordsearch/donate";
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
 			return true;
 		}
 		default:
