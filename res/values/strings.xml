@@ -76,7 +76,7 @@
 	<string name="prefs_category_summary">Current Word Bank: %replaceme</string>
 	<string name="prefs_touch_mode_summary">Current Input Type: %replaceme</string>
 
-	<string name="CRASH_MSG">"We are very sorry but WordSearch FREE has crashed unexpectedly.\n\nPlease help us make our application better by sending us stack trace"</string>
+	<string name="CRASH_MSG">"We are very sorry but Open WordSearch has crashed unexpectedly.\n\nPlease help us make our application better by sending us stack trace"</string>
 	<string name="CRASH_SENDING_WAIT">Sending Please wait...</string>
 	<string name="PREVIEW">Preview</string>
 	<string name="SEND">Send</string>
