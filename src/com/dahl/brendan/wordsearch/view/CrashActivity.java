@@ -56,22 +56,19 @@ public class CrashActivity extends Activity {
 	private String ver;
 	private String trace;
 	private String aVer;
-	private String pac;
 	private String model;
 
 	private void buildTrace(Intent i) {
 		ver = i.getStringExtra(Constants.APPLICATION_VERSION);
 		aVer = i.getStringExtra(Constants.ANDROID_VERSION);
-		pac = i.getStringExtra(Constants.APPLICATION_PACKAGE);
 		model = i.getStringExtra(Constants.PHONE_MODEL);
 		trace = i.getStringExtra(Constants.APPLICATION_STACKTRACE);
 	}
 
 	private String getPreview() {
-		String preview = "Application ver: ----ver----\nAndroid ver: ----aVer----\nPackage: ----pac----\nPhone model: ----model----\nDetails: ----details----\nStackTrace:\n----trace----";
+		String preview = "Application ver: ----ver----\nAndroid ver: ----aVer----\nPhone model: ----model----\nDetails: ----details----\nStackTrace:\n----trace----";
 		preview = preview.replace("----ver----", ver + "");
 		preview = preview.replace("----aVer----", aVer + "");
-		preview = preview.replace("----pac----", pac + "");
 		preview = preview.replace("----model----", model + "");
 		preview = preview.replace("----details----", getMoreDetails() + "");
 		preview = preview.replace("----trace----", trace + "");
@@ -131,7 +128,6 @@ public class CrashActivity extends Activity {
 			    List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 			    nvps.add(new BasicNameValuePair(Constants.SECURITY_TOKEN, Constants.VALUE_SECRET));
 			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_VERSION, ver));
-			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_PACKAGE, pac));
 			    nvps.add(new BasicNameValuePair(Constants.PHONE_MODEL, model));
 			    nvps.add(new BasicNameValuePair(Constants.ANDROID_VERSION, aVer));
 			    nvps.add(new BasicNameValuePair(Constants.APPLICATION_STACKTRACE, trace));

@@ -23,7 +23,6 @@ public class Constants {
 
 	// intent params
 	public final static String APPLICATION_VERSION = "APPLICATION_VERSION";
-	public final static String APPLICATION_PACKAGE = "APPLICATION_PACKAGE";
 	public final static String APPLICATION_STACKTRACE = "APPLICATION_STACKTRACE";
 	public final static String PHONE_MODEL = "PHONE_MODEL";
 	public final static String ANDROID_VERSION = "ANDROID_VERSION";

@@ -57,8 +57,6 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 			pi = pm.getPackageInfo(context.getPackageName(), 0);
 			intent.putExtra(Constants.APPLICATION_VERSION,
 					pi.versionName);
-			intent.putExtra(Constants.APPLICATION_PACKAGE,
-					pi.packageName);
 			intent.putExtra(Constants.PHONE_MODEL,
 					android.os.Build.MODEL);
 			intent.putExtra(Constants.ANDROID_VERSION,
