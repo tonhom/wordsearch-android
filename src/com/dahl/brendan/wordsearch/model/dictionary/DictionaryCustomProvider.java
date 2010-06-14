@@ -42,11 +42,13 @@ public class DictionaryCustomProvider implements IDictionary {
 	public String getNextWord(int minLength, int maxLength) {
 		Cursor cursor = ctx.getContentResolver().query(Word.CONTENT_URI, new String[] { Word.WORD }, null, null, null);
 		String str = null;
-		if (cursor.getCount() != 0) {
-			cursor.moveToPosition(random.nextInt(cursor.getCount()));
-			str = cursor.getString(0);
+		if (cursor!= null) {
+			if (cursor.getCount() != 0) {
+				cursor.moveToPosition(random.nextInt(cursor.getCount()));
+				str = cursor.getString(0);
+			}
+			cursor.close();
 		}
-		cursor.close();
 		return str;
 	}
 
