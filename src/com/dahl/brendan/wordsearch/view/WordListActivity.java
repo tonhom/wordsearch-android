@@ -24,39 +24,130 @@ import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
+import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
 
 /**
  * 
  * @author Brendan Dahl
- *
- * Activity to allow user to edit the WordDictionaryProvider's database of words
+ * 
+ *         Activity to allow user to edit the WordDictionaryProvider's database
+ *         of words
  */
-public class WordListActivity extends ListActivity implements OnItemClickListener, OnClickListener {
+public class WordListActivity extends ListActivity implements
+		OnItemClickListener, OnClickListener {
+	class ExportListener implements View.OnClickListener, OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				AlertDialog ad = (AlertDialog) dialog;
+				boolean overwrite = ((CheckBox) ad
+						.findViewById(R.id.dialog_io_overwrite)).isChecked();
+				Intent service = new Intent(WordListActivity.this,
+						IOService.class);
+				service.putExtra(IOService.EXTRA_ACTION_TYPE,
+						IOService.ACTION_WRITE);
+				service.putExtra(IOService.EXTRA_FILENAME, ((TextView) ad
+						.findViewById(R.id.dialog_io_filename)).getText());
+				service.putExtra(IOService.EXTRA_OVERWRITE, overwrite);
+				startService(service);
+				break;
+			case DialogInterface.BUTTON_NEUTRAL:
+				break;
+			}
+		}
+
+		public void onClick(View v) {
+			Intent intent = new Intent(Constants.ACTION_PICK_FILE);
+			// Construct URI from file name.
+			intent.setData(Uri.parse("file://" + exportFilename.getText()));
+			// Set fancy title and button (optional)
+			intent.putExtra(Constants.EXTRA_BUTTON_TEXT, getString(R.string.EXPORT));
+			 if (isPickFileIntentAvailable()) {
+				 startActivityForResult(intent, REQUEST_CODE_PICK_FILE_OR_DIRECTORY_EXPORT);
+			 } else {
+					showMissingDialog();
+			 }
+		}
+	}
+	class ImportListener implements View.OnClickListener, OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				AlertDialog ad = (AlertDialog) dialog;
+				boolean overwrite = ((CheckBox) ad.findViewById(R.id.dialog_io_overwrite)).isChecked();
+				Intent service = new Intent(WordListActivity.this, IOService.class);
+				service.putExtra(IOService.EXTRA_ACTION_TYPE, IOService.ACTION_READ);
+				service.putExtra(IOService.EXTRA_FILENAME, ((TextView) ad.findViewById(R.id.dialog_io_filename)).getText());
+				service.putExtra(IOService.EXTRA_OVERWRITE, overwrite);
+				startService(service);
+				break;
+			case DialogInterface.BUTTON_NEUTRAL:
+				break;
+			}
+		}
+
+		public void onClick(View v) {
+			Intent intent = new Intent(Constants.ACTION_PICK_FILE);
+			// Construct URI from file name.
+			intent.setData(Uri.parse("file://" + importFilename.getText()));
+			// Set fancy title and button (optional)
+			intent.putExtra(Constants.EXTRA_BUTTON_TEXT, getString(R.string.IMPORT));
+
+			if (isPickFileIntentAvailable()) {
+				startActivityForResult(intent, REQUEST_CODE_PICK_FILE_OR_DIRECTORY_IMPORT);
+			} else {
+				showMissingDialog();
+			}
+		}
+	}
+
+	public void showMissingDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.MISSING_FILE_MANAGER);
+		builder.setNeutralButton(R.string.DEFAULT, this);
+		builder.setPositiveButton(R.string.custom, new OnClickListener() {
+			public void onClick(DialogInterface arg0, int arg1) {
+				Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=org.openintents.filemanager"));
+				startActivity(intent2);
+			}
+		});
+		builder.show();
+	}
+	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_IMPORT = 1;
+	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_EXPORT = 2;
+
+	public TextView importFilename;
+	public TextView exportFilename;
+
 	public static final int DIALOG_ID_CLICK = 0;
 	public static final int DIALOG_ID_ADD = 1;
 	public static final int DIALOG_ID_NO_WORDS = 2;
+	public static final int DIALOG_ID_IMPORT = 3;
+	public static final int DIALOG_ID_EXPORT = 4;
 	public static final int EDIT_ID = 10;
 	private static final String LOG_TAG = "WordList";
-
 	/**
 	 * text is a field used in edit and add dialogs that is here to allow retrieval from alertdialog
 	 */
@@ -65,10 +156,39 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	 * index of word being edited or inserted by alert dialog
 	 */
 	private long index;
+
 	/**
 	 * constant used in above index to indicate that the dialog is doing an insert
 	 */
 	private static final long INSERT_INDEX = -1L;
+	private boolean isPickFileIntentAvailable() {
+		return this
+				.getPackageManager()
+				.queryIntentActivities(new Intent(Constants.ACTION_PICK_FILE),
+						0).size() > 0;
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK && data != null) {
+			// obtain the filename
+			String filename = data.getDataString();
+			if (filename != null) {
+				// Get rid of URI prefix:
+				if (filename.startsWith("file://")) {
+					filename = filename.substring(7);
+				}
+				switch (requestCode) {
+				case REQUEST_CODE_PICK_FILE_OR_DIRECTORY_IMPORT:
+					importFilename.setText(filename);
+					break;
+				case REQUEST_CODE_PICK_FILE_OR_DIRECTORY_EXPORT:
+					exportFilename.setText(filename);
+					break;
+				}
+			}
+		}
+	}
 
 	public void onClick(DialogInterface dialog, int whichButton) {
 		switch (whichButton) {
@@ -80,26 +200,29 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 		case Dialog.BUTTON_NEUTRAL:
 			break;
 		case Dialog.BUTTON_POSITIVE: {
-			EditText text = (EditText)((AlertDialog)dialog).findViewById(EDIT_ID);
-			String str =text.getText().toString();
+			EditText text = (EditText) ((AlertDialog) dialog)
+					.findViewById(EDIT_ID);
+			String str = text.getText().toString();
 			String str2 = "";
-        	for (int i = 0; i < str.length() && str2.length() <= 10; i++) {
-        		Character c = str.charAt(i);
-        		if (Character.isLetter(c)) {
-            		str2 += Character.toUpperCase(c);
-        		}
-        	}
+			for (int i = 0; i < str.length() && str2.length() <= 10; i++) {
+				Character c = str.charAt(i);
+				if (Character.isLetter(c)) {
+					str2 += Character.toUpperCase(c);
+				}
+			}
 			if (str2 != null && str2.trim().length() >= 4) {
 				ContentValues values = new ContentValues();
 				values.put(Word.WORD, str2);
 				if (index == INSERT_INDEX) {
 					getContentResolver().insert(getIntent().getData(), values);
 				} else {
-					Uri uri = ContentUris.withAppendedId(getIntent().getData(), index);
+					Uri uri = ContentUris.withAppendedId(getIntent().getData(),
+							index);
 					getContentResolver().update(uri, values, null, null);
 				}
 			} else {
-				Toast.makeText(this, R.string.invalid_word, Toast.LENGTH_LONG).show();
+				Toast.makeText(this, R.string.invalid_word, Toast.LENGTH_LONG)
+						.show();
 			}
 			break;
 		}
@@ -118,7 +241,8 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
-			Uri wordUri = ContentUris.withAppendedId(getIntent().getData(), info.id);
+			Uri wordUri = ContentUris.withAppendedId(getIntent().getData(),
+					info.id);
 			getContentResolver().delete(wordUri, null, null);
 			return true;
 		}
@@ -136,7 +260,8 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 			intent.setData(Word.CONTENT_URI);
 		}
 
-		Cursor cursor = managedQuery(getIntent().getData(), new String[] { Word._ID, Word.WORD }, null, null, Word.DEFAULT_SORT_ORDER);
+		Cursor cursor = managedQuery(getIntent().getData(), new String[] {
+				Word._ID, Word.WORD }, null, null, Word.DEFAULT_SORT_ORDER);
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
 				android.R.layout.simple_list_item_1, cursor,
 				new String[] { Word.WORD }, new int[] { android.R.id.text1 });
@@ -163,7 +288,8 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 
 			Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
 			if (cursor == null) {
-				// For some reason the requested item isn't available, do nothing
+				// For some reason the requested item isn't available, do
+				// nothing
 				return;
 			}
 			this.getMenuInflater().inflate(R.menu.wordlist_context, menu);
@@ -175,7 +301,7 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		Dialog dialog;
-		switch(id) {
+		switch (id) {
 		case DIALOG_ID_CLICK: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setView(text);
@@ -205,6 +331,40 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 			dialog = builder.create();
 			break;
 		}
+		case DIALOG_ID_IMPORT: {
+			ImportListener listener = new ImportListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			ViewGroup view = (ViewGroup) this.getLayoutInflater().inflate(
+					R.layout.dialog_io, null);
+			builder.setView(view);
+			builder.setPositiveButton(R.string.IMPORT, listener);
+			builder.setNeutralButton(android.R.string.cancel, listener);
+			dialog = builder.create();
+			((Button) view.findViewById(R.id.dialog_io_browse))
+					.setOnClickListener(listener);
+			importFilename = (TextView) view
+					.findViewById(R.id.dialog_io_filename);
+			importFilename.setText(Constants.DEFAULT_FILE_LOCATION);
+			((CheckBox) view.findViewById(R.id.dialog_io_overwrite))
+					.setText(R.string.IMPORT_OVERWRITE);
+			break;
+		}
+		case DIALOG_ID_EXPORT: {
+			ExportListener listener = new ExportListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			ViewGroup view = (ViewGroup) this.getLayoutInflater().inflate(
+					R.layout.dialog_io, null);
+			builder.setView(view);
+			builder.setPositiveButton(R.string.EXPORT, listener);
+			builder.setNeutralButton(android.R.string.cancel, listener);
+			dialog = builder.create();
+			((Button) view.findViewById(R.id.dialog_io_browse))
+					.setOnClickListener(listener);
+			exportFilename = (TextView) view
+					.findViewById(R.id.dialog_io_filename);
+			exportFilename.setText(Constants.DEFAULT_FILE_LOCATION);
+			break;
+		}
 		default:
 			dialog = super.onCreateDialog(id);
 			break;
@@ -218,13 +378,18 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 		menu.findItem(R.id.menu_insert).setIcon(android.R.drawable.ic_menu_add);
 		menu.findItem(R.id.menu_quit).setIcon(
 				android.R.drawable.ic_menu_close_clear_cancel);
+		menu.findItem(R.id.menu_import).setIcon(
+				android.R.drawable.ic_menu_upload);
+		menu.findItem(R.id.menu_export)
+				.setIcon(android.R.drawable.ic_menu_save);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
 	 * called when editing a word in the list
 	 */
-	public void onItemClick(AdapterView<?> data, View view, int position, long rowid) {
+	public void onItemClick(AdapterView<?> data, View view, int position,
+			long rowid) {
 		index = rowid;
 		text.setText(((TextView) view).getText());
 		this.showDialog(DIALOG_ID_CLICK);
@@ -239,6 +404,12 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 		case R.id.menu_insert:
 			this.showDialog(DIALOG_ID_ADD);
 			return true;
+		case R.id.menu_import:
+			this.showDialog(DIALOG_ID_IMPORT);
+			return true;
+		case R.id.menu_export:
+			this.showDialog(DIALOG_ID_EXPORT);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -246,10 +417,11 @@ public class WordListActivity extends ListActivity implements OnItemClickListene
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		super.onPrepareDialog(id, dialog);
-		switch(id) {
+		switch (id) {
 		case DIALOG_ID_ADD: {
 			index = INSERT_INDEX;
-			EditText text = (EditText)((AlertDialog)dialog).findViewById(EDIT_ID);
+			EditText text = (EditText) ((AlertDialog) dialog)
+					.findViewById(EDIT_ID);
 			text.setText("");
 			break;
 		}

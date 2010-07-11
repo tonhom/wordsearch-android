@@ -111,4 +111,14 @@
 	
 	<string name="REPLAY">Replay</string>
 	<string name="DONATE">Donate</string>
+	
+	<string name="IMPORT">Import</string>
+	<string name="EXPORT">Export</string>
+	<string name="REPLACEALL">Replace All</string>
+	<string name="OVERWRITE">Overwrite</string>
+	<string name="IMPORT_OVERWRITE">Overwrite, Warning: this will remove existing custom words</string>
+	<string name="BROWSE">Browse</string>
+	<string name="DEFAULT">Default</string>
+	<string name="MISSING_FILE_MANAGER">Please install OI File Manager to pick a custom file location, else use the default location</string>
+
 </resources>

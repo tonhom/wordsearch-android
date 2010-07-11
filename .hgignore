@@ -2,9 +2,6 @@
 syntax: glob
 bin/*
 gen/*
-#assets/*
-#res/drawable/*.png
-#res/values/word*.xml
 *~
 
 default.properties

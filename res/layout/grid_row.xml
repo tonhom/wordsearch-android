@@ -7,4 +7,3 @@
   android:orientation="horizontal"
   android:gravity="center"
   android:focusable="false"/>
-

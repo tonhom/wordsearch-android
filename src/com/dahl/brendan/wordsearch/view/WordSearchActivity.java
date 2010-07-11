@@ -360,7 +360,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		DefaultExceptionHandler.register(this,CrashActivity.class);
+		DefaultExceptionHandler.register(this.getApplicationContext(),CrashActivity.class);
 		try {
 			tracker = GoogleAnalyticsTracker.getInstance();
 		} catch (RuntimeException re) {
