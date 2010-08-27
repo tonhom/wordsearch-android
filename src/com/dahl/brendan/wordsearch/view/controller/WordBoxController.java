@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.runnables.UpdateLetterBox;
 import com.dahl.brendan.wordsearch.view.runnables.UpdateWordBox;
@@ -35,7 +36,7 @@ import com.dahl.brendan.wordsearch.view.runnables.UpdateWordBox;
  *
  * handles the logic of displaying the words that the user is to hunt in the grid
  */
-public class WordBoxController implements OnClickListener {
+public class WordBoxController implements OnClickListener, WordBoxControllerI {
 	final private Button next;
 	final private Button prev;
 	final private TextView wordBox;
@@ -71,12 +72,7 @@ public class WordBoxController implements OnClickListener {
 		updateWordBox();
 	}
 
-	/**
-	 * resets the list of words available to the user
-	 * 
-	 * @param wordList new list of available words
-	 */
-	protected void resetWords(LinkedList<String> wordList) {
+	public void resetWords(LinkedList<String> wordList) {
 		this.words = wordList;
 		this.wordFound = words.size();
 		this.wordsIndex = 0;
@@ -99,33 +95,27 @@ public class WordBoxController implements OnClickListener {
 		prev.post(new UpdateWordBox(prev, next, wordBox, prevEnabled, nextEnabled, text));
 	}
 
-	/**
-	 * 
-	 * @param charSequence sets the letter to show the user which letter is being touched
-	 * 						null to hide the preview letter
-	 */
-	protected void setLetter(CharSequence charSequence) {
+	public void setLetter(CharSequence charSequence) {
 		prev.post(new UpdateLetterBox(charSequence, prev, letterBox));
 	}
 	
-	/**
-	 * removes a word from the list of words to find
-	 * 
-	 * @param str word to remove the list of words
-	 * @return number of words left to find
-	 */
-	protected int wordFound(String str) {
+	public int wordFound(String str) {
 		words.remove(str);
 		wordsIndex = 0;
 		this.updateWordBox();
 		return words.size();
 	}
 
-	protected int wordsLeft() {
+	public int wordsLeft() {
 		return words.size();
 	}
 
-	public int getWordsFount() {
+	public int getWordsFound() {
 		return this.wordFound;
+	}
+	
+	public void updateTheme(Theme theme) {
+		this.letterBox.setTextColor(theme.picked);
+		this.wordBox.setTextColor(theme.normal);
 	}
 }

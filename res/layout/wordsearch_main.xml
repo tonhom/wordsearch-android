@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:paddingLeft="@dimen/grid_padding"
+		android:paddingRight="@dimen/grid_padding"
+		android:paddingBottom="@dimen/grid_padding"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:id="@+id/wordsearch_base">
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,28 +31,8 @@
 			android:text="" android:textSize="@dimen/word_box"
 			android:layout_toLeftOf="@id/next" android:layout_toRightOf="@id/ViewFlipper" />
 	</RelativeLayout>
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
-			android:width="5sp"
-			android:id="@+id/paddingLeft"/>
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			android:id="@+id/gridTable" android:layout_width="fill_parent"
-			android:orientation="vertical"
-			android:layout_height="fill_parent"/>
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
-			android:width="5sp"
-			android:id="@+id/paddingRight"/>
-	</LinearLayout>
-	<TextView
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:height="5sp"
-		android:id="@+id/paddingBottom"/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/gridTable" android:layout_width="fill_parent"
+		android:orientation="vertical"
+		android:layout_height="fill_parent"/>
 </LinearLayout>

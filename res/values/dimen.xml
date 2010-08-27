@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<dimen name="grid_padding">5sp</dimen>
 	<dimen name="button">20sp</dimen>
+	<dimen name="wordlist_view">16sp</dimen>
 	<dimen name="grid_view">28sp</dimen>
 	<dimen name="word_box">32sp</dimen>
 	<dimen name="letter_box">35sp</dimen>

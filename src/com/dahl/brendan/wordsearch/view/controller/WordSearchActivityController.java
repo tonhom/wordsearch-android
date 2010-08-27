@@ -42,6 +42,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dahl.brendan.wordsearch.Constants;
@@ -143,7 +144,7 @@ public class WordSearchActivityController {
 	/**
 	 * sub-control module
 	 */
-	private WordBoxController wordBoxManager;
+	private WordBoxControllerI wordBoxManager;
 	/**
 	 * sub-control module
 	 */
@@ -190,12 +191,16 @@ public class WordSearchActivityController {
 		dictionaryFactory = new DictionaryFactory(this.wordSearch);
 		{
 			TextView wordBox = (TextView) wordSearch.findViewById(R.id.wordBox);
-			TextView letterBox = (TextView) wordSearch
-					.findViewById(R.id.letterBox);
-			Button prev = (Button) wordSearch.findViewById(R.id.prev);
-			Button next = (Button) wordSearch.findViewById(R.id.next);
-			wordBoxManager = new WordBoxController(prev, next, wordBox,
-					letterBox);
+			if (wordBox != null) {
+				TextView letterBox = (TextView) wordSearch.findViewById(R.id.letterBox);
+				Button prev = (Button) wordSearch.findViewById(R.id.prev);
+				Button next = (Button) wordSearch.findViewById(R.id.next);
+				wordBoxManager = new WordBoxController(prev, next, wordBox, letterBox);
+			} else {
+				ListView wordList = (ListView) wordSearch.findViewById(R.id.wordList);
+				TextView letterBox = (TextView) wordSearch.findViewById(R.id.letterBox);
+				wordBoxManager = new WordBoxControllerLand(wordSearch.getApplicationContext(), wordList, letterBox);
+			}
 		}
 		{
 			gridManager = new TextViewGridController(this);
@@ -331,7 +336,7 @@ public class WordSearchActivityController {
 	}
 
 	private void setHighScore(long time) {
-		hs = new HighScore(time, getGridSize(), dictionaryFactory.getCurrentTheme(), this.wordBoxManager.getWordsFount());
+		hs = new HighScore(time, getGridSize(), dictionaryFactory.getCurrentTheme(), this.wordBoxManager.getWordsFound());
 		wordSearch.runOnUiThread(new GameOver());
 	}
 
@@ -359,5 +364,9 @@ public class WordSearchActivityController {
 
 	public boolean isReplaying() {
 		return grid.isReplaying();
+	}
+
+	public void updateTheme() {
+		this.wordBoxManager.updateTheme(getTheme());
 	}
 }

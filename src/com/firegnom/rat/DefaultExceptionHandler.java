@@ -55,14 +55,10 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pi;
 			pi = pm.getPackageInfo(context.getPackageName(), 0);
-			intent.putExtra(Constants.APPLICATION_VERSION,
-					pi.versionName);
-			intent.putExtra(Constants.PHONE_MODEL,
-					android.os.Build.MODEL);
-			intent.putExtra(Constants.ANDROID_VERSION,
-					android.os.Build.VERSION.RELEASE);
-			intent.putExtra(Constants.APPLICATION_STACKTRACE, result
-					.toString());
+			intent.putExtra(Constants.APPLICATION_VERSION, pi.versionName);
+			intent.putExtra(Constants.PHONE_MODEL, android.os.Build.MODEL);
+			intent.putExtra(Constants.ANDROID_VERSION, android.os.Build.VERSION.RELEASE);
+			intent.putExtra(Constants.APPLICATION_STACKTRACE, result.toString());
 
 		} catch (NameNotFoundException ex) {
 			ex.printStackTrace();
