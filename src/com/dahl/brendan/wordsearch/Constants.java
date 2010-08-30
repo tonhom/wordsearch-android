@@ -5,6 +5,8 @@ import java.io.File;
 import android.os.Environment;
 
 public class Constants {
+	public static final int DONATE_GAME_PLAY_COUNT = 10;
+
 	public static final String API_URL_BASE = "http://wordsearchapp.brendandahl.com/app/";
 	public static final String API_URL_CRASH = API_URL_BASE + "crash";
 	private static final String API_URL_SCORE = API_URL_BASE + "score";
@@ -24,6 +26,8 @@ public class Constants {
 	public static final String KEY_PAYLOAD = "payload";
 	public static final String KEY_DEVICE_ID = "KEY_DEVICE_ID";
 	public static final String KEY_INTRO_VER = "intro_app_ver";
+	public static final String KEY_DONATE_IGNORE = "di";
+	public static final String KEY_GAME_PLAY_COUNT = "gpc";
 
 	// intent params
 	public final static String APPLICATION_VERSION = "APPLICATION_VERSION";

@@ -1,7 +1,6 @@
 package com.dahl.brendan.wordsearch.view.controller;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.runnables.UpdateLetterBoxLand;
@@ -37,24 +37,26 @@ public class WordBoxControllerLand extends ArrayAdapter<String> implements WordB
 	
 	public int wordFound(String str) {
 		this.wordsFound.add(str);
+		this.remove(str);
+		this.add(str);
 		this.wordListView.post(new UpdateWordList(this));
 		return wordsLeft();
 	}
 
-	public void resetWords(LinkedList<String> wordList) {
+	public void resetWords(Grid grid) {
 		this.wordsFound.clear();
 		this.clear();
-		for (String str : wordList) {
+		for (String str : grid.getWordList()) {
 			this.add(str);
+		}
+		for (String str : grid.getWordFound()) {
+			this.add(str);
+			this.wordsFound.add(str);
 		}
 	}
 
 	public int wordsLeft() {
 		return this.getCount()-this.wordsFound.size();
-	}
-
-	public int getWordsFound() {
-		return this.wordsFound.size();
 	}
 
 	public void updateTheme(Theme theme) {

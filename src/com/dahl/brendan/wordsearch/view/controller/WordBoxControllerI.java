@@ -1,7 +1,6 @@
 package com.dahl.brendan.wordsearch.view.controller;
 
-import java.util.LinkedList;
-
+import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Theme;
 
 public interface WordBoxControllerI {
@@ -25,10 +24,8 @@ public interface WordBoxControllerI {
 	 * 
 	 * @param wordList new list of available words
 	 */
-	public void resetWords(LinkedList<String> wordList);
+	public void resetWords(Grid grid);
 
-	public int wordsLeft();
-	public int getWordsFound();
-	
+	public int wordsLeft();	
 	public void updateTheme(Theme theme);
 }

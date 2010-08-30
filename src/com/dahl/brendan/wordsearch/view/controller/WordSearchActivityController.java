@@ -278,6 +278,7 @@ public class WordSearchActivityController {
 		this.setGrid(grid);
 		getTheme().reset(grid.getWordListLength());
 		wordSearch.trackGame();
+		this.prefs.increaseGamePlayCount();
 	}
 
 	public void resetGrid() {
@@ -331,12 +332,12 @@ public class WordSearchActivityController {
 	}
 
 	private void setGrid(Grid grid) {
-		wordBoxManager.resetWords(grid.getWordList());
+		wordBoxManager.resetWords(grid);
 		timeStart = System.currentTimeMillis();
 	}
 
 	private void setHighScore(long time) {
-		hs = new HighScore(time, getGridSize(), dictionaryFactory.getCurrentTheme(), this.wordBoxManager.getWordsFound());
+		hs = new HighScore(time, getGridSize(), dictionaryFactory.getCurrentTheme(), this.grid.getWordListLength());
 		wordSearch.runOnUiThread(new GameOver());
 	}
 

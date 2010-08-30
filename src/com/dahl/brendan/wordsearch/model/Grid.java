@@ -232,9 +232,17 @@ public class Grid implements Parcelable {
 		return points;
 	}
 
-	public LinkedList<String> getWordList() {
+	public List<String> getWordList() {
 		LinkedList<String> lists = new LinkedList<String>();
 		for (Word word : wordsHidden) {
+			lists.add(new String(word.getString()));
+		}
+		return lists;
+	}
+
+	public List<String> getWordFound() {
+		LinkedList<String> lists = new LinkedList<String>();
+		for (Word word : wordsFound) {
 			lists.add(new String(word.getString()));
 		}
 		return lists;

@@ -43,7 +43,6 @@ public class Preferences {
 	private static final String PREFS_SCORE_SIZE = "score_size";
 	private static final String PREFS_SCORE = "score";
 	private static final String PREFS_SEPARATOR = ":";
-//	private static final String LOG_TAG = "Preferences";
 	private final SharedPreferences settings_scores;
 	private final SharedPreferences settings;
 
@@ -168,5 +167,26 @@ public class Preferences {
 	
 	public String getDefaultName() {
 		return settings.getString(PREFS_SCORE_DEFAULT_NAME, "");
+	}
+
+	public void increaseGamePlayCount() {
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt(Constants.KEY_GAME_PLAY_COUNT, getGamePlayCount()+1);
+		editor.commit();
+	}
+
+	public Integer getGamePlayCount() {
+		return settings.getInt(Constants.KEY_GAME_PLAY_COUNT, 0);
+	}
+
+	
+	public Boolean isDonateIngored() {
+		return settings.getBoolean(Constants.KEY_DONATE_IGNORE, false);
+	}
+
+	public void setDonateIgnore() {
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean(Constants.KEY_DONATE_IGNORE, true);
+		editor.commit();
 	}
 }

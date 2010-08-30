@@ -18,13 +18,14 @@
 
 package com.dahl.brendan.wordsearch.view.controller;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.view.R;
 import com.dahl.brendan.wordsearch.view.runnables.UpdateLetterBox;
@@ -41,9 +42,8 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 	final private Button prev;
 	final private TextView wordBox;
 	final private TextView letterBox;
-	private LinkedList<String> words;
+	private List<String> words;
 	private int wordsIndex = 0;
-	private int wordFound;
 
 	protected WordBoxController(Button prev, Button next, TextView wordBox, TextView letterBox) {
 		this.letterBox = letterBox;
@@ -72,9 +72,8 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 		updateWordBox();
 	}
 
-	public void resetWords(LinkedList<String> wordList) {
-		this.words = wordList;
-		this.wordFound = words.size();
+	public void resetWords(Grid grid) {
+		this.words = grid.getWordList();
 		this.wordsIndex = 0;
 		this.updateWordBox();
 	}
@@ -110,10 +109,6 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 		return words.size();
 	}
 
-	public int getWordsFound() {
-		return this.wordFound;
-	}
-	
 	public void updateTheme(Theme theme) {
 		this.letterBox.setTextColor(theme.picked);
 		this.wordBox.setTextColor(theme.normal);

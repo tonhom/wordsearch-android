@@ -121,4 +121,9 @@
 	<string name="DEFAULT">Default</string>
 	<string name="MISSING_FILE_MANAGER">Please install OI File Manager to pick a custom file location, else use the default location</string>
 
+	<string name="INTRO_DONATE_MSG">We, the developers, are glad you enjoy this game. Please consider donating to support this open source development.</string>
+	<string name="DONATE_MSG">Please consider donating to support this project\'s development. There is a donate app in the market, or you can use Paypal or Google Checkout through our website.</string>
+	<string name="DONATE_MARKET">Market Donation</string>
+	<string name="DONATE_WEB">Website Donation</string>
+	<string name="DONATE_NO">Maybe Later</string>
 </resources>

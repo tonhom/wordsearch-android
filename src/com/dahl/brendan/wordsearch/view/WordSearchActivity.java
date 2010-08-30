@@ -316,11 +316,56 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			}
 		}
 	}
+	class DialogDonateListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE: {
+				String url = "market://search?q=pname:com.dahl.brendan.donate";
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				startActivity(i);
+				break;
+			}
+			case DialogInterface.BUTTON_NEUTRAL: {
+				String url = "http://www.brendandahl.com/wordsearch/donate";
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				startActivity(i);
+				break;
+			}
+			case DialogInterface.BUTTON_NEGATIVE: {
+				break;
+			}
+			default:
+				break;
+			}
+			control.getPrefs().setDonateIgnore();
+		}
+	}
+	class DialogIntroDonateListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE: {
+				showDialog(DIALOG_ID_DONATE);
+				break;
+			}
+			case DialogInterface.BUTTON_NEGATIVE: {
+				control.getPrefs().setDonateIgnore();
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
 	final public static int DIALOG_ID_NO_WORDS = 0;
 	final public static int DIALOG_ID_NO_WORDS_CUSTOM = 1;
 	final public static int DIALOG_ID_GAME_OVER = 2;
 	final public static int DIALOG_ID_HIGH_SCORES_LOCAL_SHOW = 3;
 	final public static int DIALOG_ID_GAME_NEW = 5;
+	final public static int DIALOG_ID_INTRO_INPUT_TYPE = 6;
+	final public static int DIALOG_ID_INTRO_DONATE = 7;
+	final public static int DIALOG_ID_DONATE = 8;
 
 	final private static String LOG_TAG = "WordSearchActivity";
 	/**
@@ -334,26 +379,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		return control;
 	}
 
-	/**
-	 * onclick for alert dialog on no words alerts
-	 */
-	public void onClick(DialogInterface dialog, int which) {
-		switch (which) {
-		case DialogInterface.BUTTON_POSITIVE:
-			Intent intent = new Intent(Intent.ACTION_EDIT, com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word.CONTENT_URI);
-			intent.setType(com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word.CONTENT_TYPE);
-			startActivity(intent);
-			break;
-		case DialogInterface.BUTTON_NEUTRAL:
-			break;
-		case DialogInterface.BUTTON_NEGATIVE:
-			startActivity(new Intent(this, WordSearchPreferences.class));
-			break;
-		default:
-			break;
-		}
-	}
-	
 	public static AndroidHttpClient httpClient = null;
 	
 	/** Called when the activity is first created. */
@@ -388,14 +413,10 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		{
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 			if (!appVer.equals(sp.getString(Constants.KEY_INTRO_VER, null)) && sp.getString(getString(R.string.prefs_touch_mode), null) == null) {
-				final DialogIntroListener DIALOG_LISTENER_INTRO = new DialogIntroListener();
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage(R.string.INTRO);
-				builder.setPositiveButton(R.string.tap, DIALOG_LISTENER_INTRO);
-				builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_INTRO);
-				builder.setNegativeButton(R.string.drag, DIALOG_LISTENER_INTRO);
-				builder.show();
+				this.showDialog(DIALOG_ID_INTRO_INPUT_TYPE);
 				sp.edit().putString(Constants.KEY_INTRO_VER, appVer).commit();
+			} else if (control.getPrefs().getGamePlayCount() >= Constants.DONATE_GAME_PLAY_COUNT && !control.getPrefs().isDonateIngored()) {
+				this.showDialog(DIALOG_ID_INTRO_DONATE);
 			}
 		}
 		httpClient = AndroidHttpClient.newInstance("wordsearch");
@@ -464,6 +485,35 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 			builder.setPositiveButton(R.string.new_game, DIALOG_LISTENER_GAME_NEW);
 			builder.setNeutralButton(R.string.REPLAY, DIALOG_LISTENER_GAME_NEW);
 			builder.setNegativeButton(android.R.string.cancel, DIALOG_LISTENER_GAME_NEW);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_INTRO_INPUT_TYPE: {
+			final DialogIntroListener DIALOG_LISTENER_INTRO = new DialogIntroListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.INTRO);
+			builder.setPositiveButton(R.string.tap, DIALOG_LISTENER_INTRO);
+			builder.setNeutralButton(android.R.string.cancel, DIALOG_LISTENER_INTRO);
+			builder.setNegativeButton(R.string.drag, DIALOG_LISTENER_INTRO);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_INTRO_DONATE: {
+			final DialogInterface.OnClickListener LISTENER = new DialogIntroDonateListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.INTRO_DONATE_MSG);
+			builder.setPositiveButton(R.string.DONATE, LISTENER);
+			builder.setNegativeButton(R.string.DONATE_NO, LISTENER);
+			dialog = builder.create();
+			break;
+		}
+		case DIALOG_ID_DONATE: {
+			final DialogInterface.OnClickListener LISTENER = new DialogDonateListener();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.DONATE_MSG);
+			builder.setPositiveButton(R.string.DONATE_MARKET, LISTENER);
+			builder.setNeutralButton(R.string.DONATE_WEB, LISTENER);
+			builder.setNegativeButton(R.string.DONATE_NO, LISTENER);
 			dialog = builder.create();
 			break;
 		}
@@ -577,10 +627,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		}
 		case R.id.menu_donate:
 		{
-			String url = "http://www.brendandahl.com/wordsearch/donate";
-			Intent i = new Intent(Intent.ACTION_VIEW);
-			i.setData(Uri.parse(url));
-			startActivity(i);
+			this.showDialog(DIALOG_ID_DONATE);
 			return true;
 		}
 		default:
