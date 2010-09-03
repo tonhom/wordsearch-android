@@ -8,7 +8,17 @@
 		android:layout_width="110sp"
 		android:layout_height="fill_parent"
 		>
-		<include android:id="@+id/letterBox" layout="@layout/wordlist_text_view" />
+		<TextView
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:id="@+id/letterBox"
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:gravity="center"
+			  android:focusable="true"
+			  android:saveEnabled="false"
+			  android:inputType="none"
+			  android:typeface="monospace"
+			  android:textSize="@dimen/letterbox_list"/>
 		<ListView xmlns:android="http://schemas.android.com/apk/res/android"
 			android:id="@+id/wordList"
 			android:layout_width="fill_parent"
