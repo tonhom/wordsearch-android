@@ -320,7 +320,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		public void onClick(DialogInterface dialog, int which) {
 			switch (which) {
 			case DialogInterface.BUTTON_POSITIVE: {
-				String url = "market://search?q=pname:com.dahl.brendan.donate";
+				String url = "market://details?id=com.dahl.brendan.donate";
 				Intent i = new Intent(Intent.ACTION_VIEW);
 				i.setData(Uri.parse(url));
 				startActivity(i);
