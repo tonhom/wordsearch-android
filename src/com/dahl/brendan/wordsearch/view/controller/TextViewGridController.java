@@ -405,8 +405,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		Point point = new Point();
 		for (point.y = 0; point.y < gridView.length; point.y++) {
 			for (point.x = 0; point.x < gridView[point.y].length; point.x++) {
-				gridView[point.y][point.x].setText(grid.getLetterAt(point)
-						.toString());
+				gridView[point.y][point.x].setText(grid.getLetterAt(point).toString());
 				gridView[point.y][point.x].setTag(null);
 				gridView[point.y][point.x].setTextColor(getTheme().normal);
 			}
@@ -433,8 +432,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		for (int y = 0; y <gridView.length; y++) {
 			for (int x = 0; x < gridView[y].length; x++) {
 				TextView view = gridView[y][x];
-				if (view.getTextColors().equals(getTheme().picked)) {
-					this.setTextViewColor(view, null);
+				if (getTheme().picked.equals(view.getTextColors())) {
+					new ChangeTextViewColor(getTheme(), null, view).run();
 				}
 				bundle.putParcelable(BUNDLE_COLOR_STATE_PREFIX+Integer.valueOf(y)+BUNDLE_COLOR_STATE_SEP+Integer.valueOf(x), view.getTextColors());
 			}

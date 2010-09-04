@@ -37,22 +37,14 @@ public class WordBoxControllerLand extends ArrayAdapter<String> implements WordB
 	
 	public int wordFound(String str) {
 		this.wordsFound.add(str);
-		this.remove(str);
-		this.add(str);
-		this.wordListView.post(new UpdateWordList(this));
+		this.wordListView.post(new UpdateWordList(this, str, null));
 		return wordsLeft();
 	}
 
 	public void resetWords(Grid grid) {
 		this.wordsFound.clear();
-		this.clear();
-		for (String str : grid.getWordList()) {
-			this.add(str);
-		}
-		for (String str : grid.getWordFound()) {
-			this.add(str);
-			this.wordsFound.add(str);
-		}
+		this.wordsFound.addAll(grid.getWordFound());
+		this.wordListView.post(new UpdateWordList(this, null, grid));
 	}
 
 	public int wordsLeft() {
@@ -62,7 +54,7 @@ public class WordBoxControllerLand extends ArrayAdapter<String> implements WordB
 	public void updateTheme(Theme theme) {
 		this.theme = theme;
 		this.letterBox.setTextColor(theme.picked);
-		this.wordListView.post(new UpdateWordList(this));
+		this.wordListView.post(new UpdateWordList(this, null, null));
 	}
 
 	public long getItemId(int position) {
