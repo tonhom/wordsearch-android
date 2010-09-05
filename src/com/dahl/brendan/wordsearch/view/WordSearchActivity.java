@@ -75,7 +75,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
  *
  * Activity for the word search game itself
  */
-public class WordSearchActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class WordSearchActivity extends Activity {
 	class StartHighScoreGlobalTask extends AsyncTask<Integer, Integer, List<HighScore>> {
 		final private ProgressDialog pd = new ProgressDialog(WordSearchActivity.this);
 
@@ -242,7 +242,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	class DialogHighScoresGlobalShowListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
 			if (which == DialogInterface.BUTTON_NEGATIVE) {
-				getControl().resetScores();
+				control.getPrefs().resetTopScores();
 			}
 			if (which == DialogInterface.BUTTON_POSITIVE) {
 				showDialog(WordSearchActivity.DIALOG_ID_HIGH_SCORES_LOCAL_SHOW);
@@ -254,7 +254,7 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 	class DialogHighScoresLocalShowListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
 			if (which == DialogInterface.BUTTON_NEGATIVE) {
-				getControl().resetScores();
+				control.getPrefs().resetTopScores();
 			}
 			if (which == DialogInterface.BUTTON_POSITIVE) {
 				new StartHighScoreGlobalTask().execute(new Integer[0]);
@@ -409,7 +409,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		setContentView(R.layout.wordsearch_main);
 		control = new WordSearchActivityController(this);
 		control.restoreState(savedInstanceState);
-		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 		{
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 			if (!appVer.equals(sp.getString(Constants.KEY_INTRO_VER, null)) && sp.getString(getString(R.string.prefs_touch_mode), null) == null) {
@@ -675,14 +674,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		this.removeDialog(DIALOG_ID_GAME_OVER);
 	}
 
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (this.getString(R.string.prefs_touch_mode).equals(key)) {
-			if (control != null) {// safety check
-				control.updateTouchMode();
-			}
-		}
-	}
-
 	/**
 	 * creates a grid of textViews from layout files based on the gridSize
 	 *  and sets the new textViews to use the controller as their listener
@@ -695,8 +686,6 @@ public class WordSearchActivity extends Activity implements SharedPreferences.On
 		int gridSize = control.getGridSize();
 		TextViewGridController controller = control.getGridManager();
 		ViewGroup gridTable = (ViewGroup) this.findViewById(R.id.gridTable);
-		this.findViewById(R.id.wordsearch_base).setBackgroundResource(control.getTheme().background);
-		this.control.updateTheme();
 		if (gridTable.getChildCount() != gridSize) {
 			if (gridTable.getChildCount() == 0) {
 				gridTable.setKeepScreenOn(true);

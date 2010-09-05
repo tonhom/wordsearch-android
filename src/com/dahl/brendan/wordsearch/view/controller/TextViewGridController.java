@@ -36,6 +36,7 @@ import com.dahl.brendan.wordsearch.model.ColorState;
 import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Selection;
 import com.dahl.brendan.wordsearch.model.Theme;
+import com.dahl.brendan.wordsearch.model.Word;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
 import com.dahl.brendan.wordsearch.view.runnables.ChangeTextViewColor;
@@ -409,6 +410,10 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 				gridView[point.y][point.x].setTag(null);
 				gridView[point.y][point.x].setTextColor(getTheme().normal);
 			}
+		}
+		for (Word wordFound : grid.getWordsFound()) {
+			this.selectionPaint(wordFound.getPointStart(), wordFound.getPointEnd(), ColorState.FOUND);
+			control.getTheme().updateCurrentFound();
 		}
 	}
 

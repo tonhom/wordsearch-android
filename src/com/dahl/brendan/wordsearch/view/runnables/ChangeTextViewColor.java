@@ -32,13 +32,17 @@ import com.dahl.brendan.wordsearch.model.Theme;
  *
  */
 public class ChangeTextViewColor implements Runnable {
-	final private Theme theme;
 	final private ColorState color;
 	final private TextView view;
+	final private ColorStateList picked;
+	final private ColorStateList found;
+	final private ColorStateList normal;
 
 
 	public ChangeTextViewColor(Theme theme, ColorState color, TextView view) {
-		this.theme = theme;
+		this.picked = theme.picked;
+		this.normal = theme.normal;
+		this.found = theme.getCurrentFound();
 		if (color == null) {
 			this.color = ColorState.NORMAL;
 		} else {
@@ -53,12 +57,12 @@ public class ChangeTextViewColor implements Runnable {
 		case SELECTED:
 			if (view.getTag() == null) {
 				view.setTag(view.getTextColors());
-				view.setTextColor(theme.picked);
+				view.setTextColor(picked);
 			}
 			break;
 		case FOUND:
 			view.setTag(null);
-			view.setTextColor(theme.getCurrentFound());
+			view.setTextColor(found);
 			break;
 		case NORMAL:
 		default:
@@ -66,7 +70,7 @@ public class ChangeTextViewColor implements Runnable {
 			if (tag instanceof ColorStateList) {
 				view.setTextColor((ColorStateList) tag);
 			} else {
-				view.setTextColor(theme.normal);
+				view.setTextColor(normal);
 			}
 			view.setTag(null);
 			break;
