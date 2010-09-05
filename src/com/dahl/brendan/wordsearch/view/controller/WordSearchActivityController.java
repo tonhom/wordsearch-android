@@ -212,7 +212,8 @@ public class WordSearchActivityController {
 	}
 
 	protected void foundWord(String word) {
-		int remainingWordCount = wordBoxManager.wordFound(word);
+		wordBoxManager.wordFound(word);
+		int remainingWordCount = grid.getWordListLength();
 		if (remainingWordCount == 0) {
 			Long diffMill = System.currentTimeMillis() - timeStart + timeSum;
 			setHighScore(diffMill);
@@ -254,7 +255,7 @@ public class WordSearchActivityController {
 		return grid.guessWord(pointStart, pointEnd);
 	}
 	public boolean isGameRunning() {
-		return wordBoxManager.wordsLeft() != 0;
+		return grid.getWordListLength() != 0;
 	}
 	public void newWordSearch() {
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));
