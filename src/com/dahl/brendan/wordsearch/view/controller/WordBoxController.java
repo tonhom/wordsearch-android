@@ -98,15 +98,10 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 		prev.post(new UpdateLetterBox(charSequence, prev, letterBox));
 	}
 	
-	public int wordFound(String str) {
+	public void wordFound(String str) {
 		words.remove(str);
 		wordsIndex = 0;
 		this.updateWordBox();
-		return words.size();
-	}
-
-	public int wordsLeft() {
-		return words.size();
 	}
 
 	public void updateTheme(Theme theme) {

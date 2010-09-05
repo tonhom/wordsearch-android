@@ -35,20 +35,15 @@ public class WordBoxControllerLand extends ArrayAdapter<String> implements WordB
 		this.wordListView.post(new UpdateLetterBoxLand(charSequence, letterBox));
 	}
 	
-	public int wordFound(String str) {
+	public void wordFound(String str) {
 		this.wordsFound.add(str);
 		this.wordListView.post(new UpdateWordList(this, str, null));
-		return wordsLeft();
 	}
 
 	public void resetWords(Grid grid) {
 		this.wordsFound.clear();
 		this.wordsFound.addAll(grid.getWordFound());
 		this.wordListView.post(new UpdateWordList(this, null, grid));
-	}
-
-	public int wordsLeft() {
-		return this.getCount()-this.wordsFound.size();
 	}
 
 	public void updateTheme(Theme theme) {
