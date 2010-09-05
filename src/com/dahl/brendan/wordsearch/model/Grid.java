@@ -38,7 +38,6 @@ import com.dahl.brendan.wordsearch.model.dictionary.IDictionary;
  * this class also handles the generation of new grids
  */
 public class Grid implements Parcelable {
-	// private static final String LOG_TAG = "Grid";
 	private static Random random = new Random();
 	final static private Point deltaNN = new Point(-1, -1);
 	final static private Point deltaNP = new Point(-1, 1);
@@ -343,5 +342,14 @@ public class Grid implements Parcelable {
 
 	public int getSize() {
 		return size;
+	}
+
+	public List<Word> getWordsFound() {
+		List<Word> lists = new LinkedList<Word>();
+		for (Word word : wordsFound) {
+			Word word2 = new Word(word.getString(), word.getPointStart(), word.getPointEnd());
+			lists.add(word2);
+		}
+		return lists;
 	}
 }
