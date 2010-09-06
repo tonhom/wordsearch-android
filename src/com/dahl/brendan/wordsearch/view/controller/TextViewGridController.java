@@ -18,13 +18,11 @@
 
 package com.dahl.brendan.wordsearch.view.controller;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Handler.Callback;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -50,7 +48,61 @@ import com.dahl.brendan.wordsearch.view.WordSearchActivity;
  * most complex stuff happens here
  *
  */
-public class TextViewGridController implements OnTouchListener, OnKeyListener, Runnable, Callback {
+public class TextViewGridController implements OnTouchListener, OnKeyListener, Callback {
+	class EventHandlerCallback implements Callback {
+		public boolean handleMessage(Message msg) {
+			if (handlerEvents.hasMessages(MSG_CLEAR)) {
+				return true;
+			}
+			switch (msg.what) {
+			case MSG_KEY: {
+				selectionStartEnd((TextView)msg.obj);
+				break;
+			}
+			case MotionEvent.ACTION_MOVE: {
+				if (handlerEvents.hasMessages(MotionEvent.ACTION_UP) || handlerEvents.hasMessages(MotionEvent.ACTION_DOWN)) {
+					return true;
+				}
+			}
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_DOWN: {
+				MotionEvent event = (MotionEvent)msg.obj;
+				// defines grid TextView's height and width for later calculations if it isn't already saved
+				if (pointDemension == null) {
+					TextView t = gridView[0][0];
+					Point p = new Point();
+					p.x = t.getWidth();
+					p.y = t.getHeight();
+					pointDemension = p;
+				}
+				Point point = new Point();// row and column of the grid that was touched
+				Point pointPadding = new Point();// the x and y offset within the
+													// touched grid TextView where the
+													// touch occurred
+				point.y = Math.round(event.getY()) / pointDemension.y;
+				pointPadding.y = Math.round(event.getY()) % pointDemension.y;
+				if (pointPadding.y == 0 && point.y != 0) {
+					point.y--;
+				}
+				point.x = Math.round(event.getX()) / pointDemension.x;
+				pointPadding.x = Math.round(event.getX()) % pointDemension.x;
+				if (pointPadding.x == 0 && point.x != 0) {
+					point.x--;
+				}
+				if (touchMode) {
+					handleTextViewEventTouch(point, pointPadding, event.getAction());
+				} else {
+					handleTextViewEventClick(point, pointPadding, event.getAction());
+				}
+				break;
+			}
+			default: {
+				return false;
+			}
+			}
+			return true;
+		}
+	}
 	final private static String LOG_TAG = "TextViewGridController";
 	/**
 	 * populated by the setupgridview in {@link WordSearchActivity.java}
@@ -70,15 +122,16 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 */
 	private Point pointDemension;
 	
-	final private Thread eventThread = new Thread(this);
-
-	final private BlockingQueue<MotionEvent> eventsQue = new LinkedBlockingQueue<MotionEvent>();
 	final private Handler handler;
+	final private HandlerThread threadEvents;
+	final private Handler handlerEvents;
 
 	protected TextViewGridController(WordSearchActivityController control) {
 		this.control = control;
+		this.threadEvents = new HandlerThread("word-search-events");
+		this.threadEvents.start();
+		this.handlerEvents = new Handler(threadEvents.getLooper(), new EventHandlerCallback());
 		this.handler = new Handler(this);
-		this.eventThread.start();
 	}
 
 	public void setGridView(TextView[][] gridViewNew) {
@@ -106,9 +159,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		case 23:
 		case 62:
 		case 66:
-			if (event.getAction() == KeyEvent.ACTION_UP
-					&& view instanceof TextView) {
-				this.selectionStartEnd((TextView) view);
+			if (event.getAction() == KeyEvent.ACTION_UP && view instanceof TextView) {
+				Message.obtain(handlerEvents, MSG_KEY, view).sendToTarget();
 			}
 			return true;
 		default:
@@ -117,7 +169,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	}
 
 	public boolean onTouch(View view, MotionEvent event) {
-		eventsQue.add(event);
+		Message.obtain(handlerEvents, event.getAction(), view.getId(), 0, event).sendToTarget();
 		return true;
 	}
 	
@@ -130,54 +182,6 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		}
 	}
 	
-	public void run() {
-		MotionEvent event = null;
-		boolean running = true;
-		int maxEvents = 0;
-		try {
-			while (running) {
-				event = eventsQue.take();
-				if (event.getAction() != MotionEvent.ACTION_MOVE
-						|| eventsQue.size() == 0) {
-					// defines grid TextView's height and width for later calculations if it
-					// isn't already saved
-					if (pointDemension == null) {
-						TextView t = gridView[0][0];
-						Point p = new Point();
-						p.x = t.getWidth();
-						p.y = t.getHeight();
-						pointDemension = p;
-					}
-					Point point = new Point();// row and column of the grid that was touched
-					Point pointPadding = new Point();// the x and y offset within the
-														// touched grid TextView where the
-														// touch occurred
-					point.y = Math.round(event.getY()) / pointDemension.y;
-					pointPadding.y = Math.round(event.getY()) % pointDemension.y;
-					if (pointPadding.y == 0 && point.y != 0) {
-						point.y--;
-					}
-					point.x = Math.round(event.getX()) / pointDemension.x;
-					pointPadding.x = Math.round(event.getX()) % pointDemension.x;
-					if (pointPadding.x == 0 && point.x != 0) {
-						point.x--;
-					}
-					if (touchMode) {
-						handleTextViewEventTouch(point, pointPadding, event.getAction());
-					} else {
-						handleTextViewEventClick(point, pointPadding, event.getAction());
-					}
-				}
-				if (eventsQue.size() > maxEvents) {
-					maxEvents = eventsQue.size();
-					Log.v(LOG_TAG, "maxEvents="+maxEvents);
-				}
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private void handleTextViewEventClick(Point point, Point pointPadding, int action) {
 		if (Selection.isValidPoint(point, gridView.length)) {
 			TextView views2 = null;
@@ -408,7 +412,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 * @param grid word search model of all the letters in a grid
 	 */
 	public void reset(Grid grid) {
-		eventsQue.clear();
+		handlerEvents.sendEmptyMessage(MSG_CLEAR);
 		Point point = new Point();
 		for (point.y = 0; point.y < gridView.length; point.y++) {
 			for (point.x = 0; point.x < gridView[point.y].length; point.x++) {
@@ -428,6 +432,8 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	}
 
 	final private static int MSG_SET_TEXT_COLOR = 0;
+	final private static int MSG_CLEAR = -1;
+	final private static int MSG_KEY = -2;
 	final private static String MSG_DATA_COLOR = "data_color";
 	final private static String MSG_DATA_FOUND = "data_found";
 	public boolean handleMessage(Message msg) {
@@ -441,6 +447,9 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			}
 			switch (color) {
 			case SELECTED:
+				if (this.handler.hasMessages(msg.what, msg.obj)) {
+					return true;
+				}
 				if (view.getTag() == null) {
 					view.setTag(view.getTextColors());
 					view.setTextColor(getTheme().picked);
@@ -453,12 +462,12 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 			case NORMAL:
 			default:
 				Object tag = view.getTag();
+				view.setTag(null);
 				if (tag instanceof ColorStateList) {
 					view.setTextColor((ColorStateList) tag);
-				} else {
+				} else if (getTheme().picked.equals(view.getTextColors())) {
 					view.setTextColor(getTheme().normal);
 				}
-				view.setTag(null);
 				break;
 			}
 			break;
