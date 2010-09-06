@@ -27,7 +27,7 @@ import com.dahl.brendan.wordsearch.model.Theme;
  * @author dahlb
  *
  */
-public interface WordBoxControllerI {
+public interface IWordBoxController {
 	/**
 	 * 
 	 * @param charSequence sets the letter to show the user which letter is being touched

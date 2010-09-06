@@ -38,7 +38,7 @@ import com.dahl.brendan.wordsearch.model.dictionary.IDictionary;
  * this class also handles the generation of new grids
  */
 public class Grid implements Parcelable {
-	private static Random random = new Random();
+	final static private Random random = new Random();
 	final static private Point deltaNN = new Point(-1, -1);
 	final static private Point deltaNP = new Point(-1, 1);
 	final static private Point deltaPN = new Point(1, -1);
@@ -116,33 +116,38 @@ public class Grid implements Parcelable {
 	public static Grid generateGrid(IDictionary dic, Integer maxWords,
 			Integer minLength, int size) {
 		// Log.v(LOG_TAG, "generatedGrid:");
-		Grid grid = new Grid(size);
-		int maxLength = size;
-		String word;
-		int missedCount = 0;
-		for (int wordsAdded = 0; wordsAdded < maxWords
-				&& (word = dic.getNextWord(minLength, maxLength)) != null
-				&& minLength != maxLength;) {
-			if (!grid.wordExists(word)) {
-				Word word2 = new Word(word, new Point(), new Point());
-				if (attemptWord(word2, grid)) {
-					// Log.v(LOG_TAG, grid.toString());
-					grid.addWord(word2);
-					wordsAdded++;
+		Grid grid;
+		int tries = 0;
+		do {
+			grid = new Grid(size);
+			int maxLength = size;
+			String word;
+			int missedCount = 0;
+			for (int wordsAdded = 0; wordsAdded < maxWords
+					&& (word = dic.getNextWord(minLength, maxLength)) != null
+					&& minLength != maxLength;) {
+				if (!grid.wordExists(word)) {
+					Word word2 = new Word(word, new Point(), new Point());
+					if (attemptWord(word2, grid)) {
+						// Log.v(LOG_TAG, grid.toString());
+						grid.addWord(word2);
+						wordsAdded++;
+					} else {
+						// Log.v(LOG_TAG, "Word Couldn't Fit");
+						missedCount++;
+						maxLength--;
+					}
 				} else {
-					// Log.v(LOG_TAG, "Word Couldn't Fit");
 					missedCount++;
-					maxLength--;
 				}
-			} else {
-				missedCount++;
+				if (missedCount == 2) {
+					wordsAdded++;
+					missedCount = 0;
+				}
 			}
-			if (missedCount == 2) {
-				wordsAdded++;
-				missedCount = 0;
-			}
-		}
-		grid.fillEmpty();
+			grid.fillEmpty();
+			tries++;
+		} while(grid.hasDups() && tries <= 2);
 		return grid;
 	}
 
@@ -215,10 +220,6 @@ public class Grid implements Parcelable {
 		this.letterPoints.clear();
 	}
 
-	public boolean isReplaying() {
-		return replaying;
-	}
-
 	public Character getLetterAt(Point point) {
 		return gridInternals[point.x + point.y * size];
 	}
@@ -231,12 +232,8 @@ public class Grid implements Parcelable {
 		return points;
 	}
 
-	public List<String> getWordList() {
-		LinkedList<String> lists = new LinkedList<String>();
-		for (Word word : wordsHidden) {
-			lists.add(new String(word.getString()));
-		}
-		return lists;
+	public int getSize() {
+		return size;
 	}
 
 	public List<String> getWordFound() {
@@ -247,10 +244,31 @@ public class Grid implements Parcelable {
 		return lists;
 	}
 
+	public List<String> getWordList() {
+		LinkedList<String> lists = new LinkedList<String>();
+		for (Word word : wordsHidden) {
+			lists.add(new String(word.getString()));
+		}
+		return lists;
+	}
+
 	public int getWordListLength() {
 		return wordsHidden.size() + wordsFound.size();
 	}
 
+	public boolean isRunning() {
+		return wordsHidden.size() != 0;
+	}
+
+	public List<Word> getWordsFound() {
+		List<Word> lists = new LinkedList<Word>();
+		for (Word word : wordsFound) {
+			Word word2 = new Word(word.getString(), word.getPointStart(), word.getPointEnd());
+			lists.add(word2);
+		}
+		return lists;
+	}
+	
 	final public String guessWord(Point pointStart, Point pointEnd) {
 		for (int i = 0; i < wordsHidden.size(); i++) {
 			Word word = wordsHidden.get(i);
@@ -265,14 +283,86 @@ public class Grid implements Parcelable {
 		}
 		return null;
 	}
-	
-	final public void reset() {
+
+	private boolean hasDupDelta(String subWord, Point location, Point delta) {
+    	if (subWord.charAt(0) == this.getLetterAt(location)) {
+    		if (subWord.length() == 1) {
+    			return true;
+    		} else {
+        		location.offset(delta.x, delta.y);
+        		return hasDupDelta(subWord.substring(1), location, delta);
+    		}
+    	}
+    	return false;
+    }
+    private boolean hasDups() {
+    	for (Word word : this.wordsHidden) {
+    		LinkedList<Point> points = getPointsForLetter(word.getString().charAt(0));
+    		points.remove(word.getPointStart());
+    		for (Point p : points) {
+    			int len = word.getString().length();
+    			Point test = new Point();
+    			test.set(p.x, p.y);
+    			test.offset(deltaNN.x*len, deltaNN.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaNN)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaNP.x*len, deltaNP.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaNP)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaPN.x*len, deltaPN.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaPN)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaPP.x*len, deltaPP.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaPP)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaPZ.x*len, deltaPZ.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaPZ)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaZP.x*len, deltaZP.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaZP)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaPP.x*len, deltaPP.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaPP)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaNZ.x*len, deltaNZ.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaNZ)) {
+    				return true;
+    			}
+    			test.set(p.x, p.y);
+    			test.offset(deltaZN.x*len, deltaZN.y*len);
+    			if (Selection.isValidPoint(test, getSize()) && hasDupDelta(word.getString(), new Point(p), deltaZN)) {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    }
+
+    public boolean isReplaying() {
+		return replaying;
+	}
+    
+    final public void reset() {
 		replaying = true;
 		this.wordsHidden.addAll(this.wordsFound);
 		this.wordsFound.clear();
 	}
-
-	private void setLetterAt(Point point, Character letter) {
+    
+    private void setLetterAt(Point point, Character letter) {
 		int index = point.x + point.y * size;
 		if (gridInternals[index] == null) {
 			LinkedList<Point> points = getPointsForLetter(letter);
@@ -281,6 +371,7 @@ public class Grid implements Parcelable {
 		}
 		gridInternals[index] = letter;
 	}
+    
     public String toString() {
 		String str = "";
 		for (int i = 0; i < gridInternals.length; i++) {
@@ -297,7 +388,7 @@ public class Grid implements Parcelable {
 		return str;
 	}
 
-    private boolean validateWord(Word word, Point delta) {
+	private boolean validateWord(Word word, Point delta) {
 		if (!Selection.isValidPoint(word.getPointStart(), size)) {
 			return false;
 		}
@@ -320,8 +411,8 @@ public class Grid implements Parcelable {
 		}
 		return true;
 	}
-    
-    private boolean wordExists(String str) {
+
+	private boolean wordExists(String str) {
 		for (Word word : wordsHidden) {
 			if (word.getString().equals(str)) {
 				return true;
@@ -339,17 +430,4 @@ public class Grid implements Parcelable {
     	}
     	out.writeString(Boolean.toString(this.replaying));
     }
-
-	public int getSize() {
-		return size;
-	}
-
-	public List<Word> getWordsFound() {
-		List<Word> lists = new LinkedList<Word>();
-		for (Word word : wordsFound) {
-			Word word2 = new Word(word.getString(), word.getPointStart(), word.getPointEnd());
-			lists.add(word2);
-		}
-		return lists;
-	}
 }

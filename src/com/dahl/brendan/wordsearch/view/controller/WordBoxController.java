@@ -20,6 +20,9 @@ package com.dahl.brendan.wordsearch.view.controller;
 
 import java.util.List;
 
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,8 +31,6 @@ import android.widget.TextView;
 import com.dahl.brendan.wordsearch.model.Grid;
 import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.view.R;
-import com.dahl.brendan.wordsearch.view.runnables.UpdateLetterBox;
-import com.dahl.brendan.wordsearch.view.runnables.UpdateWordBox;
 
 /**
  * 
@@ -37,11 +38,12 @@ import com.dahl.brendan.wordsearch.view.runnables.UpdateWordBox;
  *
  * handles the logic of displaying the words that the user is to hunt in the grid
  */
-public class WordBoxController implements OnClickListener, WordBoxControllerI {
+public class WordBoxController implements OnClickListener, IWordBoxController, Callback {
 	final private Button next;
 	final private Button prev;
 	final private TextView wordBox;
 	final private TextView letterBox;
+	final private Handler handler;
 	private List<String> words;
 	private int wordsIndex = 0;
 
@@ -52,6 +54,7 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 		this.next = next;
 		this.next.setOnClickListener(this);
 		this.wordBox = wordBox;
+		this.handler = new Handler(this);
 	}
 
 	public void onClick(View view) {
@@ -69,43 +72,69 @@ public class WordBoxController implements OnClickListener, WordBoxControllerI {
 		default:
 			return;
 		}
-		updateWordBox();
+		Message.obtain(handler, MSG_UPDATE_WORD_BOX).sendToTarget();
 	}
 
 	public void resetWords(Grid grid) {
 		this.words = grid.getWordList();
 		this.wordsIndex = 0;
-		this.updateWordBox();
-	}
-
-	/**
-	 * displays the current word in the wordList to the user
-	 */
-	private void updateWordBox() {
-		if (wordsIndex < 0 || wordsIndex > words.size()) {
-			wordsIndex = 0;
-		}
-		boolean nextEnabled = (wordsIndex < words.size()-1);
-		boolean prevEnabled = (wordsIndex > 0);
-		CharSequence text = "";
-		if (words.size() != 0) {
-			text = words.get(wordsIndex);
-		}
-		prev.post(new UpdateWordBox(prev, next, wordBox, prevEnabled, nextEnabled, text));
+		Message.obtain(handler, MSG_UPDATE_WORD_BOX).sendToTarget();
 	}
 
 	public void setLetter(CharSequence charSequence) {
-		prev.post(new UpdateLetterBox(charSequence, prev, letterBox));
+		Message.obtain(handler, MSG_SET_LETTER_BOX, charSequence).sendToTarget();
 	}
 	
 	public void wordFound(String str) {
 		words.remove(str);
 		wordsIndex = 0;
-		this.updateWordBox();
+		Message.obtain(handler, MSG_UPDATE_WORD_BOX).sendToTarget();
 	}
 
 	public void updateTheme(Theme theme) {
-		this.letterBox.setTextColor(theme.picked);
-		this.wordBox.setTextColor(theme.normal);
+		Message.obtain(handler, MSG_UPDATE_THEME, theme).sendToTarget();
+	}
+
+	final static private int MSG_SET_LETTER_BOX = 0;
+	final static private int MSG_UPDATE_WORD_BOX = 1;
+	final static private int MSG_UPDATE_THEME = 2;
+	public boolean handleMessage(Message msg) {
+		switch (msg.what) {
+		case MSG_SET_LETTER_BOX: {
+			CharSequence letterBoxText = (CharSequence)msg.obj;
+			if (letterBoxText == null) {
+				prev.setVisibility(Button.VISIBLE);
+				letterBox.setVisibility(TextView.INVISIBLE);
+			} else {
+				prev.setVisibility(Button.INVISIBLE);
+				letterBox.setText(letterBoxText);
+				letterBox.setVisibility(TextView.VISIBLE);
+			}
+			break;
+		}
+		case MSG_UPDATE_WORD_BOX: {
+			if (wordsIndex < 0 || wordsIndex > words.size()) {
+				wordsIndex = 0;
+			}
+			CharSequence text = "";
+			if (words.size() != 0) {
+				text = words.get(wordsIndex);
+			}
+			next.setEnabled(wordsIndex < words.size()-1);
+			prev.setEnabled(wordsIndex > 0);
+			wordBox.setText(text);
+			break;
+		}
+		case MSG_UPDATE_THEME: { 
+			Theme theme = (Theme)msg.obj;
+			this.letterBox.setTextColor(theme.picked);
+			this.wordBox.setTextColor(theme.normal);
+			break;
+		}
+		default: {
+			return false;
+		}
+		}
+		return true;
 	}
 }

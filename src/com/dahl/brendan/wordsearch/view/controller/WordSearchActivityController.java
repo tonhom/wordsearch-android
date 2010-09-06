@@ -145,7 +145,7 @@ public class WordSearchActivityController implements SharedPreferences.OnSharedP
 	/**
 	 * sub-control module
 	 */
-	private WordBoxControllerI wordBoxManager;
+	private IWordBoxController wordBoxManager;
 	/**
 	 * sub-control module
 	 */
@@ -210,8 +210,7 @@ public class WordSearchActivityController implements SharedPreferences.OnSharedP
 
 	protected void foundWord(String word) {
 		wordBoxManager.wordFound(word);
-		int remainingWordCount = grid.getWordListLength();
-		if (remainingWordCount == 0) {
+		if (!grid.isRunning()) {
 			Long diffMill = System.currentTimeMillis() - timeStart + timeSum;
 			setHighScore(diffMill);
 		}
@@ -252,7 +251,7 @@ public class WordSearchActivityController implements SharedPreferences.OnSharedP
 		return grid.guessWord(pointStart, pointEnd);
 	}
 	public boolean isGameRunning() {
-		return grid.getWordListLength() != 0;
+		return grid.isRunning();
 	}
 	public void newWordSearch() {
 		String category = PreferenceManager.getDefaultSharedPreferences(wordSearch).getString(wordSearch.getString(R.string.prefs_category), wordSearch.getString(R.string.RANDOM));

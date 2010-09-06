@@ -23,7 +23,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.content.res.ColorStateList;
 import android.graphics.Point;
-import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -39,7 +41,6 @@ import com.dahl.brendan.wordsearch.model.Theme;
 import com.dahl.brendan.wordsearch.model.Word;
 import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordSearchActivity;
-import com.dahl.brendan.wordsearch.view.runnables.ChangeTextViewColor;
 
 /**
  * 
@@ -49,7 +50,7 @@ import com.dahl.brendan.wordsearch.view.runnables.ChangeTextViewColor;
  * most complex stuff happens here
  *
  */
-public class TextViewGridController implements OnTouchListener, OnKeyListener, Runnable {
+public class TextViewGridController implements OnTouchListener, OnKeyListener, Runnable, Callback {
 	final private static String LOG_TAG = "TextViewGridController";
 	/**
 	 * populated by the setupgridview in {@link WordSearchActivity.java}
@@ -72,9 +73,11 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	final private Thread eventThread = new Thread(this);
 
 	final private BlockingQueue<MotionEvent> eventsQue = new LinkedBlockingQueue<MotionEvent>();
+	final private Handler handler;
 
 	protected TextViewGridController(WordSearchActivityController control) {
 		this.control = control;
+		this.handler = new Handler(this);
 		this.eventThread.start();
 	}
 
@@ -394,7 +397,10 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 	 * @param color change the view to this color; or pass in null to revert the color to its old color
 	 */
 	private void setTextViewColor(TextView view, ColorState color) {
-		view.post(new ChangeTextViewColor(getTheme(), color, view));
+		Message msg = Message.obtain(handler, MSG_SET_TEXT_COLOR, view);
+		msg.getData().putParcelable(MSG_DATA_COLOR, color);
+		msg.getData().putParcelable(MSG_DATA_FOUND, getTheme().getCurrentFound());
+		msg.sendToTarget();
 	}
 
 	/**
@@ -417,36 +423,50 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, R
 		}
 	}
 
-	/**
-	 * handles bundle serializing
-	 */
-	final private static String BUNDLE_COLOR_STATE_PREFIX = "ws_color_state_";
-	final private static String BUNDLE_COLOR_STATE_SEP = ":";
-
-	protected void fromBundle(Bundle bundle) {
-		for (int y = 0; y <gridView.length; y++) {
-			for (int x = 0; x < gridView[y].length; x++) {
-				ColorStateList csl = bundle.getParcelable(BUNDLE_COLOR_STATE_PREFIX+Integer.valueOf(y)+BUNDLE_COLOR_STATE_SEP+Integer.valueOf(x));
-				gridView[y][x].setTextColor(csl);
-			}
-		}
-	}
-	
-	protected Bundle toBundle() {
-		Bundle bundle = new Bundle();
-		for (int y = 0; y <gridView.length; y++) {
-			for (int x = 0; x < gridView[y].length; x++) {
-				TextView view = gridView[y][x];
-				if (getTheme().picked.equals(view.getTextColors())) {
-					new ChangeTextViewColor(getTheme(), null, view).run();
-				}
-				bundle.putParcelable(BUNDLE_COLOR_STATE_PREFIX+Integer.valueOf(y)+BUNDLE_COLOR_STATE_SEP+Integer.valueOf(x), view.getTextColors());
-			}
-		}
-		return bundle;
-	}
-
 	public void setPointDemension(Point pointDemension2) {
 		this.pointDemension = pointDemension2;
+	}
+
+	final private static int MSG_SET_TEXT_COLOR = 0;
+	final private static String MSG_DATA_COLOR = "data_color";
+	final private static String MSG_DATA_FOUND = "data_found";
+	public boolean handleMessage(Message msg) {
+		switch (msg.what) {
+		case MSG_SET_TEXT_COLOR: {
+			TextView view = (TextView)msg.obj;
+			ColorState color = msg.getData().getParcelable(MSG_DATA_COLOR);
+			ColorStateList found = msg.getData().getParcelable(MSG_DATA_FOUND);
+			if (color == null) {
+				color = ColorState.NORMAL;
+			}
+			switch (color) {
+			case SELECTED:
+				if (view.getTag() == null) {
+					view.setTag(view.getTextColors());
+					view.setTextColor(getTheme().picked);
+				}
+				break;
+			case FOUND:
+				view.setTag(null);
+				view.setTextColor(found);
+				break;
+			case NORMAL:
+			default:
+				Object tag = view.getTag();
+				if (tag instanceof ColorStateList) {
+					view.setTextColor((ColorStateList) tag);
+				} else {
+					view.setTextColor(getTheme().normal);
+				}
+				view.setTag(null);
+				break;
+			}
+			break;
+		}
+		default: {
+			return false;
+		}
+		}
+		return true;
 	}
 }
