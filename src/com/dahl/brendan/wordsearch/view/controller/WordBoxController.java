@@ -82,6 +82,9 @@ public class WordBoxController implements OnClickListener, IWordBoxController, C
 	}
 
 	public void setLetter(CharSequence charSequence) {
+		if (charSequence != null && charSequence.length() > 1) {
+			charSequence = String.valueOf(charSequence.charAt(charSequence.length()-1));
+		}
 		Message.obtain(handler, MSG_SET_LETTER_BOX, charSequence).sendToTarget();
 	}
 	

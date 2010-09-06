@@ -59,13 +59,13 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, C
 				selectionStartEnd((TextView)msg.obj);
 				break;
 			}
+			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_MOVE: {
 				if (handlerEvents.hasMessages(MotionEvent.ACTION_UP) || handlerEvents.hasMessages(MotionEvent.ACTION_DOWN)) {
 					return true;
 				}
 			}
-			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_DOWN: {
+			case MotionEvent.ACTION_UP: {
 				MotionEvent event = (MotionEvent)msg.obj;
 				// defines grid TextView's height and width for later calculations if it isn't already saved
 				if (pointDemension == null) {
@@ -282,6 +282,7 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, C
 		if (!selection.hasBegun()) {// starting
 			selection.setStart(view);
 			setTextViewColor(view, ColorState.SELECTED);
+			control.setLetter(selection.getEnd().getText());
 		} else if (!view.equals(selection.getStart())
 				&& !view.equals(selection.getEnd())) {
 			Point pointStart = ConversionUtil.convertIDToPoint(selection.getStart().getId(), control.getGridSize());
@@ -305,9 +306,28 @@ public class TextViewGridController implements OnTouchListener, OnKeyListener, C
 				this.setTextViewColor(view, ColorState.SELECTED);
 			}
 			selection.setEnd(view);
+			control.setLetter(getSelectionWord(pointStart, pointNew, delta));
 		}
-		control.setLetter(selection.getEnd().getText());
 		return true;
+	}
+	
+	private String getSelectionWord(Point pointStart, Point pointEnd, Point delta) {
+		String selectionWord = "";
+		Point point = new Point();
+		point.x = pointStart.x;
+		point.y = pointStart.y;
+		if (!Selection.isValidPoint(point, gridView.length)) {
+			throw new NullPointerException("point: "+point.x+","+point.y+"; delta: "+delta.x+","+delta.y + "; length: "+gridView.length);
+		}
+		selectionWord += this.gridView[point.y][point.x].getText();
+		do {
+			point.x += delta.x;
+			point.y += delta.y;
+			if (!point.equals(pointStart) && Selection.isValidPoint(point, gridView.length)) {
+				selectionWord += this.gridView[point.y][point.x].getText();
+			}
+		} while (!point.equals(pointEnd) && Selection.isValidPoint(point, gridView.length));
+		return selectionWord;
 	}
 	
 	private Theme getTheme() {
