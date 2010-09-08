@@ -691,7 +691,7 @@ public class WordSearchActivity extends Activity {
 				gridTable.setKeepScreenOn(true);
 				gridTable.setOnTouchListener(controller);
 			}
-			control.getGridManager().setPointDemension(null);
+			control.getGridManager().clearPointDemension();
 			gridTable.removeAllViews();
 			Point point = new Point();
 			controller.setGridView(new TextView[gridSize][]);
