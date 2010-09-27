@@ -1,6 +1,10 @@
+Version 2.3.1 (105):
+fix icon missing on Android 1.5
+
 Version 2.3 (100):
 change theme mid game
 improve performance and coding practices with handlers 
+improve accuracy of grid selection
 
 Version 2.2 (90):
 landscape mode
