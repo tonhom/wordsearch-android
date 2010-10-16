@@ -63,6 +63,7 @@
 
 	<!-- category preference choices -->
 	<string-array name="categories_list_labels">
+		<item>@string/seasonal</item>
 		<item>@string/places</item>
 		<item>@string/animals</item>
 		<item>@string/people</item>
@@ -77,6 +78,7 @@
 		<item>@string/random</item>
 	</string-array>
 	<string-array name="categories_list_values">
+		<item>@string/SEASONAL</item>
 		<item>@string/PLACES</item>
 		<item>@string/ANIMALS</item>
 		<item>@string/PEOPLE</item>
@@ -113,6 +115,7 @@
 	</string-array>
 
 	<!-- DictionaryType Enum values -->
+	<string name="SEASONAL">SEASONAL</string>
 	<string name="PLACES">PLACES</string>
 	<string name="ANIMALS">ANIMALS</string>
 	<string name="PEOPLE">PEOPLE</string>
