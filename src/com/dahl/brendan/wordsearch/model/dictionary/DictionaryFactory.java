@@ -34,6 +34,7 @@ import com.dahl.brendan.wordsearch.view.R;
 public class DictionaryFactory {
 	public enum DictionaryType {
 		SEASONAL,
+		CHRISTMAS,
 		PLACES,
 		ANIMALS,
 		PEOPLE,
@@ -77,6 +78,9 @@ public class DictionaryFactory {
 		switch (themeIndex) {
 		case SEASONAL:
 			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_SEASONAL));
+			break;
+		case CHRISTMAS:
+			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_CHRISTMAS));
 			break;
 		case PLACES:
 			dic = new DictionaryStringArray(ctx.getResources().getStringArray(R.array.WORDS_PLACES));
