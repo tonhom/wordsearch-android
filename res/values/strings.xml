@@ -2,6 +2,7 @@
 <resources>
 	<string name="app_name">Word Search</string>
 
+	<string name="foods">Foods</string>
 	<string name="seasonal">Seasonal</string>
 	<string name="christmas">Christmas</string>
 	<string name="places">Places</string>

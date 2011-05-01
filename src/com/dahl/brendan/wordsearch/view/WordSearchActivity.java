@@ -13,7 +13,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Open WordSearch.  If not, see <http://www.gnu.org/licenses/>.
 //
-//	  Copyright 2009, 2010 Brendan Dahl <dahl.brendan@brendandahl.com>
+//	  Copyright 2009, 2010, 2011 Brendan Dahl <dahl.brendan@brendandahl.com>
 //	  	http://www.brendandahl.com
 
 package com.dahl.brendan.wordsearch.view;
@@ -59,6 +59,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dahl.brendan.util.AnalyticsTask;
 import com.dahl.brendan.wordsearch.Constants;
 import com.dahl.brendan.wordsearch.model.HighScore;
 import com.dahl.brendan.wordsearch.util.AndroidHttpClient;
@@ -66,8 +67,6 @@ import com.dahl.brendan.wordsearch.util.ConversionUtil;
 import com.dahl.brendan.wordsearch.view.WordDictionaryProvider.Word;
 import com.dahl.brendan.wordsearch.view.controller.TextViewGridController;
 import com.dahl.brendan.wordsearch.view.controller.WordSearchActivityController;
-import com.firegnom.rat.DefaultExceptionHandler;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 /**
  * 
@@ -82,7 +81,11 @@ public class WordSearchActivity extends Activity {
 		@Override
 		protected void onPostExecute(List<HighScore> highScores) {
 			if (!this.isCancelled() && pd.isShowing() && pd.getWindow() != null) {
-				pd.dismiss();
+				try {
+					pd.dismiss();
+				} catch (IllegalArgumentException e) {
+					return;
+				}
 				if (highScores != null) {
 					StringBuilder str = new StringBuilder();
 					if (highScores.size() == 0) {
@@ -372,7 +375,6 @@ public class WordSearchActivity extends Activity {
 	 * control classes were made to segment the complex game logic away from the display logic
 	 */
 	private WordSearchActivityController control;
-	private GoogleAnalyticsTracker tracker = null;
 	private String appVer;
 
 	public WordSearchActivityController getControl() {
@@ -385,22 +387,14 @@ public class WordSearchActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		DefaultExceptionHandler.register(this.getApplicationContext(),CrashActivity.class);
-		try {
-			tracker = GoogleAnalyticsTracker.getInstance();
-		} catch (RuntimeException re) {
-			Log.e(LOG_TAG, "tracker failed!");
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "tracker failed!");
-		}
 		try {
 			appVer = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			appVer = "unknown";
 		}
 		try {
-			tracker.start("UA-146333-5", 60, this);
-			tracker.trackPageView("/app/"+appVer+"/WordSearchActivity");
+			AnalyticsTask analytics = new AnalyticsTask(this, true);
+			analytics.execute(new String[] {"/WordSearchActivity"});
 		} catch (RuntimeException re) {
 			Log.e(LOG_TAG, "tracker failed!");
 		} catch (Exception e) {
@@ -639,13 +633,6 @@ public class WordSearchActivity extends Activity {
 		super.onPause();
 //		Log.v(LOG_TAG, "onPause");
 		control.timePause();
-		try {
-			tracker.dispatch();
-		} catch (RuntimeException re) {
-			Log.e(LOG_TAG, "tracker failed!");
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "tracker failed!");
-		}
 	}
 
 	@Override
@@ -664,13 +651,6 @@ public class WordSearchActivity extends Activity {
 		super.onSaveInstanceState(outState);
 //		Log.v(LOG_TAG, "onSaveInstanceState");
 		control.saveState(outState);
-		try {
-			tracker.dispatch();
-		} catch (RuntimeException re) {
-			Log.e(LOG_TAG, "tracker failed!");
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "tracker failed!");
-		}
 		this.removeDialog(DIALOG_ID_GAME_OVER);
 	}
 
@@ -721,7 +701,8 @@ public class WordSearchActivity extends Activity {
 			if (control.getPrefs().getTouchMode()) {
 				input = "Drag";
 			}
-			tracker.trackEvent(category, input, appVer, control.getGridSize());
+			AnalyticsTask analytics = new AnalyticsTask(this, false);
+			analytics.execute(new String[] {category, input, Integer.toString(control.getGridSize())});
 		} catch (RuntimeException re) {
 			Log.e(LOG_TAG, "tracker failed!");
 		} catch (Exception e) {
@@ -732,11 +713,8 @@ public class WordSearchActivity extends Activity {
 	public void trackReplay() {
 		try {
 			String category = control.getPrefs().getCategory();
-			int input = 2;
-			if (control.getPrefs().getTouchMode()) {
-				input = 1;
-			}
-			tracker.trackEvent(category, "replay", appVer, input);
+			AnalyticsTask analytics = new AnalyticsTask(this, false);
+			analytics.execute(new String[] {category, "replay", Integer.toString(control.getGridSize())});
 		} catch (RuntimeException re) {
 			Log.e(LOG_TAG, "tracker failed!");
 		} catch (Exception e) {

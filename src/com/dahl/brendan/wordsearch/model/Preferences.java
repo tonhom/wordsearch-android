@@ -39,8 +39,6 @@ public class Preferences {
 	private static final String PREFS_SCORE_DEFAULT_NAME = "score_default_name";
 	private static final String PREFS_SCORE_TIME = "score_time";
 	private static final String PREFS_SCORE_NAME = "score_name";
-	private static final String PREFS_SCORE_THEME = "score_theme";
-	private static final String PREFS_SCORE_SIZE = "score_size";
 	private static final String PREFS_SCORE = "score";
 	private static final String PREFS_SEPARATOR = ":";
 	private final SharedPreferences settings_scores;
@@ -81,13 +79,6 @@ public class Preferences {
 			if (score != -1) {
 				HighScore highScore = new HighScore(name, score, time);
 				scores.add(highScore);
-			} else {// TODO REMOVE in 2.0 most likely
-				int size = settings_scores.getInt(getTopScoreSizeKey(level), -1);
-				float theme = settings_scores.getFloat(getTopScoreThemeKey(level), -1);
-				if (theme != -1) {
-					HighScore highScore = new HighScore(name, time, size, theme);
-					scores.add(highScore);
-				}
 			}
 		}
 		return scores;
@@ -98,16 +89,6 @@ public class Preferences {
 	}
 	private String getTopScoreNameKey(String level) {
 		return PREFS_SCORE_NAME + PREFS_SEPARATOR + level;
-	}
-	// TODO REMOVE in 2.0 most likely
-	@Deprecated
-	private String getTopScoreSizeKey(String level) {
-		return PREFS_SCORE_SIZE + PREFS_SEPARATOR + level;
-	}
-	// TODO REMOVE in 2.0 most likely
-	@Deprecated
-	private String getTopScoreThemeKey(String level) {
-		return PREFS_SCORE_THEME + PREFS_SEPARATOR + level;
 	}
 	private String getTopScoreTimeKey(String level) {
 		return PREFS_SCORE_TIME + PREFS_SEPARATOR + level;
@@ -124,10 +105,6 @@ public class Preferences {
 			editor.remove(getTopScoreKey(level));
 			editor.remove(getTopScoreNameKey(level));
 			editor.remove(getTopScoreTimeKey(level));
-			
-			// TODO REMOVE in 2.0 most likely
-			editor.remove(getTopScoreSizeKey(level));
-			editor.remove(getTopScoreThemeKey(level));
 		}
 		editor.commit();
 	}
@@ -142,18 +119,10 @@ public class Preferences {
 				editor.putString(getTopScoreNameKey(level), highScore.getName());
 				editor.putLong(getTopScoreKey(level), highScore.getScore());
 				editor.putLong(getTopScoreTimeKey(level), highScore.getTime());
-
-				// TODO REMOVE in 2.0 most likely
-				editor.remove(getTopScoreSizeKey(level));
-				editor.remove(getTopScoreThemeKey(level));
 			} else {
 				editor.remove(getTopScoreKey(level));
 				editor.remove(getTopScoreNameKey(level));
 				editor.remove(getTopScoreTimeKey(level));
-				
-				// TODO REMOVE in 2.0 most likely
-				editor.remove(getTopScoreSizeKey(level));
-				editor.remove(getTopScoreThemeKey(level));
 			}
 		}
 		editor.commit();

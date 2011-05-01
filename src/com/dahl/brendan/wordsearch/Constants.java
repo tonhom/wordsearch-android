@@ -6,6 +6,7 @@ import android.os.Environment;
 
 public class Constants {
 	public static final int DONATE_GAME_PLAY_COUNT = 10;
+	public static final String GA_CODE = "UA-146333-5";
 
 	public static final String API_URL_BASE = "http://wordsearchapp.brendandahl.com/app/";
 	public static final String API_URL_CRASH = API_URL_BASE + "crash";
